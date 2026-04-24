@@ -10,6 +10,7 @@ struct TonePageView: View {
     let outputGainQuickSteps: [Double]
     let dismissKeyboard: () -> Void
     let applyToneFrequencyText: () -> Void
+    @Environment(\.dashboardLayoutMetrics) private var metrics
 
     var body: some View {
         NavigationStack {
@@ -38,8 +39,34 @@ struct TonePageView: View {
 
     private var frequencyControlCard: some View {
         InstrumentCard {
-            VStack(alignment: .leading, spacing: 8) {
-                SectionTitle(title: String(localized: "tone.frequency_control"))
+            VStack(alignment: .leading, spacing: 9) {
+                HStack(alignment: .firstTextBaseline, spacing: 12) {
+                    SectionTitle(title: String(localized: "tone.frequency_control"))
+
+                    Spacer()
+
+                    VStack(alignment: .trailing, spacing: 1) {
+                        Text("FREQUENCY")
+                            .font(.system(size: 8, weight: .bold, design: .monospaced))
+                            .foregroundStyle(AppTheme.textSecondary)
+                            .tracking(1.6)
+
+                        Text(frequencyReadoutText)
+                            .font(.system(size: metrics.primaryReadoutFontSize - 4, weight: .heavy, design: .rounded))
+                            .monospacedDigit()
+                            .foregroundStyle(isDangerousFrequency ? AppTheme.danger : AcousticTheme.textPrimary)
+                            .shadow(color: isDangerousFrequency ? AppTheme.danger.opacity(0.55) : selectedWaveAccent.opacity(0.22), radius: 7)
+                    }
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.78)
+                }
+
+                if isDangerousFrequency {
+                    Text(String(localized: "tone.high_frequency_warning"))
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(AppTheme.danger)
+                }
+
                 InputRow(
                     field: .toneFrequency,
                     title: String(localized: "label.frequency"),
@@ -50,24 +77,25 @@ struct TonePageView: View {
                     action: applyToneFrequencyText
                 )
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 3) {
                     Text(String(localized: "tone.log_slider"))
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.white)
-                    Slider(
-                        value: Binding(
-                            get: { LogFrequencyScale.sliderValue(for: audioController.clampedFrequency) },
-                            set: { audioController.setFrequency(LogFrequencyScale.frequency(for: $0)) }
+
+                    LogFrequencySlider(
+                        frequency: Binding(
+                            get: { audioController.clampedFrequency },
+                            set: { audioController.setFrequency($0) }
                         ),
-                        in: 0 ... 1
+                        accentColor: selectedWaveAccent
                     )
-                    .tint(AppTheme.accent)
+
                     HStack {
                         Text("1 Hz")
                         Spacer()
                         Text("32 kHz")
                     }
-                    .font(.caption)
+                    .font(.caption.monospacedDigit())
                     .foregroundStyle(AppTheme.textSecondary)
                 }
             }
@@ -76,12 +104,12 @@ struct TonePageView: View {
 
     private var waveformControlCard: some View {
         InstrumentCard {
-            VStack(alignment: .leading, spacing: 8) {
-                ChipGrid(
+            VStack(alignment: .leading, spacing: 12) {
+                HardwareCapsuleSelector(
                     title: String(localized: "label.waveform"),
                     selection: $audioController.waveform,
                     items: AudioEngineController.Waveform.allCases,
-                    columns: 4,
+                    accentColor: { $0.acousticAccentColor },
                     label: { $0.localizedTitle }
                 )
 
@@ -123,5 +151,17 @@ struct TonePageView: View {
             return String(format: "%+.1f Hz", step)
         }
         return String(format: "%+.0f Hz", step)
+    }
+
+    private var selectedWaveAccent: Color {
+        audioController.waveform.acousticAccentColor
+    }
+
+    private var isDangerousFrequency: Bool {
+        audioController.clampedFrequency > 15_000
+    }
+
+    private var frequencyReadoutText: String {
+        String(format: "%.1f Hz", audioController.clampedFrequency)
     }
 }

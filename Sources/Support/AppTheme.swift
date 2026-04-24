@@ -13,17 +13,17 @@ extension Color {
 }
 
 enum AppTheme {
-    static let backgroundTop = Color(hex: 0x08111F)
-    static let backgroundBottom = Color(hex: 0x111C2E)
-    static let card = Color.white.opacity(0.08)
-    static let cardStrong = Color.white.opacity(0.12)
-    static let stroke = Color.white.opacity(0.10)
-    static let accent = Color(hex: 0x6EE7F9)
-    static let accentSoft = Color(hex: 0x60A5FA)
-    static let success = Color(hex: 0x34D399)
-    static let warning = Color(hex: 0xFBBF24)
-    static let danger = Color(hex: 0xFB7185)
-    static let textSecondary = Color.white.opacity(0.68)
+    static let backgroundTop = AcousticTheme.backgroundElevated
+    static let backgroundBottom = AcousticTheme.backgroundBase
+    static let card = AcousticTheme.panelBackground
+    static let cardStrong = AcousticTheme.panelBackgroundStrong
+    static let stroke = AcousticTheme.stroke
+    static let accent = AcousticTheme.sineAccent
+    static let accentSoft = AcousticTheme.noiseAccent
+    static let success = Color(hex: 0x32D5A4)
+    static let warning = Color(hex: 0xF8C34A)
+    static let danger = AcousticTheme.warningRed
+    static let textSecondary = AcousticTheme.textSecondary
 }
 
 extension AudioEngineController.SignalMode {

@@ -343,12 +343,11 @@ struct AdaptiveDashboard<Content: View>: View {
 
     var body: some View {
         GeometryReader { geometry in
-            let horizontalPadding = dashboardHorizontalPadding(for: geometry.size.width)
-            let spacing = dashboardCardSpacing(for: geometry.size.width)
+            let metrics = DashboardLayoutMetrics(size: geometry.size)
             let contentMinHeight = max(
                 geometry.size.height
-                    - dashboardTopPadding(for: geometry.size.width)
-                    - dashboardBottomPadding(for: geometry.size.width),
+                    - metrics.topPadding
+                    - metrics.bottomPadding,
                 1
             )
 
@@ -373,14 +372,15 @@ struct AdaptiveDashboard<Content: View>: View {
                     .offset(x: -geometry.size.width * 0.25, y: geometry.size.height * 0.22)
 
                 ScrollView(showsIndicators: false) {
-                    VStack(spacing: spacing) {
+                    VStack(spacing: metrics.cardSpacing) {
                         content
                     }
                     .frame(maxWidth: .infinity, minHeight: contentMinHeight, alignment: .top)
-                    .padding(.horizontal, horizontalPadding)
-                    .padding(.top, dashboardTopPadding(for: geometry.size.width))
-                    .padding(.bottom, dashboardBottomPadding(for: geometry.size.width))
+                    .padding(.horizontal, metrics.horizontalPadding)
+                    .padding(.top, metrics.topPadding)
+                    .padding(.bottom, metrics.bottomPadding)
                 }
+                .environment(\.dashboardLayoutMetrics, metrics)
                 .scrollDismissesKeyboard(.interactively)
                 .simultaneousGesture(TapGesture().onEnded {
                     onBackgroundTap?()
@@ -388,30 +388,95 @@ struct AdaptiveDashboard<Content: View>: View {
             }
         }
     }
+}
 
-    private func dashboardHorizontalPadding(for width: CGFloat) -> CGFloat {
-        switch width {
-        case ..<360:
-            return 10
-        case ..<430:
-            return 14
-        case ..<700:
-            return 16
-        default:
-            return 24
+struct DashboardLayoutMetrics {
+    let horizontalPadding: CGFloat
+    let topPadding: CGFloat
+    let bottomPadding: CGFloat
+    let cardSpacing: CGFloat
+    let cardPadding: CGFloat
+    let cardCornerRadius: CGFloat
+    let statusIconSize: CGFloat
+    let statusValueFontSize: CGFloat
+    let primaryReadoutFontSize: CGFloat
+    let sliderTrackHeight: CGFloat
+    let sliderThumbSize: CGFloat
+    let selectorVerticalPadding: CGFloat
+    let selectorFontSize: CGFloat
+
+    init(size: CGSize) {
+        let width = size.width
+        let height = size.height
+
+        if width >= 700 {
+            horizontalPadding = 24
+            topPadding = 16
+            bottomPadding = 28
+            cardSpacing = 12
+            cardPadding = 10
+            cardCornerRadius = 22
+            statusIconSize = 34
+            statusValueFontSize = 20
+            primaryReadoutFontSize = 36
+            sliderTrackHeight = 11
+            sliderThumbSize = 26
+            selectorVerticalPadding = 11
+            selectorFontSize = 13
+        } else if width >= 430 || height >= 900 {
+            horizontalPadding = 18
+            topPadding = 10
+            bottomPadding = 118
+            cardSpacing = 9
+            cardPadding = 9
+            cardCornerRadius = 21
+            statusIconSize = 34
+            statusValueFontSize = 20
+            primaryReadoutFontSize = 34
+            sliderTrackHeight = 10
+            sliderThumbSize = 25
+            selectorVerticalPadding = 10
+            selectorFontSize = 12
+        } else if width >= 390 {
+            horizontalPadding = 14
+            topPadding = 8
+            bottomPadding = 108
+            cardSpacing = 8
+            cardPadding = 9
+            cardCornerRadius = 20
+            statusIconSize = 33
+            statusValueFontSize = 19
+            primaryReadoutFontSize = 32
+            sliderTrackHeight = 10
+            sliderThumbSize = 24
+            selectorVerticalPadding = 9
+            selectorFontSize = 12
+        } else {
+            horizontalPadding = 10
+            topPadding = 6
+            bottomPadding = 98
+            cardSpacing = 8
+            cardPadding = 9
+            cardCornerRadius = 20
+            statusIconSize = 31
+            statusValueFontSize = 18
+            primaryReadoutFontSize = 30
+            sliderTrackHeight = 10
+            sliderThumbSize = 24
+            selectorVerticalPadding = 8
+            selectorFontSize = 11
         }
     }
+}
 
-    private func dashboardCardSpacing(for width: CGFloat) -> CGFloat {
-        width >= 700 ? 12 : 8
-    }
+private struct DashboardLayoutMetricsKey: EnvironmentKey {
+    static let defaultValue = DashboardLayoutMetrics(size: CGSize(width: 402, height: 874))
+}
 
-    private func dashboardTopPadding(for width: CGFloat) -> CGFloat {
-        width >= 700 ? 16 : 8
-    }
-
-    private func dashboardBottomPadding(for width: CGFloat) -> CGFloat {
-        width >= 700 ? 28 : 108
+extension EnvironmentValues {
+    var dashboardLayoutMetrics: DashboardLayoutMetrics {
+        get { self[DashboardLayoutMetricsKey.self] }
+        set { self[DashboardLayoutMetricsKey.self] = newValue }
     }
 }
 
@@ -430,25 +495,15 @@ struct DashboardColumn<Content: View>: View {
 struct InstrumentCard<Content: View>: View {
     var fill: Color = AppTheme.card
     @ViewBuilder let content: Content
+    @Environment(\.dashboardLayoutMetrics) private var metrics
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             content
         }
-        .padding(10)
+        .padding(metrics.cardPadding)
         .frame(maxWidth: .infinity, alignment: .topLeading)
-        .background(fill)
-        .overlay(
-            RoundedRectangle(cornerRadius: 24)
-                .stroke(AppTheme.stroke, lineWidth: 1)
-        )
-        .clipShape(RoundedRectangle(cornerRadius: 24))
-        .background(
-            RoundedRectangle(cornerRadius: 24)
-                .fill(Color.white.opacity(0.02))
-                .blur(radius: 2)
-        )
-        .shadow(color: .black.opacity(0.18), radius: 18, x: 0, y: 12)
+        .hardwarePanel(fill: fill, cornerRadius: metrics.cardCornerRadius)
     }
 }
 
@@ -459,6 +514,7 @@ struct CompactStatusCard<Extra: View>: View {
     let badge: String
     let auxiliary: String
     @ViewBuilder let extra: Extra
+    @Environment(\.dashboardLayoutMetrics) private var metrics
 
     var body: some View {
         InstrumentCard(fill: AppTheme.cardStrong) {
@@ -467,7 +523,7 @@ struct CompactStatusCard<Extra: View>: View {
                     ZStack {
                         RoundedRectangle(cornerRadius: 12)
                             .fill(AppTheme.accent.opacity(0.16))
-                            .frame(width: 34, height: 34)
+                            .frame(width: metrics.statusIconSize, height: metrics.statusIconSize)
                         Image(systemName: icon)
                             .font(.system(size: 15, weight: .semibold))
                             .foregroundStyle(AppTheme.accent)
@@ -478,7 +534,7 @@ struct CompactStatusCard<Extra: View>: View {
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(AppTheme.textSecondary)
                         Text(value)
-                            .font(.system(size: 20, weight: .bold, design: .rounded))
+                            .font(.system(size: metrics.statusValueFontSize, weight: .bold, design: .rounded))
                             .foregroundStyle(.white)
                             .monospacedDigit()
                             .lineLimit(1)
@@ -535,22 +591,23 @@ struct InputRow: View {
     let actionTitle: String
     let focusedField: FocusState<InputField?>.Binding
     let action: () -> Void
+    @Environment(\.dashboardLayoutMetrics) private var metrics
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 5) {
             Text(title)
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.white)
-            HStack(spacing: 10) {
+            HStack(spacing: 8) {
                 TextField(placeholder, text: $text)
                     .keyboardType(.decimalPad)
                     .textFieldStyle(.plain)
                     .focused(focusedField, equals: field)
                     .submitLabel(.done)
                     .padding(.horizontal, 12)
-                    .padding(.vertical, 10)
+                    .padding(.vertical, metrics.cardPadding)
                     .background(Color.white.opacity(0.08))
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                     .frame(maxWidth: .infinity)
                     .onSubmit(action)
                 Button(actionTitle, action: action)
@@ -912,7 +969,8 @@ struct PrimaryButtonStyle: ButtonStyle {
             .padding(.vertical, 10)
             .frame(minWidth: 84)
             .background(AppTheme.accent.opacity(configuration.isPressed ? 0.82 : 1))
-            .clipShape(RoundedRectangle(cornerRadius: 16))
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .shadow(color: AppTheme.accent.opacity(configuration.isPressed ? 0.14 : 0.26), radius: 8, x: 0, y: 2)
             .scaleEffect(configuration.isPressed ? 0.98 : 1)
     }
 }
@@ -939,12 +997,13 @@ struct SecondaryButtonStyle: ButtonStyle {
             .foregroundStyle(.white)
             .padding(.horizontal, 12)
             .padding(.vertical, 9)
-            .background(Color.white.opacity(configuration.isPressed ? 0.14 : 0.08))
-            .clipShape(RoundedRectangle(cornerRadius: 14))
+            .background(AcousticTheme.controlBackground.opacity(configuration.isPressed ? 0.90 : 1))
+            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
             .overlay(
-                RoundedRectangle(cornerRadius: 14)
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
                     .stroke(AppTheme.stroke, lineWidth: 1)
             )
+            .shadow(color: .black.opacity(0.32), radius: configuration.isPressed ? 2 : 6, x: 0, y: configuration.isPressed ? 1 : 3)
     }
 }
 
@@ -958,11 +1017,16 @@ struct ChipButtonStyle: ButtonStyle {
             .padding(.horizontal, 8)
             .padding(.vertical, 9)
             .frame(maxWidth: .infinity)
-            .background(isSelected ? AppTheme.accent.opacity(configuration.isPressed ? 0.84 : 1) : Color.white.opacity(configuration.isPressed ? 0.14 : 0.08))
-            .clipShape(RoundedRectangle(cornerRadius: 16))
+            .background(
+                isSelected
+                    ? AppTheme.accent.opacity(configuration.isPressed ? 0.84 : 1)
+                    : AcousticTheme.controlBackground.opacity(configuration.isPressed ? 0.92 : 1)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
             .overlay(
-                RoundedRectangle(cornerRadius: 16)
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
                     .stroke(isSelected ? AppTheme.accent.opacity(0.3) : AppTheme.stroke, lineWidth: 1)
             )
+            .shadow(color: .black.opacity(isSelected ? 0.18 : 0.26), radius: configuration.isPressed ? 2 : 6, x: 0, y: configuration.isPressed ? 1 : 3)
     }
 }

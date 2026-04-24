@@ -14,6 +14,7 @@
 		32B849A96EEEB68920D5B667 /* AudioEngineController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A5998912B2BAB3D7CB1E23 /* AudioEngineController.swift */; };
 		3D4FFBEC8586F20898A445B1 /* NoisePageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAA4B40388F817B0A3B0848 /* NoisePageView.swift */; };
 		3F39E8BFD81E2A8A17646FE1 /* AudioFunctionGeneratorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB6EF56CBCE0845FD03C4AA7 /* AudioFunctionGeneratorApp.swift */; };
+		47F36291142A8289E50651BA /* AcousticTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = D68C042EC1A8CE02C1C31544 /* AcousticTheme.swift */; };
 		4EB8E762C1EF38DD5EC0ED4B /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFCDBD69DCBE012D2EBBE788 /* AppTheme.swift */; };
 		511D3D406CFA4BF847ABDB26 /* SweepPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0967EBE35C57B0C5789C0E4A /* SweepPageView.swift */; };
 		550CF32A6A1F0DDCD76DF6CD /* FrequencyFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99694741D0827045A82BD4A3 /* FrequencyFormatting.swift */; };
@@ -22,6 +23,7 @@
 		6A7BA3D418FC8610F5B9605B /* AudioCalibrationSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485ACF78A024AE55E57A3641 /* AudioCalibrationSupport.swift */; };
 		817A3FB99BF50BBD77190091 /* PresetsPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0567973F9C25D2C7DB1B7701 /* PresetsPageView.swift */; };
 		8437E2ECBBAC1258BCD4CABC /* AudioSignalMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2D820F5AEC4A68F9F3301C /* AudioSignalMath.swift */; };
+		8A09A042F09690787629640C /* AcousticControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18F0E731693D316CB2366240 /* AcousticControls.swift */; };
 		AB3AAF3E9FF749C776BE1197 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5A153A6425C67980A0D1A51B /* Assets.xcassets */; };
 		B35033D9B69515C356C0DD21 /* SettingsPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025F51080F34FB8FF925DA77 /* SettingsPageView.swift */; };
 		B49BF268D279E055A672C4E8 /* AppPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73D581887993A1161831B7D /* AppPreset.swift */; };
@@ -38,6 +40,7 @@
 		0967EBE35C57B0C5789C0E4A /* SweepPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SweepPageView.swift; sourceTree = "<group>"; };
 		0CF51A30E7AF18FA394B786D /* TonePageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TonePageView.swift; sourceTree = "<group>"; };
 		127494B39A551301B0B10B93 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		18F0E731693D316CB2366240 /* AcousticControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcousticControls.swift; sourceTree = "<group>"; };
 		22443FD4E50DF62C9EFFB407 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		22A5998912B2BAB3D7CB1E23 /* AudioEngineController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngineController.swift; sourceTree = "<group>"; };
 		29A1D4E3D6A0B3A709AEA004 /* AppUIComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUIComponents.swift; sourceTree = "<group>"; };
@@ -54,6 +57,7 @@
 		B52EBD4F0AF0661AA4B2CAB9 /* FrequencyStepCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrequencyStepCatalog.swift; sourceTree = "<group>"; };
 		B73D581887993A1161831B7D /* AppPreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPreset.swift; sourceTree = "<group>"; };
 		C1B068D120B2D94B817778DF /* AppViewTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewTypes.swift; sourceTree = "<group>"; };
+		D68C042EC1A8CE02C1C31544 /* AcousticTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcousticTheme.swift; sourceTree = "<group>"; };
 		E9879F26062BCD5E868CA426 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		F1BFF93C5C31A6CF5E6DA31C /* AudioFunctionGenerator.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = AudioFunctionGenerator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB6EF56CBCE0845FD03C4AA7 /* AudioFunctionGeneratorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFunctionGeneratorApp.swift; sourceTree = "<group>"; };
@@ -83,6 +87,7 @@
 		796FD6C2D51401095E4ADD6A /* Support */ = {
 			isa = PBXGroup;
 			children = (
+				D68C042EC1A8CE02C1C31544 /* AcousticTheme.swift */,
 				B73D581887993A1161831B7D /* AppPreset.swift */,
 				FFCDBD69DCBE012D2EBBE788 /* AppTheme.swift */,
 				05CBBFF1A5C78C9E12EE2C42 /* CalibrationProfile.swift */,
@@ -115,6 +120,7 @@
 		BE4FF18AD7C5D834692E01F0 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				18F0E731693D316CB2366240 /* AcousticControls.swift */,
 				29A1D4E3D6A0B3A709AEA004 /* AppUIComponents.swift */,
 				C1B068D120B2D94B817778DF /* AppViewTypes.swift */,
 				FB6EF56CBCE0845FD03C4AA7 /* AudioFunctionGeneratorApp.swift */,
@@ -221,6 +227,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A09A042F09690787629640C /* AcousticControls.swift in Sources */,
+				47F36291142A8289E50651BA /* AcousticTheme.swift in Sources */,
 				B49BF268D279E055A672C4E8 /* AppPreset.swift in Sources */,
 				4EB8E762C1EF38DD5EC0ED4B /* AppTheme.swift in Sources */,
 				6347CE84F8595E77EF20858E /* AppUIComponents.swift in Sources */,

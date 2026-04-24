@@ -548,11 +548,11 @@ struct SettingsPageView: View {
         InstrumentCard {
             VStack(alignment: .leading, spacing: 8) {
                 SectionTitle(title: String(localized: "settings.channel"))
-                ChipGrid(
+                HardwareCapsuleSelector(
                     title: String(localized: "label.channel"),
                     selection: $audioController.channelMode,
                     items: AudioEngineController.ChannelMode.allCases,
-                    columns: 3,
+                    accentColor: { $0.acousticAccentColor },
                     label: { $0.localizedTitle }
                 )
             }

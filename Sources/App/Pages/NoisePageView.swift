@@ -36,20 +36,20 @@ struct NoisePageView: View {
 
     private var noiseModeCard: some View {
         InstrumentCard {
-            VStack(alignment: .leading, spacing: 8) {
-                ChipGrid(
+            VStack(alignment: .leading, spacing: 12) {
+                HardwareCapsuleSelector(
                     title: String(localized: "noise.type"),
                     selection: $audioController.noiseType,
                     items: AudioEngineController.NoiseType.allCases,
-                    columns: 3,
+                    accentColor: { $0.acousticAccentColor },
                     label: { $0.localizedTitle }
                 )
 
-                ChipGrid(
+                HardwareCapsuleSelector(
                     title: String(localized: "noise.filter"),
                     selection: $audioController.noiseFilterMode,
                     items: AudioEngineController.FilterMode.allCases,
-                    columns: 2,
+                    accentColor: { $0.acousticAccentColor },
                     label: { $0.localizedTitle }
                 )
             }
@@ -58,7 +58,7 @@ struct NoisePageView: View {
 
     private var noiseCutoffCard: some View {
         InstrumentCard {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 12) {
                 SectionTitle(title: noiseFrequencySectionTitle)
                 InputRow(
                     field: .noiseCutoff,
@@ -70,21 +70,46 @@ struct NoisePageView: View {
                     action: applyNoiseCutoffText
                 )
 
-                Slider(
-                    value: Binding(
-                        get: { LogFrequencyScale.sliderValue(for: audioController.noiseCutoff) },
-                        set: { audioController.setNoiseCutoff(LogFrequencyScale.frequency(for: $0)) }
-                    ),
-                    in: 0 ... 1
-                )
-                .tint(AppTheme.accent)
+                VStack(alignment: .leading, spacing: 5) {
+                    HStack {
+                        Text(String(localized: "tone.log_slider"))
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.white)
+                        Spacer()
+                        Text(FrequencyFormatting.displayString(for: audioController.noiseCutoff))
+                            .font(.caption.monospacedDigit())
+                            .foregroundStyle(noiseAccentColor)
+                    }
+
+                    LogFrequencySlider(
+                        frequency: Binding(
+                            get: { audioController.noiseCutoff },
+                            set: { audioController.setNoiseCutoff($0) }
+                        ),
+                        accentColor: noiseAccentColor
+                    )
+
+                    HStack {
+                        Text("1 Hz")
+                        Spacer()
+                        Text("32 kHz")
+                    }
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(AppTheme.textSecondary)
+                }
+
+                if audioController.noiseCutoff > 15_000 {
+                    Text(String(localized: "noise.high_frequency_warning"))
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(AppTheme.danger)
+                }
 
                 if audioController.noiseFilterMode == .lowPass || audioController.noiseFilterMode == .highPass {
-                    ChipGrid(
+                    HardwareCapsuleSelector(
                         title: String(localized: "noise.filter_slope"),
                         selection: $audioController.noiseFilterSlope,
                         items: AudioEngineController.FilterSlope.allCases,
-                        columns: 2,
+                        accentColor: { $0.acousticAccentColor },
                         label: { $0.localizedTitle }
                     )
                 }
@@ -106,7 +131,7 @@ struct NoisePageView: View {
                             ),
                             in: 0.5 ... 12.0
                         )
-                        .tint(AppTheme.accent)
+                        .tint(noiseAccentColor)
                     }
                 }
 
@@ -133,5 +158,9 @@ struct NoisePageView: View {
 
     private var noiseFrequencyInputTitle: String {
         audioController.noiseFilterMode == .bandPass ? String(localized: "noise.center_input") : String(localized: "noise.cutoff_input")
+    }
+
+    private var noiseAccentColor: Color {
+        audioController.noiseFilterMode == .off ? audioController.noiseType.acousticAccentColor : audioController.noiseFilterMode.acousticAccentColor
     }
 }

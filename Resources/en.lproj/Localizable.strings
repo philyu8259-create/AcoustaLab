@@ -287,3 +287,5 @@
 "signal_spec.sweep.name" = "Sweep";
 "signal_spec.sweep.standard" = "IEC 60268-3";
 "signal_spec.sweep.metric" = "Log sweep, constant amplitude";
+"tone.high_frequency_warning" = "High-frequency caution: reduce gain before extended listening.";
+"noise.high_frequency_warning" = "High cutoff warning: reduce gain before extended listening.";

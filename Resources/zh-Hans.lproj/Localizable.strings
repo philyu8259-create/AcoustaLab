@@ -287,3 +287,5 @@
 "signal_spec.sweep.name" = "扫频";
 "signal_spec.sweep.standard" = "IEC 60268-3";
 "signal_spec.sweep.metric" = "对数扫频，幅值恒定";
+"tone.high_frequency_warning" = "高频警示：长时间试听前请先降低输出增益。";
+"noise.high_frequency_warning" = "高截止频率警示：长时间试听前请先降低输出增益。";

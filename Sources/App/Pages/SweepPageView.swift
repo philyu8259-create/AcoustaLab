@@ -40,7 +40,7 @@ struct SweepPageView: View {
 
     private var sweepRangeCard: some View {
         InstrumentCard {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 12) {
                 SectionTitle(title: String(localized: "sweep.range"))
                 ViewThatFits(in: .horizontal) {
                     HStack(spacing: 12) {
@@ -76,17 +76,32 @@ struct SweepPageView: View {
                         )
                     }
                 }
+                VStack(alignment: .leading, spacing: 10) {
+                    sweepEndpointSlider(
+                        title: String(localized: "sweep.start"),
+                        value: audioController.sweepStartFrequency,
+                        accentColor: AcousticTheme.triangleAccent,
+                        apply: { audioController.setSweepStartFrequency($0) }
+                    )
+
+                    sweepEndpointSlider(
+                        title: String(localized: "sweep.end"),
+                        value: audioController.sweepEndFrequency,
+                        accentColor: AcousticTheme.sawAccent,
+                        apply: { audioController.setSweepEndFrequency($0) }
+                    )
+                }
                 FrequencyStepSection(
                     title: String(localized: "sweep.step_mode"),
                     mode: $audioController.sweepStepMode,
                     isExpanded: $sweepStepExpanded,
                     value: currentSweepTargetValue,
                     leadingControls: {
-                        ChipGrid(
+                        HardwareCapsuleSelector(
                             title: String(localized: "sweep.step_target"),
                             selection: $sweepStepTarget,
                             items: SweepStepTarget.allCases,
-                            columns: 2,
+                            accentColor: { $0 == .start ? AcousticTheme.triangleAccent : AcousticTheme.sawAccent },
                             label: { $0.localizedTitle }
                         )
                     },
@@ -99,14 +114,14 @@ struct SweepPageView: View {
 
     private var sweepBehaviorCard: some View {
         InstrumentCard {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 12) {
                 SectionTitle(title: String(localized: "sweep.behavior"))
 
-                ChipGrid(
+                HardwareCapsuleSelector(
                     title: String(localized: "sweep.mode"),
                     selection: $audioController.sweepMode,
                     items: AudioEngineController.SweepMode.allCases,
-                    columns: 2,
+                    accentColor: { $0.acousticAccentColor },
                     label: { $0.localizedTitle }
                 )
 
@@ -129,11 +144,11 @@ struct SweepPageView: View {
                 }
 
                 if audioController.sweepMode == .sweep {
-                    ChipGrid(
+                    HardwareCapsuleSelector(
                         title: String(localized: "sweep.curve"),
                         selection: $audioController.sweepCurve,
                         items: AudioEngineController.SweepCurve.allCases,
-                        columns: 2,
+                        accentColor: { $0.acousticAccentColor },
                         label: { $0.localizedTitle }
                     )
                 }
@@ -143,6 +158,33 @@ struct SweepPageView: View {
 
     private var currentSweepTargetValue: Double {
         sweepStepTarget == .start ? audioController.sweepStartFrequency : audioController.sweepEndFrequency
+    }
+
+    private func sweepEndpointSlider(
+        title: String,
+        value: Double,
+        accentColor: Color,
+        apply: @escaping (Double) -> Void
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 5) {
+            HStack {
+                Text(title)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.white)
+                Spacer()
+                Text(FrequencyFormatting.displayString(for: value))
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(accentColor)
+            }
+
+            LogFrequencySlider(
+                frequency: Binding(
+                    get: { value },
+                    set: apply
+                ),
+                accentColor: accentColor
+            )
+        }
     }
 
     private var sweepDurationTitle: String {
