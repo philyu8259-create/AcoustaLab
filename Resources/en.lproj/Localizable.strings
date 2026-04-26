@@ -113,9 +113,9 @@
 "settings.support" = "Support & Privacy";
 "settings.support_body" = "Open help, review the privacy policy, or contact support by email.";
 "settings.support_url" = "Support Page";
-"settings.support_url_value" = "https://philyu8259-create.github.io/AcoustaLab/support-en.html";
+"settings.support_url_value" = "https://philyu8259-create.github.io/AcoustaLab/support-en.html?v=20260426";
 "settings.privacy_policy" = "Privacy Policy";
-"settings.privacy_policy_url_value" = "https://philyu8259-create.github.io/AcoustaLab/privacy-policy-en.html";
+"settings.privacy_policy_url_value" = "https://philyu8259-create.github.io/AcoustaLab/privacy-policy-en.html?v=20260426";
 "settings.support_contact" = "Contact";
 "settings.support_email" = "Email";
 "settings.app_info" = "App Info";

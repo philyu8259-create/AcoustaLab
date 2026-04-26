@@ -113,9 +113,9 @@
 "settings.support" = "支持与隐私";
 "settings.support_body" = "查看帮助说明、隐私政策，或通过邮箱联系支持。";
 "settings.support_url" = "支持页面";
-"settings.support_url_value" = "https://philyu8259-create.github.io/AcoustaLab/support-zh-Hans.html";
+"settings.support_url_value" = "https://philyu8259-create.github.io/AcoustaLab/support-zh-Hans.html?v=20260426";
 "settings.privacy_policy" = "隐私政策";
-"settings.privacy_policy_url_value" = "https://philyu8259-create.github.io/AcoustaLab/privacy-policy-zh-Hans.html";
+"settings.privacy_policy_url_value" = "https://philyu8259-create.github.io/AcoustaLab/privacy-policy-zh-Hans.html?v=20260426";
 "settings.support_contact" = "联系人";
 "settings.support_email" = "邮箱";
 "settings.app_info" = "App 信息";
