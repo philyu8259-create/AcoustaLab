@@ -2,9 +2,11 @@
 
 AcoustaLab is designed as a local acoustic utility. We respect your privacy and keep the app focused on signal generation, audio routing, local measurement, and calibration workflows.
 
-## Data We Do Not Collect
+## Data We Collect and Use
 
-AcoustaLab does not collect, sell, or share personal data. The app does not use third-party advertising trackers and does not track users across apps or websites.
+AcoustaLab does not upload your generated audio, microphone audio, presets, or calibration measurements to our servers.
+
+The app includes third-party advertising for users who have not unlocked lifetime access. The advertising SDK may collect device identifiers, advertising data, and ad interaction data for ad delivery, measurement, fraud prevention, and third-party advertising. If iOS asks for tracking permission, you can allow or deny it in system settings. Lifetime unlock users do not see ads in the app.
 
 ## Microphone Access
 
@@ -37,4 +39,4 @@ For privacy questions, please contact:
 - Contact: Lincoln Chen
 - Email: 10883714@qq.com
 
-Last updated: April 25, 2026
+Last updated: May 20, 2026
