@@ -427,7 +427,7 @@ final class AudioEngineController: ObservableObject {
 
     var calibrationProfileUpdatedText: String {
         guard let activeCalibrationProfile else {
-            return String(format: String(localized: "calibration.route_key"), currentOutputRouteKey)
+            return String(localized: "calibration.profile_missing")
         }
 
         let timestamp = DateFormatter.localizedString(
@@ -1028,7 +1028,7 @@ final class AudioEngineController: ObservableObject {
             outputRouteName = String(localized: "route.unknown")
             outputRouteHint = String(localized: "route.none")
             currentOutputRouteKey = "no-output"
-            currentOutputRouteDetail = String(format: String(localized: "calibration.route_key"), currentOutputRouteKey)
+            currentOutputRouteDetail = String(localized: "route.none")
             isExternalOutputRoute = false
             let hadExtendedSupport = supportsExtendedExternalGain
             supportsExtendedExternalGain = false
@@ -1048,18 +1048,21 @@ final class AudioEngineController: ObservableObject {
 
         isExternalOutputRoute = isExternal
         supportsExtendedExternalGain = supportsExtendedGain
-        outputRouteName = primaryOutput.portName
         currentOutputRouteKey = makeOutputRouteKey(primaryOutput)
         currentOutputRouteDetail = makeOutputRouteDetail(primaryOutput)
 
         switch primaryOutput.portType {
         case .bluetoothA2DP, .bluetoothHFP, .bluetoothLE:
+            outputRouteName = primaryOutput.portName
             outputRouteHint = String(localized: "route.bluetooth_hint")
         case .headphones, .airPlay, .usbAudio, .lineOut:
+            outputRouteName = primaryOutput.portName
             outputRouteHint = String(localized: "route.external_hint")
         case .builtInSpeaker:
+            outputRouteName = String(localized: "route.speaker_name")
             outputRouteHint = String(localized: "route.speaker_hint")
         default:
+            outputRouteName = primaryOutput.portName
             outputRouteHint = String(localized: "route.current_prefix") + primaryOutput.portType.rawValue
         }
 
@@ -1080,9 +1083,9 @@ final class AudioEngineController: ObservableObject {
         inputRouteHint = String(localized: "route.ios_only")
         calibrationInputSuitable = false
         currentOutputRouteKey = "unavailable"
-        currentOutputRouteDetail = String(format: String(localized: "calibration.route_key"), currentOutputRouteKey)
+        currentOutputRouteDetail = String(localized: "route.unavailable")
         currentInputRouteKey = "unavailable"
-        currentInputRouteDetail = String(format: String(localized: "calibration.route_key"), currentInputRouteKey)
+        currentInputRouteDetail = String(localized: "route.unavailable")
         reloadActiveCalibrationProfile()
         #endif
     }
@@ -1105,7 +1108,7 @@ final class AudioEngineController: ObservableObject {
             inputRouteHint = String(localized: "calibration.input_hint_unavailable")
             calibrationInputSuitable = false
             currentInputRouteKey = "no-input"
-            currentInputRouteDetail = String(format: String(localized: "calibration.route_key"), currentInputRouteKey)
+            currentInputRouteDetail = String(localized: "calibration.input_hint_unavailable")
             selectedCalibrationInputID = nil
             return
         }

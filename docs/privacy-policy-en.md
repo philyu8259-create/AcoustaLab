@@ -2,9 +2,9 @@
 
 AcoustaLab is designed as a local acoustic utility. We respect your privacy and keep the app focused on signal generation, audio routing, local measurement, and calibration workflows.
 
-## Data We Do Not Collect
+## Data We Collect and Use
 
-AcoustaLab does not collect, sell, or share personal data. The app does not use third-party advertising trackers and does not track users across apps or websites.
+AcoustaLab does not upload your generated audio, microphone audio, presets, or calibration measurements to our servers. The app does not include third-party advertising, advertising SDKs, App Tracking Transparency prompts, or tracking for advertising purposes.
 
 ## Microphone Access
 
@@ -16,7 +16,7 @@ The app may store local settings such as preferences, trial status, calibration 
 
 ## In-App Purchases
 
-AcoustaLab uses Apple In-App Purchase for lifetime unlock. Purchase transactions and payment processing are handled by Apple. We do not receive or store your payment card details.
+AcoustaLab uses Apple In-App Purchase for one-time full access unlock. Purchase transactions and payment processing are handled by Apple. We do not receive or store your payment card details.
 
 ## Support Email
 
@@ -37,4 +37,4 @@ For privacy questions, please contact:
 - Contact: Lincoln Chen
 - Email: 10883714@qq.com
 
-Last updated: April 25, 2026
+Last updated: May 23, 2026

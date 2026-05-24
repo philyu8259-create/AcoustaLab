@@ -128,12 +128,7 @@ struct DetailTile: View {
         .frame(maxWidth: .infinity, minHeight: 82, alignment: .topLeading)
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
-        .background(Color.white.opacity(0.06))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(AppTheme.stroke, lineWidth: 1)
-        )
+        .hardwarePanel(fill: Color.white.opacity(0.055), cornerRadius: 16)
     }
 }
 
@@ -215,12 +210,7 @@ struct CalibrationCurveView: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 12)
-        .background(Color.white.opacity(0.06))
-        .clipShape(RoundedRectangle(cornerRadius: 18))
-        .overlay(
-            RoundedRectangle(cornerRadius: 18)
-                .stroke(AppTheme.stroke, lineWidth: 1)
-        )
+        .hardwarePanel(fill: Color.white.opacity(0.055), cornerRadius: 18)
     }
 
     private var chartCanvas: some View {
@@ -339,43 +329,51 @@ struct CalibrationCurveView: View {
 
 struct AdaptiveDashboard<Content: View>: View {
     var onBackgroundTap: (() -> Void)? = nil
-    @ViewBuilder let content: Content
+    private let content: (DashboardLayoutMetrics) -> Content
+
+    init(onBackgroundTap: (() -> Void)? = nil, @ViewBuilder content: @escaping () -> Content) {
+        self.onBackgroundTap = onBackgroundTap
+        self.content = { _ in content() }
+    }
+
+    init(onBackgroundTap: (() -> Void)? = nil, @ViewBuilder content: @escaping (DashboardLayoutMetrics) -> Content) {
+        self.onBackgroundTap = onBackgroundTap
+        self.content = content
+    }
 
     var body: some View {
         GeometryReader { geometry in
             let metrics = DashboardLayoutMetrics(size: geometry.size)
-            let contentMinHeight = max(
-                geometry.size.height
-                    - metrics.topPadding
-                    - metrics.bottomPadding,
-                1
-            )
 
             ZStack {
                 LinearGradient(
-                    colors: [AppTheme.backgroundTop, AppTheme.backgroundBottom],
+                    colors: [
+                        AppTheme.backgroundTop,
+                        AcousticTheme.backgroundElevated,
+                        AppTheme.backgroundBottom
+                    ],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
+                .overlay(
+                    LinearGradient(
+                        colors: [
+                            Color.white.opacity(0.045),
+                            Color.clear,
+                            Color.black.opacity(0.18)
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+                .acousticGrain(opacity: 0.010)
                 .ignoresSafeArea()
-
-                Circle()
-                    .fill(AppTheme.accent.opacity(0.12))
-                    .frame(width: geometry.size.width >= 700 ? 340 : 240, height: geometry.size.width >= 700 ? 340 : 240)
-                    .blur(radius: 40)
-                    .offset(x: geometry.size.width * 0.28, y: -geometry.size.height * 0.18)
-
-                Circle()
-                    .fill(AppTheme.accentSoft.opacity(0.10))
-                    .frame(width: geometry.size.width >= 700 ? 320 : 220, height: geometry.size.width >= 700 ? 320 : 220)
-                    .blur(radius: 44)
-                    .offset(x: -geometry.size.width * 0.25, y: geometry.size.height * 0.22)
 
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: metrics.cardSpacing) {
-                        content
+                        content(metrics)
                     }
-                    .frame(maxWidth: .infinity, minHeight: contentMinHeight, alignment: .top)
+                    .frame(maxWidth: .infinity, minHeight: metrics.contentMinHeight, alignment: .top)
                     .padding(.horizontal, metrics.horizontalPadding)
                     .padding(.top, metrics.topPadding)
                     .padding(.bottom, metrics.bottomPadding)
@@ -404,15 +402,21 @@ struct DashboardLayoutMetrics {
     let sliderThumbSize: CGFloat
     let selectorVerticalPadding: CGFloat
     let selectorFontSize: CGFloat
+    let contentMinHeight: CGFloat
+    let toneMonitorMinHeight: CGFloat?
+    let toneTransportMinHeight: CGFloat?
+    let toneFrequencyMinHeight: CGFloat?
+    let toneWaveformMinHeight: CGFloat?
+    let toneStepMinHeight: CGFloat?
 
     init(size: CGSize) {
         let width = size.width
         let height = size.height
 
         if width >= 700 {
-            horizontalPadding = 24
-            topPadding = 16
-            bottomPadding = 28
+            horizontalPadding = 16
+            topPadding = 12
+            bottomPadding = 18
             cardSpacing = 12
             cardPadding = 10
             cardCornerRadius = 22
@@ -466,6 +470,27 @@ struct DashboardLayoutMetrics {
             selectorVerticalPadding = 8
             selectorFontSize = 11
         }
+
+        contentMinHeight = max(height - topPadding - bottomPadding, 1)
+
+        if width >= 700 {
+            let availableCardHeight = max(contentMinHeight - (cardSpacing * 4), 1)
+            let baseHeights: [CGFloat] = [112, 230, 204, 148, 168]
+            let baseTotal = baseHeights.reduce(0, +)
+            let extraHeight = max(availableCardHeight - baseTotal, 0)
+
+            toneMonitorMinHeight = baseHeights[0] + (extraHeight * 0.12)
+            toneTransportMinHeight = baseHeights[1] + (extraHeight * 0.27)
+            toneFrequencyMinHeight = baseHeights[2] + (extraHeight * 0.25)
+            toneWaveformMinHeight = baseHeights[3] + (extraHeight * 0.15)
+            toneStepMinHeight = baseHeights[4] + (extraHeight * 0.21)
+        } else {
+            toneMonitorMinHeight = nil
+            toneTransportMinHeight = nil
+            toneFrequencyMinHeight = nil
+            toneWaveformMinHeight = nil
+            toneStepMinHeight = nil
+        }
     }
 }
 
@@ -494,6 +519,7 @@ struct DashboardColumn<Content: View>: View {
 
 struct InstrumentCard<Content: View>: View {
     var fill: Color = AppTheme.card
+    var minHeight: CGFloat? = nil
     @ViewBuilder let content: Content
     @Environment(\.dashboardLayoutMetrics) private var metrics
 
@@ -502,8 +528,21 @@ struct InstrumentCard<Content: View>: View {
             content
         }
         .padding(metrics.cardPadding)
-        .frame(maxWidth: .infinity, alignment: .topLeading)
+        .frame(maxWidth: .infinity, minHeight: minHeight, alignment: .topLeading)
         .hardwarePanel(fill: fill, cornerRadius: metrics.cardCornerRadius)
+        .overlay(alignment: .top) {
+            RoundedRectangle(cornerRadius: metrics.cardCornerRadius, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [Color.white.opacity(0.12), Color.white.opacity(0)],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+                .frame(height: 1)
+                .padding(.horizontal, 8)
+                .allowsHitTesting(false)
+        }
     }
 }
 
@@ -793,9 +832,12 @@ struct SignalSpecificationRow: View {
 struct OutputTransportCard: View {
     @ObservedObject var audioController: AudioEngineController
     let outputGainQuickSteps: [Double]
+    var minHeight: CGFloat? = nil
+    var allowsPlayback: Bool = true
+    var requestMembership: (() -> Void)? = nil
 
     var body: some View {
-        InstrumentCard(fill: AppTheme.cardStrong) {
+        InstrumentCard(fill: AppTheme.cardStrong, minHeight: minHeight) {
             VStack(alignment: .leading, spacing: 12) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(audioController.outputRouteName)
@@ -900,26 +942,38 @@ struct OutputTransportCard: View {
                 }
 
                 Button {
+                    guard allowsPlayback else {
+                        requestMembership?()
+                        return
+                    }
+
+                    let generator = UIImpactFeedbackGenerator(style: .heavy)
+                    generator.impactOccurred()
+
                     audioController.togglePlayback()
                 } label: {
-                    Label(transportButtonTitle, systemImage: transportButtonIcon)
-                        .frame(maxWidth: .infinity)
+                    Image(systemName: transportButtonIcon)
+                        .font(.system(size: 24, weight: .black))
+                    .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(TransportButtonStyle(background: transportButtonColor))
+                .disabled(!allowsPlayback && requestMembership == nil)
+                .buttonStyle(
+                    StudioTransportButtonStyle(
+                        isPlaying: audioController.isPlaying,
+                        activeColor: AppTheme.danger,
+                        inactiveColor: allowsPlayback ? AppTheme.success : AppTheme.accent
+                    )
+                )
+                .padding(.top, 4)
             }
         }
     }
 
-    private var transportButtonTitle: String {
-        audioController.isPlaying ? String(localized: "button.stop") : String(localized: "button.play")
-    }
-
     private var transportButtonIcon: String {
-        audioController.isPlaying ? "stop.fill" : "play.fill"
-    }
-
-    private var transportButtonColor: Color {
-        audioController.isPlaying ? AppTheme.danger : AppTheme.success
+        if !allowsPlayback {
+            return "lock.fill"
+        }
+        return audioController.isPlaying ? "stop.fill" : "play.fill"
     }
 
     private var outputGainValueText: String {
@@ -968,25 +1022,71 @@ struct PrimaryButtonStyle: ButtonStyle {
             .padding(.horizontal, 16)
             .padding(.vertical, 10)
             .frame(minWidth: 84)
-            .background(AppTheme.accent.opacity(configuration.isPressed ? 0.82 : 1))
+            .background(
+                LinearGradient(
+                    colors: [
+                        AppTheme.accent.opacity(configuration.isPressed ? 0.72 : 1),
+                        AppTheme.accent.opacity(configuration.isPressed ? 0.88 : 0.78)
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            )
             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
             .shadow(color: AppTheme.accent.opacity(configuration.isPressed ? 0.14 : 0.26), radius: 8, x: 0, y: 2)
             .scaleEffect(configuration.isPressed ? 0.98 : 1)
     }
 }
 
-struct TransportButtonStyle: ButtonStyle {
-    let background: Color
+struct StudioTransportButtonStyle: ButtonStyle {
+    let isPlaying: Bool
+    let activeColor: Color
+    let inactiveColor: Color
 
     func makeBody(configuration: Configuration) -> some View {
+        let isPressed = configuration.isPressed
+        let currentColor = isPlaying ? activeColor : inactiveColor
+
         configuration.label
-            .font(.system(size: 20, weight: .bold, design: .rounded))
-            .foregroundStyle(Color.black.opacity(0.88))
-            .padding(.horizontal, 18)
             .padding(.vertical, 16)
-            .background(background.opacity(configuration.isPressed ? 0.84 : 1))
-            .clipShape(RoundedRectangle(cornerRadius: 20))
-            .scaleEffect(configuration.isPressed ? 0.98 : 1)
+            .frame(maxWidth: .infinity)
+            .foregroundStyle(currentColor)
+            .shadow(color: currentColor.opacity(isPressed ? 0.3 : 0.8), radius: isPressed ? 2 : 8, x: 0, y: 0)
+            .background(
+                ZStack {
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .fill(
+                            LinearGradient(
+                                colors: [Color(white: 0.18), Color(white: 0.10)],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        )
+
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .stroke(Color.black.opacity(0.8), lineWidth: 2)
+
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .stroke(Color.white.opacity(0.15), lineWidth: 1)
+                        .offset(y: -1)
+                        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+
+                    if isPressed {
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .fill(Color.black.opacity(0.5))
+                    }
+
+                    if isPlaying {
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .fill(currentColor.opacity(0.08))
+                    }
+                }
+            )
+            .shadow(color: Color.black.opacity(0.5), radius: 6, x: 0, y: 4)
+            .shadow(color: currentColor.opacity(isPlaying ? 0.2 : 0), radius: 15, x: 0, y: 0)
+            .scaleEffect(isPressed ? 0.95 : 1)
+            .animation(.spring(response: 0.25, dampingFraction: 0.6), value: isPressed)
+            .animation(.easeInOut(duration: 0.3), value: isPlaying)
     }
 }
 
@@ -997,13 +1097,11 @@ struct SecondaryButtonStyle: ButtonStyle {
             .foregroundStyle(.white)
             .padding(.horizontal, 12)
             .padding(.vertical, 9)
-            .background(AcousticTheme.controlBackground.opacity(configuration.isPressed ? 0.90 : 1))
-            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .stroke(AppTheme.stroke, lineWidth: 1)
+            .hardwarePanel(
+                fill: configuration.isPressed ? AcousticTheme.controlBackgroundPressed : AcousticTheme.controlBackground,
+                cornerRadius: 14,
+                isPressed: configuration.isPressed
             )
-            .shadow(color: .black.opacity(0.32), radius: configuration.isPressed ? 2 : 6, x: 0, y: configuration.isPressed ? 1 : 3)
     }
 }
 
@@ -1018,15 +1116,18 @@ struct ChipButtonStyle: ButtonStyle {
             .padding(.vertical, 9)
             .frame(maxWidth: .infinity)
             .background(
-                isSelected
-                    ? AppTheme.accent.opacity(configuration.isPressed ? 0.84 : 1)
-                    : AcousticTheme.controlBackground.opacity(configuration.isPressed ? 0.92 : 1)
-            )
-            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-            .overlay(
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .stroke(isSelected ? AppTheme.accent.opacity(0.3) : AppTheme.stroke, lineWidth: 1)
+                    .fill(
+                        isSelected
+                            ? AppTheme.accent.opacity(configuration.isPressed ? 0.82 : 1)
+                            : AcousticTheme.controlBackground.opacity(configuration.isPressed ? 0.88 : 1)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .stroke(isSelected ? Color.white.opacity(0.28) : AppTheme.stroke, lineWidth: 1)
+                    )
             )
-            .shadow(color: .black.opacity(isSelected ? 0.18 : 0.26), radius: configuration.isPressed ? 2 : 6, x: 0, y: configuration.isPressed ? 1 : 3)
+            .shadow(color: .black.opacity(isSelected ? 0.20 : 0.30), radius: configuration.isPressed ? 2 : 7, x: 0, y: configuration.isPressed ? 1 : 4)
+            .shadow(color: isSelected ? AppTheme.accent.opacity(0.20) : .clear, radius: 9)
     }
 }

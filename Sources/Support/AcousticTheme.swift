@@ -2,14 +2,16 @@ import SwiftUI
 
 /// Professional acoustic UI design tokens used across the app shell and controls.
 struct AcousticTheme {
-    static let backgroundBase = Color(red: 0.05, green: 0.05, blue: 0.06)
-    static let backgroundElevated = Color(red: 0.07, green: 0.08, blue: 0.10)
-    static let panelBackground = Color(red: 0.10, green: 0.10, blue: 0.12)
-    static let panelBackgroundStrong = Color(red: 0.12, green: 0.12, blue: 0.15)
-    static let controlBackground = Color(red: 0.15, green: 0.15, blue: 0.18)
+    static let backgroundBase = Color(hex: 0x090B12)
+    static let backgroundElevated = Color(hex: 0x111722)
+    static let panelBackground = Color(hex: 0x222633)
+    static let panelBackgroundStrong = Color(hex: 0x313848)
+    static let controlBackground = Color(hex: 0x373A47)
+    static let controlBackgroundPressed = Color(hex: 0x2C303B)
+    static let displayGlass = Color(hex: 0x080A0F)
 
-    static let sineAccent = Color.cyan
-    static let squareAccent = Color.orange
+    static let sineAccent = Color(red: 0.38, green: 0.82, blue: 0.96)
+    static let squareAccent = Color(red: 0.98, green: 0.61, blue: 0.28)
     static let triangleAccent = Color(red: 0.28, green: 0.90, blue: 0.58)
     static let sawAccent = Color(red: 0.98, green: 0.84, blue: 0.24)
     static let noiseAccent = Color(red: 0.74, green: 0.50, blue: 0.98)
@@ -28,18 +30,44 @@ struct HardwarePanelModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .background(fill)
+            .background(
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                fill.opacity(isPressed ? 0.92 : 1),
+                                fill.opacity(isPressed ? 0.78 : 0.88)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+            )
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .stroke(Color.white.opacity(isPressed ? 0.03 : 0.08), lineWidth: 1)
-                    .blendMode(.overlay)
+                    .stroke(Color.white.opacity(isPressed ? 0.04 : 0.10), lineWidth: 1)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .stroke(Color.black.opacity(isPressed ? 0.32 : 0.0), lineWidth: 2)
-                    .blur(radius: 2)
-                    .offset(x: 1, y: 1)
+                    .stroke(
+                        LinearGradient(
+                            colors: [
+                                Color.white.opacity(isPressed ? 0.02 : 0.18),
+                                Color.white.opacity(0.02),
+                                Color.black.opacity(isPressed ? 0.38 : 0.28)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        lineWidth: 1
+                    )
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .stroke(Color.black.opacity(isPressed ? 0.46 : 0.20), lineWidth: isPressed ? 2 : 1)
+                    .blur(radius: isPressed ? 2 : 1.2)
+                    .offset(x: 1, y: 1.2)
                     .mask(
                         RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                             .fill(
@@ -51,11 +79,18 @@ struct HardwarePanelModifier: ViewModifier {
                             )
                     )
             )
+            .acousticGrain(opacity: isPressed ? 0.006 : 0.010)
             .shadow(
-                color: .black.opacity(isPressed ? 0.45 : 0.78),
-                radius: isPressed ? 4 : 12,
+                color: AcousticTheme.backgroundBase.opacity(isPressed ? 0.50 : 0.72),
+                radius: isPressed ? 4 : 13,
                 x: 0,
-                y: isPressed ? 2 : 7
+                y: isPressed ? 2 : 8
+            )
+            .shadow(
+                color: Color.white.opacity(isPressed ? 0.01 : 0.035),
+                radius: 1,
+                x: 0,
+                y: -0.5
             )
     }
 }

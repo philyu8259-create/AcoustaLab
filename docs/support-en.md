@@ -22,6 +22,6 @@ When reporting an issue, please include:
 
 ## Purchases
 
-AcoustaLab offers a 7-day free trial and a lifetime unlock through Apple In-App Purchase. If you already purchased lifetime access, use the Restore Purchase option in the app membership page or settings page.
+AcoustaLab offers 3 days of starter access and a one-time full access unlock through Apple In-App Purchase. If you already unlocked full access, use the Restore Purchases option in the access page or settings page.
 
-Last updated: April 25, 2026
+Last updated: May 23, 2026

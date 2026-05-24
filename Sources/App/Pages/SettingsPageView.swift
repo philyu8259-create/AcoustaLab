@@ -2,9 +2,11 @@ import SwiftUI
 
 struct SettingsPageView: View {
     @ObservedObject var audioController: AudioEngineController
-    let outputGainQuickSteps: [Double]
+    @ObservedObject var membershipStore: MembershipStore
     let dismissKeyboard: () -> Void
     let resetToDefaults: () -> Void
+    let showMembership: () -> Void
+    @State private var isResetConfirmationPresented = false
 
     var body: some View {
         NavigationStack {
@@ -19,16 +21,28 @@ struct SettingsPageView: View {
                     EmptyView()
                 }
 
-                OutputTransportCard(audioController: audioController, outputGainQuickSteps: outputGainQuickSteps)
+                MembershipSettingsCard(membershipStore: membershipStore, showMembership: showMembership)
                 routeOverviewCard
-                playbackCard
-                calibrationCard
+                if membershipStore.hasCoreAccess {
+                    playbackCard
+                    calibrationCard
+                    channelCard
+                }
                 signalSpecificationsCard
-                channelCard
+                supportCard
+                appInfoCard
                 resetCard
             }
             .navigationTitle(String(localized: "tab.settings"))
             .navigationBarTitleDisplayMode(.inline)
+            .alert(String(localized: "settings.reset_confirm_title"), isPresented: $isResetConfirmationPresented) {
+                Button(String(localized: "button.cancel"), role: .cancel) {}
+                Button(String(localized: "settings.reset_confirm_action"), role: .destructive) {
+                    resetToDefaults()
+                }
+            } message: {
+                Text(String(localized: "settings.reset_confirm_body"))
+            }
         }
         .tabItem {
             Label(String(localized: "tab.settings"), systemImage: "gearshape")
@@ -39,10 +53,6 @@ struct SettingsPageView: View {
         InstrumentCard {
             VStack(alignment: .leading, spacing: 12) {
                 SectionTitle(title: String(localized: "settings.route_overview"))
-
-                Text(String(localized: "settings.route_overview_body"))
-                    .font(.caption)
-                    .foregroundStyle(AppTheme.textSecondary)
 
                 ViewThatFits(in: .horizontal) {
                     HStack(spacing: 8) {
@@ -69,38 +79,6 @@ struct SettingsPageView: View {
                         title: String(localized: "settings.sample_rate"),
                         value: "\(Int(audioController.sampleRate)) Hz"
                     )
-                    DetailTile(
-                        title: String(localized: "calibration.readiness"),
-                        value: audioController.loopbackCalibrationStatus,
-                        caption: audioController.loopbackCalibrationStatusDetail,
-                        accentColor: calibrationStatusTone.foreground
-                    )
-                }
-
-                LazyVGrid(columns: gridColumns(2), spacing: 10) {
-                    DetailTile(
-                        title: String(localized: "settings.route_key_output"),
-                        value: audioController.currentOutputRouteKey,
-                        caption: String(localized: "settings.route_key_output_body"),
-                        monospaced: true,
-                        accentColor: AppTheme.accent
-                    )
-                    DetailTile(
-                        title: String(localized: "settings.route_key_input"),
-                        value: audioController.currentInputRouteKey,
-                        caption: String(localized: "settings.route_key_input_body"),
-                        monospaced: true,
-                        accentColor: audioController.calibrationInputSuitable ? AppTheme.success : AppTheme.warning
-                    )
-                }
-
-                VStack(alignment: .leading, spacing: 6) {
-                    SubsectionHeader(title: String(localized: "settings.route_identity"))
-
-                    Text(audioController.calibrationRouteDescriptionText)
-                        .font(.system(.caption2, design: .monospaced))
-                        .foregroundStyle(AppTheme.textSecondary)
-                        .textSelection(.enabled)
                 }
             }
         }
@@ -110,10 +88,6 @@ struct SettingsPageView: View {
         InstrumentCard {
             VStack(alignment: .leading, spacing: 12) {
                 SectionTitle(title: String(localized: "settings.playback"))
-
-                Text(String(localized: "settings.playback_body"))
-                    .font(.caption)
-                    .foregroundStyle(AppTheme.textSecondary)
 
                 Toggle(String(localized: "settings.fade"), isOn: $audioController.safetyFadeEnabled)
                     .tint(AppTheme.accent)
@@ -141,10 +115,6 @@ struct SettingsPageView: View {
             VStack(alignment: .leading, spacing: 14) {
                 SectionTitle(title: String(localized: "calibration.title"))
 
-                Text(String(localized: "calibration.body"))
-                    .font(.caption)
-                    .foregroundStyle(AppTheme.textSecondary)
-
                 ViewThatFits(in: .horizontal) {
                     HStack(spacing: 8) {
                         calibrationBadges
@@ -155,10 +125,7 @@ struct SettingsPageView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
-                    SubsectionHeader(
-                        title: String(localized: "calibration.readiness"),
-                        caption: String(localized: "calibration.readiness_body")
-                    )
+                    SubsectionHeader(title: String(localized: "calibration.readiness"))
 
                     DetailTile(
                         title: String(localized: "calibration.active_status"),
@@ -259,10 +226,7 @@ struct SettingsPageView: View {
 
                 VStack(alignment: .leading, spacing: 10) {
                     HStack(alignment: .top, spacing: 10) {
-                        SubsectionHeader(
-                            title: String(localized: "calibration.input_switch"),
-                            caption: String(localized: "calibration.input_switch_body")
-                        )
+                        SubsectionHeader(title: String(localized: "calibration.input_switch"))
                         Spacer()
                         Button(String(localized: "calibration.input_switch_auto")) {
                             audioController.selectPreferredExternalCalibrationInput()
@@ -285,10 +249,7 @@ struct SettingsPageView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 10) {
-                    SubsectionHeader(
-                        title: String(localized: "calibration.profile_section"),
-                        caption: String(localized: "calibration.profile_section_body")
-                    )
+                    SubsectionHeader(title: String(localized: "calibration.profile_section"))
 
                     LazyVGrid(columns: gridColumns(2), spacing: 10) {
                         DetailTile(
@@ -297,30 +258,13 @@ struct SettingsPageView: View {
                             caption: audioController.hasActiveCalibrationProfile ? audioController.calibrationProfileSummaryText : nil,
                             accentColor: audioController.hasActiveCalibrationProfile ? AppTheme.success : AppTheme.warning
                         )
-                        DetailTile(
-                            title: String(localized: "calibration.updated_label"),
-                            value: audioController.calibrationProfileUpdatedText,
-                            monospaced: true
-                        )
-                    }
-
-                    LazyVGrid(columns: gridColumns(2), spacing: 10) {
-                        DetailTile(
-                            title: String(localized: "calibration.route_binding"),
-                            value: audioController.currentOutputRouteKey,
-                            caption: String(localized: "calibration.route_binding_body"),
-                            monospaced: true,
-                            accentColor: AppTheme.accent
-                        )
-                        DetailTile(
-                            title: String(localized: "calibration.profile_inventory"),
-                            value: String(
-                                format: String(localized: "calibration.profile_inventory_value"),
-                                audioController.currentRouteCalibrationProfiles.count
-                            ),
-                            caption: String(localized: "calibration.profile_inventory_body"),
-                            accentColor: audioController.currentRouteCalibrationProfiles.isEmpty ? AppTheme.warning : AppTheme.success
-                        )
+                        if audioController.hasActiveCalibrationProfile {
+                            DetailTile(
+                                title: String(localized: "calibration.updated_label"),
+                                value: audioController.calibrationProfileUpdatedText,
+                                monospaced: true
+                            )
+                        }
                     }
 
                     if let analysis = activeCalibrationAnalysis {
@@ -335,7 +279,6 @@ struct SettingsPageView: View {
                                     start: analysis.coverageStart,
                                     end: analysis.coverageEnd
                                 ),
-                                caption: String(localized: "calibration.coverage_body"),
                                 accentColor: .white
                             )
                             DetailTile(
@@ -350,13 +293,11 @@ struct SettingsPageView: View {
                             DetailTile(
                                 title: String(localized: "calibration.hotspot_label"),
                                 value: hotspotText(for: analysis.strongestCorrectionPoint),
-                                caption: String(localized: "calibration.hotspot_body"),
                                 accentColor: analysis.hasStrongHotspot ? AppTheme.warning : .white
                             )
                             DetailTile(
                                 title: String(localized: "calibration.reference_anchor_label"),
                                 value: anchorText(for: analysis.referencePoint),
-                                caption: String(localized: "calibration.reference_anchor_body"),
                                 accentColor: AppTheme.success
                             )
                         }
@@ -383,6 +324,7 @@ struct SettingsPageView: View {
                             text: $audioController.calibrationProfileDraftName
                         )
                         .textFieldStyle(.plain)
+                        .submitLabel(.done)
                         .padding(.horizontal, 14)
                         .padding(.vertical, 12)
                         .background(Color.white.opacity(0.08))
@@ -439,10 +381,7 @@ struct SettingsPageView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 10) {
-                    SubsectionHeader(
-                        title: String(localized: "calibration.setup_section"),
-                        caption: String(localized: "calibration.setup_section_body")
-                    )
+                    SubsectionHeader(title: String(localized: "calibration.setup_section"))
 
                     VStack(alignment: .leading, spacing: 8) {
                         Text(String(localized: "calibration.step_mode"))
@@ -478,10 +417,7 @@ struct SettingsPageView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 10) {
-                    SubsectionHeader(
-                        title: String(localized: "calibration.actions_section"),
-                        caption: String(localized: "calibration.actions_section_body")
-                    )
+                    SubsectionHeader(title: String(localized: "calibration.actions_section"))
 
                     HStack(spacing: 10) {
                         Button(audioController.isLoopbackCalibrationRunning ? String(localized: "calibration.stop_button") : String(localized: "calibration.start_button")) {
@@ -537,9 +473,6 @@ struct SettingsPageView: View {
                     metric: String(localized: "signal_spec.sweep.metric")
                 )
 
-                Text(String(localized: "settings.specifications_hint"))
-                    .font(.caption)
-                    .foregroundStyle(AppTheme.textSecondary)
             }
         }
     }
@@ -559,14 +492,90 @@ struct SettingsPageView: View {
         }
     }
 
+    private var supportCard: some View {
+        InstrumentCard {
+            VStack(alignment: .leading, spacing: 12) {
+                SectionTitle(title: String(localized: "settings.support"))
+                Text(String(localized: "settings.support_body"))
+                    .font(.caption)
+                    .foregroundStyle(AppTheme.textSecondary)
+
+                LazyVGrid(columns: gridColumns(2), spacing: 10) {
+                    if let supportURL {
+                        resourceLink(
+                            title: String(localized: "settings.support_url"),
+                            systemImage: "questionmark.circle",
+                            destination: supportURL
+                        )
+                    }
+
+                    if let privacyPolicyURL {
+                        resourceLink(
+                            title: String(localized: "settings.privacy_policy"),
+                            systemImage: "lock.shield",
+                            destination: privacyPolicyURL
+                        )
+                    }
+
+                    if let appReviewURL {
+                        resourceLink(
+                            title: String(localized: "settings.rate_app"),
+                            systemImage: "star.bubble",
+                            destination: appReviewURL
+                        )
+                    }
+                }
+
+                SettingsRow(title: String(localized: "settings.support_contact"), value: "Lincoln Chen")
+                SettingsRow(title: String(localized: "settings.support_email"), value: "10883714@qq.com")
+            }
+        }
+    }
+
+    private var appInfoCard: some View {
+        InstrumentCard {
+            VStack(alignment: .leading, spacing: 9) {
+                SectionTitle(title: String(localized: "settings.app_info"))
+
+                SettingsRow(title: String(localized: "settings.app_name"), value: String(localized: "settings.app_name_value"))
+                SettingsRow(title: String(localized: "settings.app_version"), value: appVersionText)
+
+                Text(String(localized: "settings.app_info_body"))
+                    .font(.caption2)
+                    .foregroundStyle(AppTheme.textSecondary)
+            }
+        }
+    }
+
     private var resetCard: some View {
         InstrumentCard {
             VStack(alignment: .leading, spacing: 8) {
                 SectionTitle(title: String(localized: "settings.reset"))
-                Button(String(localized: "button.reset_defaults"), action: resetToDefaults)
-                    .buttonStyle(SecondaryButtonStyle())
+                Text(String(localized: "settings.reset_body"))
+                    .font(.caption)
+                    .foregroundStyle(AppTheme.textSecondary)
+                Button(String(localized: "button.reset_defaults")) {
+                    isResetConfirmationPresented = true
+                }
+                .buttonStyle(SecondaryButtonStyle())
             }
         }
+    }
+
+    private func resourceLink(title: String, systemImage: String, destination: URL) -> some View {
+        Link(destination: destination) {
+            HStack(spacing: 8) {
+                Image(systemName: systemImage)
+                    .font(.caption.weight(.semibold))
+                Text(title)
+                    .lineLimit(1)
+                Spacer(minLength: 4)
+                Image(systemName: "arrow.up.forward")
+                    .font(.caption2.weight(.bold))
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .buttonStyle(SecondaryButtonStyle())
     }
 
     @ViewBuilder
@@ -624,7 +633,7 @@ struct SettingsPageView: View {
                 HStack(alignment: .top, spacing: 8) {
                     Text(input.title)
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(isSelected ? Color.black.opacity(0.86) : .white)
+                        .foregroundStyle(.white)
                         .lineLimit(2)
 
                     Spacer(minLength: 6)
@@ -632,37 +641,47 @@ struct SettingsPageView: View {
                     if input.isLoopbackCapable {
                         Image(systemName: "checkmark.circle.fill")
                             .font(.caption2.weight(.semibold))
-                            .foregroundStyle(isSelected ? Color.black.opacity(0.7) : AppTheme.success)
+                            .foregroundStyle(AppTheme.success)
                     } else {
                         Image(systemName: "exclamationmark.triangle.fill")
                             .font(.caption2.weight(.semibold))
-                            .foregroundStyle(isSelected ? Color.black.opacity(0.7) : AppTheme.warning)
+                            .foregroundStyle(AppTheme.warning)
                     }
                 }
 
                 Text(input.detail)
                     .font(.caption2)
-                    .foregroundStyle(isSelected ? Color.black.opacity(0.7) : AppTheme.textSecondary)
+                    .foregroundStyle(AppTheme.textSecondary)
                     .lineLimit(3)
             }
             .frame(maxWidth: .infinity, minHeight: 90, alignment: .topLeading)
             .padding(.horizontal, 12)
             .padding(.vertical, 10)
             .background(
-                isSelected
-                    ? AppTheme.accent.opacity(isDisabled ? 0.72 : 1)
-                    : Color.white.opacity(isDisabled ? 0.05 : 0.08)
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(
+                        isSelected
+                            ? AcousticTheme.panelBackgroundStrong.opacity(isDisabled ? 0.72 : 1)
+                            : AcousticTheme.panelBackground.opacity(isDisabled ? 0.70 : 0.95)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .fill(
+                                (input.isLoopbackCapable ? AppTheme.success : AppTheme.warning)
+                                    .opacity(isSelected ? 0.10 : 0.04)
+                            )
+                    )
             )
-            .clipShape(RoundedRectangle(cornerRadius: 16))
             .overlay(
                 RoundedRectangle(cornerRadius: 16)
                     .stroke(
                         isSelected
-                            ? AppTheme.accent.opacity(0.32)
+                            ? (input.isLoopbackCapable ? AppTheme.success.opacity(0.34) : AppTheme.warning.opacity(0.42))
                             : (input.isLoopbackCapable ? AppTheme.stroke : AppTheme.warning.opacity(0.34)),
                         lineWidth: 1
                     )
             )
+            .shadow(color: Color.black.opacity(0.26), radius: 7, x: 0, y: 4)
         }
         .disabled(isDisabled)
     }
@@ -752,6 +771,24 @@ struct SettingsPageView: View {
 
     private var activeCalibrationAnalysis: CalibrationProfileAnalysis? {
         audioController.activeCalibrationProfile?.analysis
+    }
+
+    private var supportURL: URL? {
+        URL(string: String(localized: "settings.support_url_value"))
+    }
+
+    private var privacyPolicyURL: URL? {
+        URL(string: String(localized: "settings.privacy_policy_url_value"))
+    }
+
+    private var appReviewURL: URL? {
+        URL(string: String(localized: "settings.rate_app_url_value"))
+    }
+
+    private var appVersionText: String {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
+        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
+        return "\(version) (\(build))"
     }
 
     private func frequencyRangeText(start: Double, end: Double) -> String {
