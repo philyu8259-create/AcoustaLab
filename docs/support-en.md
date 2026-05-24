@@ -22,6 +22,10 @@ When reporting an issue, please include:
 
 ## Availability
 
-AcoustaLab 1.3 does not include ads, third-party ad SDKs, account login, subscriptions, or in-app purchases.
+AcoustaLab 1.3 does not include ads, third-party ad SDKs, account login, or subscriptions.
+
+## Purchases
+
+AcoustaLab offers 3 days of starter access and a one-time full access unlock through Apple In-App Purchase. If you already unlocked full access, use the Restore Purchases option in the access page or settings page.
 
 Last updated: May 23, 2026

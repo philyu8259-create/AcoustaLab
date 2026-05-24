@@ -8,6 +8,8 @@ xcuserdata/
 # Xcode build outputs
 DerivedData/
 build/
+Archives/
+Releases/
 
 # Swift Package Manager
 .build/

@@ -21,7 +21,16 @@ struct LogFrequencySlider: View {
 
             ZStack(alignment: .leading) {
                 RoundedRectangle(cornerRadius: trackHeight / 2, style: .continuous)
-                    .fill(AcousticTheme.controlBackground)
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                Color.black.opacity(0.42),
+                                AcousticTheme.controlBackgroundPressed.opacity(0.92)
+                            ],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
                     .frame(height: trackHeight)
                     .overlay(
                         RoundedRectangle(cornerRadius: trackHeight / 2, style: .continuous)
@@ -31,7 +40,7 @@ struct LogFrequencySlider: View {
                 RoundedRectangle(cornerRadius: trackHeight / 2, style: .continuous)
                     .fill(
                         LinearGradient(
-                            colors: [accentColor.opacity(0.28), accentColor],
+                            colors: [accentColor.opacity(0.42), accentColor.opacity(0.95)],
                             startPoint: .leading,
                             endPoint: .trailing
                         )
@@ -40,7 +49,13 @@ struct LogFrequencySlider: View {
                     .shadow(color: accentColor.opacity(0.42), radius: 6, x: 0, y: 0)
 
                 Circle()
-                    .fill(Color(white: 0.92))
+                    .fill(
+                        LinearGradient(
+                            colors: [Color.white, Color(white: 0.76)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
                     .overlay(
                         Circle()
                             .stroke(Color.white.opacity(0.96), lineWidth: 1)
@@ -107,7 +122,8 @@ struct HardwareCapsuleSelector<Item: Identifiable & Hashable>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(title)
-                .font(.caption.weight(.semibold))
+                .font(.caption.weight(.bold))
+                .tracking(0.2)
                 .foregroundStyle(AcousticTheme.textPrimary)
 
             HStack(spacing: 6) {
@@ -122,7 +138,7 @@ struct HardwareCapsuleSelector<Item: Identifiable & Hashable>: View {
                     } label: {
                         Text(label(item))
                             .font(.system(size: metrics.selectorFontSize, weight: .bold))
-                            .foregroundStyle(isSelected ? Color.black.opacity(0.88) : AcousticTheme.textSecondary)
+                            .foregroundStyle(isSelected ? Color.black.opacity(0.86) : AcousticTheme.textSecondary)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, metrics.selectorVerticalPadding)
                             .background(
@@ -131,7 +147,7 @@ struct HardwareCapsuleSelector<Item: Identifiable & Hashable>: View {
                                         Capsule()
                                             .fill(accentColor(item))
                                             .matchedGeometryEffect(id: "selector", in: animation)
-                                            .shadow(color: accentColor(item).opacity(0.38), radius: 10, x: 0, y: 0)
+                                            .instrumentGlow(color: accentColor(item), radius: 8)
                                     }
                                 }
                             )

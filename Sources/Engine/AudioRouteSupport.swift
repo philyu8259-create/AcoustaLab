@@ -104,8 +104,7 @@ func makeInputRouteKey(_ input: AVAudioSessionPortDescription) -> String {
 }
 
 func makeInputRouteDetail(_ input: AVAudioSessionPortDescription) -> String {
-    let key = makeInputRouteKey(input)
-    return "\(input.portName) · \(input.portType.rawValue) · \(key)"
+    "\(input.portName) · \(input.portType.rawValue)"
 }
 
 func makeOutputRouteKey(_ primaryOutput: AVAudioSessionPortDescription) -> String {
@@ -117,6 +116,5 @@ func makeOutputRouteKey(_ primaryOutput: AVAudioSessionPortDescription) -> Strin
 }
 
 func makeOutputRouteDetail(_ primaryOutput: AVAudioSessionPortDescription) -> String {
-    let key = makeOutputRouteKey(primaryOutput)
-    return "\(primaryOutput.portName) · \(primaryOutput.portType.rawValue) · \(key)"
+    "\(primaryOutput.portName) · \(primaryOutput.portType.rawValue)"
 }

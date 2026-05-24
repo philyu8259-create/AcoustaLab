@@ -13,8 +13,8 @@ extension Color {
 }
 
 enum AppTheme {
-    static let backgroundTop = AcousticTheme.backgroundElevated
-    static let backgroundBottom = AcousticTheme.backgroundBase
+    static let backgroundTop = AcousticTheme.backgroundBase
+    static let backgroundBottom = Color(hex: 0x111827)
     static let card = AcousticTheme.panelBackground
     static let cardStrong = AcousticTheme.panelBackgroundStrong
     static let stroke = AcousticTheme.stroke
