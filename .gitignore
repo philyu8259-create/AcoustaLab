@@ -17,3 +17,4 @@ Releases/
 
 # Generated local artifacts
 *.moved-aside
+.worktrees/
