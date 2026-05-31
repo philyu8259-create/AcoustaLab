@@ -66,11 +66,27 @@
 "noise.step_mode" = "Noise Step Mode";
 
 "presets.subtitle" = "Save common setups so device-side testing gets much faster.";
+"presets.builtin_title" = "Built-In Test Pack";
+"presets.builtin_subtitle" = "One-click presets for common acoustic checks before field testing.";
 "presets.save_current" = "Save Current Setup";
 "presets.name_placeholder" = "For example: 1k Sine / 20Hz-20kHz Sweep";
 "presets.count_compact" = "Saved presets";
 "presets.empty_title" = "No presets yet";
 "presets.empty_body" = "Tune a page first, then come back here to save a reusable setup.";
+"presets.testpack.preset.reference_tone.name" = "1 kHz Reference Tone";
+"presets.testpack.preset.reference_tone.description" = "Single 1 kHz sine, useful for SPL spot checks and calibration reference.";
+"presets.testpack.preset.sine_sweep_speaker.name" = "Sine Sweep Speaker Check";
+"presets.testpack.preset.sine_sweep_speaker.description" = "20 Hz to 20 kHz logarithmic sweep for speaker and chain listening checks.";
+"presets.testpack.preset.pink_noise_room_check.name" = "Pink Noise Room Check";
+"presets.testpack.preset.pink_noise_room_check.description" = "Pink noise at flat-ish spectrum for room ambience and low-level response review.";
+"presets.testpack.preset.white_noise_floor_check.name" = "White Noise Noise-Floor Check";
+"presets.testpack.preset.white_noise_floor_check.description" = "White noise for baseline noise-floor perception, gain check, and hiss observation.";
+"presets.testpack.preset.left_channel_check.name" = "Left Channel Check";
+"presets.testpack.preset.left_channel_check.description" = "Single-tone left-only output for stereo balance and routing validation.";
+"presets.testpack.preset.right_channel_check.name" = "Right Channel Check";
+"presets.testpack.preset.right_channel_check.description" = "Single-tone right-only output for stereo balance and routing validation.";
+"presets.testpack.preset.low_frequency_response_check.name" = "Low-Frequency Response Check";
+"presets.testpack.preset.low_frequency_response_check.description" = "Third-octave, 20–200 Hz logarithmic sweep to inspect low-end continuity.";
 
 "settings.subtitle" = "System options and output details live here, not on the main generator pages.";
 "settings.output" = "Output";
@@ -175,6 +191,8 @@
 "calibration.progress_value" = "Overall progress %d%%";
 "calibration.enable_compensation" = "Enable calibration compensation";
 "calibration.current_compensation" = "Current correction: %+.1f dB";
+"calibration.report_body" = "Export the active profile's test points, correction values, and route details for records or support handoff.";
+"calibration.report_button" = "Export Calibration Report";
 "calibration.start_button" = "Start Loopback Calibration";
 "calibration.stop_button" = "Stop Calibration";
 "calibration.delete_button" = "Delete Profile";
@@ -253,6 +271,7 @@
 "button.output_gain_plus_1db" = "+1 dB";
 "button.output_gain_minus_3db" = "-3 dB";
 "button.output_gain_plus_3db" = "+3 dB";
+"button.apply_test_preset" = "One-Click Apply";
 
 "presets.delete_confirm_title" = "Delete Preset?";
 "presets.delete_confirm_body" = "Delete \"%@\"? This cannot be undone.";

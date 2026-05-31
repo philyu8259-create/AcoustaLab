@@ -9,6 +9,7 @@ struct PresetsPageView: View {
     let savePreset: () -> Void
     let loadPreset: (AppPreset) -> Void
     let deletePreset: (AppPreset) -> Void
+    let builtInPresets: [BuiltInTestPreset]
 
     var body: some View {
         NavigationStack {
@@ -21,6 +22,71 @@ struct PresetsPageView: View {
                     auxiliary: String(localized: "presets.count_compact")
                 ) {
                     EmptyView()
+                }
+
+                if !builtInPresets.isEmpty {
+                    InstrumentCard(fill: AppTheme.cardStrong) {
+                        VStack(alignment: .leading, spacing: 12) {
+                            SectionTitle(title: String(localized: "presets.builtin_title"))
+                            Text(String(localized: "presets.builtin_subtitle"))
+                                .font(.caption)
+                                .foregroundStyle(AppTheme.textSecondary)
+
+                            VStack(spacing: 10) {
+                                ForEach(builtInPresets) { preset in
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            HStack(alignment: .top, spacing: 10) {
+                                                VStack(alignment: .leading, spacing: 4) {
+                                                    Text(LocalizedStringKey(preset.nameKey))
+                                                        .font(.subheadline.weight(.semibold))
+                                                        .foregroundStyle(.white)
+                                                    Text(preset.preset.mode.localizedTitle)
+                                                        .font(.caption)
+                                                        .foregroundStyle(AppTheme.textSecondary)
+                                                }
+                                                Spacer()
+                                                Text(summaryText(for: preset.preset))
+                                                    .font(.caption2.weight(.medium))
+                                                    .foregroundStyle(AppTheme.accent)
+                                                    .padding(.horizontal, 10)
+                                                    .padding(.vertical, 5)
+                                                    .background(AppTheme.accent.opacity(0.12))
+                                                    .clipShape(Capsule())
+                                            }
+
+                                            Text(LocalizedStringKey(preset.descriptionKey))
+                                                .font(.caption2)
+                                                .foregroundStyle(AppTheme.textSecondary)
+                                                .lineLimit(2)
+                                        }
+
+                                        HStack(spacing: 10) {
+                                            Button {
+                                                loadPreset(preset.preset)
+                                            } label: {
+                                                HStack(spacing: 6) {
+                                                    Image(systemName: "bolt.fill")
+                                                        .font(.caption2.weight(.semibold))
+                                                    Text(String(localized: "button.apply_test_preset"))
+                                                }
+                                            }
+                                            .buttonStyle(SecondaryButtonStyle())
+
+                                            Spacer()
+                                        }
+                                    }
+                                    .padding(12)
+                                    .background(Color.white.opacity(0.05))
+                                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                                    .overlay {
+                                        RoundedRectangle(cornerRadius: 16)
+                                            .stroke(Color.white.opacity(0.12), lineWidth: 1)
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
 
                 InstrumentCard {
@@ -102,7 +168,7 @@ struct PresetsPageView: View {
         case .single:
             return FrequencyFormatting.displayString(for: preset.frequency)
         case .sweep:
-            return "\(FrequencyFormatting.displayString(for: preset.sweepStartFrequency)) → \(FrequencyFormatting.displayString(for: preset.sweepEndFrequency))"
+            return "\(FrequencyFormatting.displayString(for: preset.sweepStartFrequency)) - \(FrequencyFormatting.displayString(for: preset.sweepEndFrequency))"
         case .noise:
             return preset.noiseType.localizedTitle
         }

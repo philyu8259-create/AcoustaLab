@@ -7,6 +7,8 @@ struct SettingsPageView: View {
     let resetToDefaults: () -> Void
     let showMembership: () -> Void
     @State private var isResetConfirmationPresented = false
+    @State private var isCalibrationReportExporterPresented = false
+    @State private var calibrationReportDocument = CalibrationReportDocument()
 
     var body: some View {
         NavigationStack {
@@ -43,6 +45,12 @@ struct SettingsPageView: View {
             } message: {
                 Text(String(localized: "settings.reset_confirm_body"))
             }
+            .fileExporter(
+                isPresented: $isCalibrationReportExporterPresented,
+                document: calibrationReportDocument,
+                contentType: .plainText,
+                defaultFilename: calibrationReportDocument.defaultFilename
+            ) { _ in }
         }
         .tabItem {
             Label(String(localized: "tab.settings"), systemImage: "gearshape")
@@ -377,6 +385,23 @@ struct SettingsPageView: View {
                         Text(String(format: String(localized: "calibration.current_compensation"), audioController.currentCompensationDecibels))
                             .font(.caption)
                             .foregroundStyle(AppTheme.accent)
+                    }
+
+                    if let activeProfile = audioController.activeCalibrationProfile {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(String(localized: "calibration.report_body"))
+                                .font(.caption2)
+                                .foregroundStyle(AppTheme.textSecondary)
+
+                            Button {
+                                calibrationReportDocument = CalibrationReportDocument(profile: activeProfile)
+                                isCalibrationReportExporterPresented = true
+                            } label: {
+                                Label(String(localized: "calibration.report_button"), systemImage: "square.and.arrow.up")
+                            }
+                            .buttonStyle(SecondaryButtonStyle())
+                            .disabled(audioController.isLoopbackCalibrationRunning)
+                        }
                     }
                 }
 

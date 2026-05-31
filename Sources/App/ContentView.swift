@@ -183,7 +183,8 @@ struct ContentView: View {
                 dismissKeyboard: dismissKeyboard,
                 savePreset: savePreset,
                 loadPreset: loadPreset,
-                deletePreset: deletePreset
+                deletePreset: deletePreset,
+                builtInPresets: BuiltInTestPresetCatalog.presets
             )
         } else {
             MembershipLockedPage(

@@ -66,11 +66,27 @@
 "noise.step_mode" = "噪声频点步进";
 
 "presets.subtitle" = "把常用参数存下来，真机测试会顺手很多。";
+"presets.builtin_title" = "内置测试包";
+"presets.builtin_subtitle" = "出厂常用声学场景，一键加载后即可开始检查。";
 "presets.save_current" = "保存当前参数";
 "presets.name_placeholder" = "比如：1k 正弦 / 20Hz-20kHz 扫描";
 "presets.count_compact" = "已存预设";
 "presets.empty_title" = "还没有预设";
 "presets.empty_body" = "先去任意功能页调好参数，再回来保存一组常用配置。";
+"presets.testpack.preset.reference_tone.name" = "1 kHz 参考正弦";
+"presets.testpack.preset.reference_tone.description" = "1 kHz 单频正弦，适用于 SPL 取样点和基准偏差对照。";
+"presets.testpack.preset.sine_sweep_speaker.name" = "扫频扬声器检查";
+"presets.testpack.preset.sine_sweep_speaker.description" = "20 Hz 到 20 kHz 对数扫频，适合听觉链路和扬声器全带宽检查。";
+"presets.testpack.preset.pink_noise_room_check.name" = "粉红噪声房间检查";
+"presets.testpack.preset.pink_noise_room_check.description" = "粉红噪声，接近平坦能量分布，用于房间响应与底噪环境感知。";
+"presets.testpack.preset.white_noise_floor_check.name" = "白噪声底噪检测";
+"presets.testpack.preset.white_noise_floor_check.description" = "白噪声，用于底噪底线感知、增益层级与噪点察觉。";
+"presets.testpack.preset.left_channel_check.name" = "左声道检查";
+"presets.testpack.preset.left_channel_check.description" = "仅左声道 1 kHz 正弦，用于声像平衡和声道路由自检。";
+"presets.testpack.preset.right_channel_check.name" = "右声道检查";
+"presets.testpack.preset.right_channel_check.description" = "仅右声道 1 kHz 正弦，用于声像平衡和声道路由自检。";
+"presets.testpack.preset.low_frequency_response_check.name" = "低频响应检查";
+"presets.testpack.preset.low_frequency_response_check.description" = "20–200 Hz 3 分频程对数扫频，用于检查低端延展与连续性。";
 
 "settings.subtitle" = "放系统级选项和输出信息，避免挤占主功能页。";
 "settings.output" = "输出信息";
@@ -175,6 +191,8 @@
 "calibration.progress_value" = "整体进度 %d%%";
 "calibration.enable_compensation" = "启用校准补偿";
 "calibration.current_compensation" = "当前补偿：%+.1f dB";
+"calibration.report_body" = "导出当前档案的频点、补偿值和链路信息，便于留档或发送给设备支持人员。";
+"calibration.report_button" = "导出校准报告";
 "calibration.start_button" = "开始回输入校准";
 "calibration.stop_button" = "停止校准";
 "calibration.delete_button" = "删除当前档案";
@@ -253,6 +271,7 @@
 "button.output_gain_plus_1db" = "+1 dB";
 "button.output_gain_minus_3db" = "-3 dB";
 "button.output_gain_plus_3db" = "+3 dB";
+"button.apply_test_preset" = "一键应用";
 
 "presets.delete_confirm_title" = "删除预设？";
 "presets.delete_confirm_body" = "确定删除“%@”吗？此操作无法撤销。";
