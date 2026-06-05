@@ -6,6 +6,7 @@ import UIKit
 struct ContentView: View {
     @StateObject private var audioController = AudioEngineController()
     @StateObject private var presetStore = PresetStore()
+    @StateObject private var guidedTestHistoryStore = GuidedTestHistoryStore()
     @StateObject private var membershipStore = MembershipStore()
 
     @State private var selectedTab: RootTab = .tone
@@ -178,13 +179,15 @@ struct ContentView: View {
             PresetsPageView(
                 audioController: audioController,
                 presetStore: presetStore,
+                guidedTestHistoryStore: guidedTestHistoryStore,
                 focusedField: $focusedField,
                 presetName: $presetName,
                 dismissKeyboard: dismissKeyboard,
                 savePreset: savePreset,
                 loadPreset: loadPreset,
                 deletePreset: deletePreset,
-                builtInPresets: BuiltInTestPresetCatalog.presets
+                builtInPresets: BuiltInTestPresetCatalog.presets,
+                guidedTestPlans: GuidedTestPlanCatalog.plans
             )
         } else {
             MembershipLockedPage(

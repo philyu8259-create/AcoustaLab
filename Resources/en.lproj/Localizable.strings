@@ -272,6 +272,48 @@
 "button.output_gain_minus_3db" = "-3 dB";
 "button.output_gain_plus_3db" = "+3 dB";
 "button.apply_test_preset" = "One-Click Apply";
+"guided_test.sheet.title" = "Guided Test";
+"guided_test.action_exit" = "Exit";
+"guided_test.action_start" = "Start Guided Test";
+"guided_test.flow_title" = "Guided Test Flow";
+"guided_test.flow_subtitle" = "Run a full predefined check flow in one place and record step results.";
+"guided_test.history_title" = "Recent Guided Test Records";
+"guided_test.history_summary" = "%d pass · %d anomaly · %d skipped";
+"guided_test.action_apply_preset" = "Apply Parameters";
+"guided_test.section_current_preset" = "Current Step";
+"guided_test.section_usage" = "Usage";
+"guided_test.section_objective" = "Objective";
+"guided_test.section_note" = "Remark";
+"guided_test.section_result" = "Step Result";
+"guided_test.step_progress" = "Step progress";
+"guided_test.plan_selection_title" = "Choose a Guided Test Plan";
+"guided_test.plan_selection_empty_title" = "No Test Plan";
+"guided_test.plan_selection_empty_body" = "No guided test plan is available. Please update the built-in flow package.";
+"guided_test.action_start_plan" = "Start";
+"guided_test.plan_step_count" = "%d steps";
+
+"guided_test.step_result.pass" = "Pass";
+"guided_test.step_result.anomaly" = "Anomaly";
+"guided_test.step_result.skipped" = "Skip";
+
+"guided_test.fallback_preset_name" = "Fallback Test Preset";
+
+"guided_test.plan.acoustic_validation.name" = "Acoustic Quick Validation";
+"guided_test.plan.acoustic_validation.description" = "Use the built-in pack for a structured local signal-check process.";
+"guided_test.plan.acoustic_validation.step.reference_tone.description" = "Apply the 1 kHz reference tone preset and check baseline playback consistency.";
+"guided_test.plan.acoustic_validation.step.reference_tone.objective" = "Confirm no obvious clipping or channel imbalance at the reference point.";
+"guided_test.plan.acoustic_validation.step.speaker_check.description" = "Apply the speaker sweep preset and listen for audible continuity.";
+"guided_test.plan.acoustic_validation.step.speaker_check.objective" = "Verify full bandwidth reproduction and any obvious dropouts.";
+"guided_test.plan.acoustic_validation.step.pink_noise.description" = "Apply pink noise for ambient listening and path comfort checks.";
+"guided_test.plan.acoustic_validation.step.pink_noise.objective" = "Estimate room/chain tone balance and low-level perception.";
+"guided_test.plan.acoustic_validation.step.white_noise.description" = "Apply white noise preset to inspect noise-floor impression and hiss.";
+"guided_test.plan.acoustic_validation.step.white_noise.objective" = "Record whether ambient noise is acceptable for field testing.";
+"guided_test.plan.acoustic_validation.step.left_channel.description" = "Apply left-only single tone and verify mono-to-stereo routing.";
+"guided_test.plan.acoustic_validation.step.left_channel.objective" = "Confirm left channel output responds as expected.";
+"guided_test.plan.acoustic_validation.step.right_channel.description" = "Apply right-only single tone and verify mono-to-stereo routing.";
+"guided_test.plan.acoustic_validation.step.right_channel.objective" = "Confirm right channel output responds as expected.";
+"guided_test.plan.acoustic_validation.step.low_frequency.description" = "Apply low-frequency sweep and check low-end continuity.";
+"guided_test.plan.acoustic_validation.step.low_frequency.objective" = "Catch possible low-end cut-off or obvious resonance behavior.";
 
 "presets.delete_confirm_title" = "Delete Preset?";
 "presets.delete_confirm_body" = "Delete \"%@\"? This cannot be undone.";
