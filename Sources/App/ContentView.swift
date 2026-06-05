@@ -7,6 +7,7 @@ struct ContentView: View {
     @StateObject private var audioController = AudioEngineController()
     @StateObject private var presetStore = PresetStore()
     @StateObject private var membershipStore = MembershipStore()
+    @StateObject private var spectrumAnalyzer = RealtimeSpectrumAnalyzer()
 
     @State private var selectedTab: RootTab = .tone
     @State private var isMembershipSheetPresented = false
@@ -42,6 +43,7 @@ struct ContentView: View {
 
             SettingsPageView(
                 audioController: audioController,
+                analyzer: spectrumAnalyzer,
                 membershipStore: membershipStore,
                 dismissKeyboard: dismissKeyboard,
                 resetToDefaults: resetToDefaults,
@@ -74,6 +76,7 @@ struct ContentView: View {
         }
         .onChange(of: selectedTab) { _, newValue in
             audioController.stop()
+            spectrumAnalyzer.stop()
             guard membershipStore.hasCoreAccess else { return }
             if let mode = newValue.signalMode {
                 audioController.selectedMode = mode

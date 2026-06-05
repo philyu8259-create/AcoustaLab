@@ -314,6 +314,25 @@
 "signal_spec.sweep.metric" = "Log sweep, constant amplitude";
 "tone.high_frequency_warning" = "High-frequency caution: reduce gain before extended listening.";
 "noise.high_frequency_warning" = "High cutoff warning: reduce gain before extended listening.";
+"analyzer.title" = "Realtime Spectrum / RTA";
+"analyzer.card_hint" = "Local microphone spectrum analysis, all processing stays on this device.";
+"analyzer.status_idle" = "Ready";
+"analyzer.status_requesting" = "Requesting microphone permission";
+"analyzer.status_starting" = "Preparing analysis";
+"analyzer.status_running" = "Analyzing";
+"analyzer.status_stopped" = "Stopped";
+"analyzer.status_no_signal" = "No signal detected";
+"analyzer.status_permission_denied" = "Microphone permission denied";
+"analyzer.status_no_input" = "No usable input available";
+"analyzer.status_failed" = "Analyzer start failed";
+"analyzer.band_chart" = "Bands (16-band 1/3-oct approximated)";
+"analyzer.peak_frequency" = "Peak Frequency";
+"analyzer.peak_unknown" = "Waiting";
+"analyzer.peak_hint" = "Peak detected band center";
+"analyzer.input_level" = "Input Level";
+"analyzer.input_level_hint" = "RMS-based level indicator";
+"analyzer.start_button" = "Start Spectrum";
+"analyzer.stop_button" = "Stop Spectrum";
 
 "membership.title" = "AcoustaLab Full Access";
 "membership.free_trial" = "Starter Access";
