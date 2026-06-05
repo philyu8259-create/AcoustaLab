@@ -1,10 +1,10 @@
 # AcoustaLab
 
-iOS MVP prototype for a mobile audio signal generator and acoustic test toolkit.
+AcoustaLab 1.4 is a local acoustic utility for tone generation, sweep generation, noise testing, presets, and headphone/speaker validation workflows on iOS.
 
-## Current status
+## Current Status (v1.4)
 
-v0.2 runnable prototype:
+Core features:
 - Single Tone page
 - Sweep page
 - Noise page
@@ -26,19 +26,31 @@ v0.2 runnable prototype:
 - Keep-screen-awake and safety fade settings
 - PolyBLEP band-limited square / saw oscillator path
 - Local preset save / load / delete
+- Built-in test pack for acoustic workflow quick checks
+- Built-in calibration report and local test history support
+- Local export of calibration report, test log, and settings-related outputs
 
-## Build
+Privacy and monetization:
+- No advertisements, no ad SDKs
+- No tracking for ad profiling, ad SDK telemetry, or user behavior ads analytics
+- No account login required
+- One-time Apple In-App Purchase for full access (no subscriptions)
+- All generated audio, presets, test history, and calibration artifacts are stored on device first
+
+## Build Commands
 
 ```bash
-cd AudioFunctionGenerator
 xcodegen generate
+xcodebuild -project AudioFunctionGenerator.xcodeproj -scheme AudioFunctionGenerator -resolvePackageDependencies
 xcodebuild -project AudioFunctionGenerator.xcodeproj -scheme AudioFunctionGenerator -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17' build
+xcodebuild -project AudioFunctionGenerator.xcodeproj -scheme AudioFunctionGenerator -destination 'platform=iOS Simulator,name=iPhone 17' clean build
 ```
 
-## Next
+## Local Privacy Notes
 
-- Improve anti-aliasing for square / saw
-- Add stronger fade ramp and parameter smoothing
-- Add output device detection and warning UI
-- Add preset management
-- Add octave / 1-3 octave quick selection logic
+AcoustaLab is designed as a local-first tool. By default, the app keeps signal generation data, routes, calibration state, tone/sweep/noise presets, test history, and export files on-device.
+
+### 1.4 Scope in Practice
+
+- Route check and test status pages are for in-app guidance only.
+- Calibration report export and test history can be shared locally by the user.
