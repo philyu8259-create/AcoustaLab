@@ -193,6 +193,9 @@
 "calibration.current_compensation" = "Current correction: %+.1f dB";
 "calibration.report_body" = "Export the active profile's test points, correction values, and route details for records or support handoff.";
 "calibration.report_button" = "Export Calibration Report";
+"calibration.export.pdf" = "Export PDF Report";
+"calibration.export.csv" = "Export CSV Data";
+"calibration.export.png" = "Export Curve Image";
 "calibration.start_button" = "Start Loopback Calibration";
 "calibration.stop_button" = "Stop Calibration";
 "calibration.delete_button" = "Delete Profile";

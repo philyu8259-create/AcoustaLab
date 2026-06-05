@@ -193,6 +193,9 @@
 "calibration.current_compensation" = "当前补偿：%+.1f dB";
 "calibration.report_body" = "导出当前档案的频点、补偿值和链路信息，便于留档或发送给设备支持人员。";
 "calibration.report_button" = "导出校准报告";
+"calibration.export.pdf" = "导出 PDF 报告";
+"calibration.export.csv" = "导出 CSV 数据";
+"calibration.export.png" = "导出曲线图";
 "calibration.start_button" = "开始回输入校准";
 "calibration.stop_button" = "停止校准";
 "calibration.delete_button" = "删除当前档案";
