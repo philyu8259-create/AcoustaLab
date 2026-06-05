@@ -10,6 +10,8 @@
 		02F0E9BEAD32CA9DA1E5C663 /* AudioRouteSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E97A1EAC1892E6B4B0CF835 /* AudioRouteSupport.swift */; };
 		0B002F5899C697169AAF9980 /* MembershipStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A88DC913DA980012380DF886 /* MembershipStore.swift */; };
 		1B6B97C4544CB7FFE44EE7CA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F8C7FF1F26DAFFEAE0BB4348 /* Localizable.strings */; };
+		1D9AA9F2C6A4DE4B5F2F0E87 /* AcousticAnalyzerUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B4B3F1A7FAE3D8E6C1A5B9F /* AcousticAnalyzerUI.swift */; };
+		1F3D2A7E6B9D4E5F8A1C3B2D /* RealtimeSpectrumAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D6A5B8F3E4A2C1D5F6E7A89 /* RealtimeSpectrumAnalyzer.swift */; };
 		2378F18346647D06405318FB /* CalibrationProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CBBFF1A5C78C9E12EE2C42 /* CalibrationProfile.swift */; };
 		27BC2E9B8B0B4A7D8C4F9D0A /* CalibrationReportDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B2E3F5D2B97414B9C7D1E11 /* CalibrationReportDocument.swift */; };
 		281EFF70030127822D37CAE5 /* FrequencyStepCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52EBD4F0AF0661AA4B2CAB9 /* FrequencyStepCatalog.swift */; };
@@ -54,6 +56,8 @@
 		2C2D820F5AEC4A68F9F3301C /* AudioSignalMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSignalMath.swift; sourceTree = "<group>"; };
 		3A4E989DE58B9AB1B7525502 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		485ACF78A024AE55E57A3641 /* AudioCalibrationSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCalibrationSupport.swift; sourceTree = "<group>"; };
+		7D6A5B8F3E4A2C1D5F6E7A89 /* RealtimeSpectrumAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealtimeSpectrumAnalyzer.swift; sourceTree = "<group>"; };
+		8B4B3F1A7FAE3D8E6C1A5B9F /* AcousticAnalyzerUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcousticAnalyzerUI.swift; sourceTree = "<group>"; };
 		525D9D268E7B892CDDD9FAD5 /* AcousticAdvancedUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcousticAdvancedUI.swift; sourceTree = "<group>"; };
 		5A153A6425C67980A0D1A51B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5CAA4B40388F817B0A3B0848 /* NoisePageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoisePageView.swift; sourceTree = "<group>"; };
@@ -125,6 +129,7 @@
 			isa = PBXGroup;
 			children = (
 				485ACF78A024AE55E57A3641 /* AudioCalibrationSupport.swift */,
+				7D6A5B8F3E4A2C1D5F6E7A89 /* RealtimeSpectrumAnalyzer.swift */,
 				22A5998912B2BAB3D7CB1E23 /* AudioEngineController.swift */,
 				6260F53D002042B0495B1E05 /* AudioEngineControllerSupportTypes.swift */,
 				5E97A1EAC1892E6B4B0CF835 /* AudioRouteSupport.swift */,
@@ -138,6 +143,7 @@
 			children = (
 				525D9D268E7B892CDDD9FAD5 /* AcousticAdvancedUI.swift */,
 				18F0E731693D316CB2366240 /* AcousticControls.swift */,
+				8B4B3F1A7FAE3D8E6C1A5B9F /* AcousticAnalyzerUI.swift */,
 				29A1D4E3D6A0B3A709AEA004 /* AppUIComponents.swift */,
 				C1B068D120B2D94B817778DF /* AppViewTypes.swift */,
 				FB6EF56CBCE0845FD03C4AA7 /* AudioFunctionGeneratorApp.swift */,
@@ -246,6 +252,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1D9AA9F2C6A4DE4B5F2F0E87 /* AcousticAnalyzerUI.swift in Sources */,
 				F8D4975689FC100E3A481DCF /* AcousticAdvancedUI.swift in Sources */,
 				8A09A042F09690787629640C /* AcousticControls.swift in Sources */,
 				47F36291142A8289E50651BA /* AcousticTheme.swift in Sources */,
@@ -270,6 +277,7 @@
 				3D4FFBEC8586F20898A445B1 /* NoisePageView.swift in Sources */,
 				817A3FB99BF50BBD77190091 /* PresetsPageView.swift in Sources */,
 				B35033D9B69515C356C0DD21 /* SettingsPageView.swift in Sources */,
+				1F3D2A7E6B9D4E5F8A1C3B2D /* RealtimeSpectrumAnalyzer.swift in Sources */,
 				511D3D406CFA4BF847ABDB26 /* SweepPageView.swift in Sources */,
 				DCE2DECDA0EE53B48E42235F /* TonePageView.swift in Sources */,
 			);

@@ -311,6 +311,25 @@
 "signal_spec.sweep.metric" = "对数扫频，幅值恒定";
 "tone.high_frequency_warning" = "高频警示：长时间试听前请先降低输出增益。";
 "noise.high_frequency_warning" = "高截止频率警示：长时间试听前请先降低输出增益。";
+"analyzer.title" = "实时频谱 / RTA";
+"analyzer.card_hint" = "麦克风实时分析全部在本机完成，不上传音频。";
+"analyzer.status_idle" = "就绪";
+"analyzer.status_requesting" = "请求麦克风权限";
+"analyzer.status_starting" = "准备分析";
+"analyzer.status_running" = "分析中";
+"analyzer.status_stopped" = "已停止";
+"analyzer.status_no_signal" = "未检测到信号";
+"analyzer.status_permission_denied" = "未授权麦克风";
+"analyzer.status_no_input" = "无可用输入";
+"analyzer.status_failed" = "分析器启动失败";
+"analyzer.band_chart" = "频段（16 条 1/3 倍频程近似）";
+"analyzer.peak_frequency" = "峰值频率";
+"analyzer.peak_unknown" = "等待中";
+"analyzer.peak_hint" = "当前能量最高频段";
+"analyzer.input_level" = "输入电平";
+"analyzer.input_level_hint" = "基于 RMS 的音量指标";
+"analyzer.start_button" = "开始频谱";
+"analyzer.stop_button" = "停止频谱";
 
 "membership.title" = "声测工坊完整权限";
 "membership.free_trial" = "入门体验";

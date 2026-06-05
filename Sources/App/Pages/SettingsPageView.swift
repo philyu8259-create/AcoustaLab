@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SettingsPageView: View {
     @ObservedObject var audioController: AudioEngineController
+    @ObservedObject var analyzer: RealtimeSpectrumAnalyzer
     @ObservedObject var membershipStore: MembershipStore
     let dismissKeyboard: () -> Void
     let resetToDefaults: () -> Void
@@ -30,6 +31,7 @@ struct SettingsPageView: View {
                     calibrationCard
                     channelCard
                 }
+                analyzerCard
                 signalSpecificationsCard
                 supportCard
                 appInfoCard
@@ -116,6 +118,10 @@ struct SettingsPageView: View {
                     .disabled(!audioController.supportsExtendedExternalGain)
             }
         }
+    }
+
+    private var analyzerCard: some View {
+        RealtimeSpectrumAnalyzerCard(analyzer: analyzer)
     }
 
     private var calibrationCard: some View {
