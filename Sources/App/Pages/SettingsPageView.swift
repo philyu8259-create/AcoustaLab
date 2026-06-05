@@ -17,12 +17,13 @@ struct SettingsPageView: View {
 
     var body: some View {
         NavigationStack {
-            AdaptiveDashboard(onBackgroundTap: dismissKeyboard) {
+            AdaptiveDashboard(onBackgroundTap: dismissKeyboard, initialScrollID: screenshotInitialScrollID) {
                 MembershipSettingsCard(membershipStore: membershipStore, showMembership: showMembership)
                 routeOverviewCard
                 if membershipStore.hasCoreAccess {
                     playbackCard
                     calibrationSummaryCard
+                        .id("settings.calibration")
                 }
                 signalSpecificationsCard
                 supportCard
@@ -44,6 +45,16 @@ struct SettingsPageView: View {
                     .presentationDetents([.large])
                     .preferredColorScheme(.dark)
             }
+            .fileExporter(
+                isPresented: $isCalibrationReportExporterPresented,
+                document: calibrationReportDocument,
+                contentType: selectedCalibrationReportExportFormat.contentType,
+                defaultFilename: calibrationReportDocument.defaultFilename
+            ) { result in
+                if case .success = result {
+                    requestReviewAfterMeaningfulAction(.reportExported)
+                }
+            }
             .onChange(of: audioController.loopbackCalibrationPhase) { _, phase in
                 if phase == .completed {
                     requestReviewAfterMeaningfulAction(.calibrationCompleted)
@@ -53,6 +64,16 @@ struct SettingsPageView: View {
         .tabItem {
             Label(String(localized: "tab.settings"), systemImage: "gearshape")
         }
+    }
+
+    private var screenshotInitialScrollID: String? {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "-AcoustaLabScreenshotScroll"),
+              arguments.indices.contains(index + 1)
+        else {
+            return nil
+        }
+        return arguments[index + 1]
     }
 
     private var routeOverviewCard: some View {
@@ -179,6 +200,10 @@ struct SettingsPageView: View {
                     )
                     .tint(AppTheme.accent)
                     .disabled(audioController.isLoopbackCalibrationRunning)
+
+                    if let activeProfile = audioController.activeCalibrationProfile {
+                        reportExportSection(for: activeProfile)
+                    }
                 }
 
                 Button {
@@ -219,17 +244,37 @@ struct SettingsPageView: View {
                     }
                 }
             }
-            .fileExporter(
-                isPresented: $isCalibrationReportExporterPresented,
-                document: calibrationReportDocument,
-                contentType: selectedCalibrationReportExportFormat.contentType,
-                defaultFilename: calibrationReportDocument.defaultFilename
-            ) { result in
-                if case .success = result {
-                    requestReviewAfterMeaningfulAction(.reportExported)
+        }
+    }
+
+    private func reportExportSection(for profile: CalibrationProfile) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(String(localized: "calibration.report_body"))
+                .font(.caption2)
+                .foregroundStyle(AppTheme.textSecondary)
+
+            LazyVGrid(columns: gridColumns(2), spacing: 10) {
+                ForEach(CalibrationReportExportFormat.exportButtonFormats, id: \.self) { format in
+                    Button {
+                        exportCalibrationReport(profile: profile, format: format)
+                    } label: {
+                        Label {
+                            Text(LocalizedStringKey(format.localizedTitleKey))
+                        } icon: {
+                            Image(systemName: format.systemImage)
+                        }
+                    }
+                    .buttonStyle(SecondaryButtonStyle())
+                    .disabled(audioController.isLoopbackCalibrationRunning)
                 }
             }
         }
+    }
+
+    private func exportCalibrationReport(profile: CalibrationProfile, format: CalibrationReportExportFormat) {
+        selectedCalibrationReportExportFormat = format
+        calibrationReportDocument = CalibrationReportDocument(profile: profile, format: format)
+        isCalibrationReportExporterPresented = true
     }
 
     private var calibrationCard: some View {
@@ -502,29 +547,7 @@ struct SettingsPageView: View {
                     }
 
                     if let activeProfile = audioController.activeCalibrationProfile {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text(String(localized: "calibration.report_body"))
-                                .font(.caption2)
-                                .foregroundStyle(AppTheme.textSecondary)
-
-                            LazyVGrid(columns: gridColumns(2), spacing: 10) {
-                                ForEach(CalibrationReportExportFormat.exportButtonFormats, id: \.self) { format in
-                                    Button {
-                                        selectedCalibrationReportExportFormat = format
-                                        calibrationReportDocument = CalibrationReportDocument(profile: activeProfile, format: format)
-                                        isCalibrationReportExporterPresented = true
-                                    } label: {
-                                        Label {
-                                            Text(LocalizedStringKey(format.localizedTitleKey))
-                                        } icon: {
-                                            Image(systemName: format.systemImage)
-                                        }
-                                    }
-                                    .buttonStyle(SecondaryButtonStyle())
-                                    .disabled(audioController.isLoopbackCalibrationRunning)
-                                }
-                            }
-                        }
+                        reportExportSection(for: activeProfile)
                     }
                 }
 

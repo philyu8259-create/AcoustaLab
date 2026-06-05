@@ -32,8 +32,9 @@ Use stable names to keep upload order deterministic:
 - `01-speaker-test` — speaker/audio test value proposition
 - `02-sweep` — sweep testing and abnormal frequency positioning
 - `03-noise` — white/pink noise environment checks
-- `04-report` — calibration report export
+- `04-report` — calibration report export from the Settings calibration card
 - `05-privacy` — local processing and privacy reassurance
+- `06-presets` — one-click built-in test presets
 
 ## Current ASO copy
 

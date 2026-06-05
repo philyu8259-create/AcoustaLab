@@ -329,15 +329,18 @@ struct CalibrationCurveView: View {
 
 struct AdaptiveDashboard<Content: View>: View {
     var onBackgroundTap: (() -> Void)? = nil
+    var initialScrollID: String? = nil
     private let content: (DashboardLayoutMetrics) -> Content
 
-    init(onBackgroundTap: (() -> Void)? = nil, @ViewBuilder content: @escaping () -> Content) {
+    init(onBackgroundTap: (() -> Void)? = nil, initialScrollID: String? = nil, @ViewBuilder content: @escaping () -> Content) {
         self.onBackgroundTap = onBackgroundTap
+        self.initialScrollID = initialScrollID
         self.content = { _ in content() }
     }
 
-    init(onBackgroundTap: (() -> Void)? = nil, @ViewBuilder content: @escaping (DashboardLayoutMetrics) -> Content) {
+    init(onBackgroundTap: (() -> Void)? = nil, initialScrollID: String? = nil, @ViewBuilder content: @escaping (DashboardLayoutMetrics) -> Content) {
         self.onBackgroundTap = onBackgroundTap
+        self.initialScrollID = initialScrollID
         self.content = content
     }
 
@@ -369,20 +372,30 @@ struct AdaptiveDashboard<Content: View>: View {
                 .acousticGrain(opacity: 0.010)
                 .ignoresSafeArea()
 
-                ScrollView(showsIndicators: false) {
-                    VStack(spacing: metrics.cardSpacing) {
-                        content(metrics)
+                ScrollViewReader { proxy in
+                    ScrollView(showsIndicators: false) {
+                        VStack(spacing: metrics.cardSpacing) {
+                            content(metrics)
+                        }
+                        .frame(maxWidth: .infinity, minHeight: metrics.contentMinHeight, alignment: .top)
+                        .padding(.horizontal, metrics.horizontalPadding)
+                        .padding(.top, metrics.topPadding)
+                        .padding(.bottom, metrics.bottomPadding)
                     }
-                    .frame(maxWidth: .infinity, minHeight: metrics.contentMinHeight, alignment: .top)
-                    .padding(.horizontal, metrics.horizontalPadding)
-                    .padding(.top, metrics.topPadding)
-                    .padding(.bottom, metrics.bottomPadding)
+                    .environment(\.dashboardLayoutMetrics, metrics)
+                    .scrollDismissesKeyboard(.interactively)
+                    .simultaneousGesture(TapGesture().onEnded {
+                        onBackgroundTap?()
+                    })
+                    .onAppear {
+                        guard let initialScrollID else { return }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                            withAnimation(.easeOut(duration: 0.2)) {
+                                proxy.scrollTo(initialScrollID, anchor: .top)
+                            }
+                        }
+                    }
                 }
-                .environment(\.dashboardLayoutMetrics, metrics)
-                .scrollDismissesKeyboard(.interactively)
-                .simultaneousGesture(TapGesture().onEnded {
-                    onBackgroundTap?()
-                })
             }
         }
     }

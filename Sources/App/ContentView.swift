@@ -67,7 +67,7 @@ struct ContentView: View {
         }
         .onAppear {
             syncAllInputFields()
-            selectedTab = RootTab(mode: audioController.selectedMode)
+            selectedTab = screenshotInitialTab ?? RootTab(mode: audioController.selectedMode)
         }
         .task {
             await membershipStore.configure()
@@ -219,6 +219,30 @@ struct ContentView: View {
 
     private func showMembership() {
         isMembershipSheetPresented = true
+    }
+
+    private var screenshotInitialTab: RootTab? {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "-AcoustaLabScreenshotTab"),
+              arguments.indices.contains(index + 1)
+        else {
+            return nil
+        }
+
+        switch arguments[index + 1] {
+        case "tone":
+            return .tone
+        case "sweep":
+            return .sweep
+        case "noise":
+            return .noise
+        case "presets":
+            return .presets
+        case "settings":
+            return .settings
+        default:
+            return nil
+        }
     }
 
     private func applySweepStepValue(_ value: Double) {
