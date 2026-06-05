@@ -9,6 +9,7 @@ struct SettingsPageView: View {
     let resetToDefaults: () -> Void
     let showMembership: () -> Void
     @State private var isResetConfirmationPresented = false
+    @State private var isCalibrationDetailPresented = false
     @State private var isCalibrationReportExporterPresented = false
     @State private var selectedCalibrationReportExportFormat: CalibrationReportExportFormat = .pdf
     @State private var calibrationReportDocument = CalibrationReportDocument()
@@ -16,23 +17,11 @@ struct SettingsPageView: View {
     var body: some View {
         NavigationStack {
             AdaptiveDashboard(onBackgroundTap: dismissKeyboard) {
-                CompactStatusCard(
-                    icon: "slider.horizontal.3",
-                    title: String(localized: "tab.settings"),
-                    value: audioController.isPlaying ? String(localized: "status.playing") : String(localized: "status.stopped"),
-                    badge: audioController.outputRouteName,
-                    auxiliary: "\(Int(audioController.sampleRate)) Hz"
-                ) {
-                    EmptyView()
-                }
-
                 MembershipSettingsCard(membershipStore: membershipStore, showMembership: showMembership)
                 routeOverviewCard
                 if membershipStore.hasCoreAccess {
                     playbackCard
-                    calibrationCard
-                    channelCard
-                    analyzerCard
+                    calibrationSummaryCard
                 }
                 signalSpecificationsCard
                 supportCard
@@ -49,12 +38,11 @@ struct SettingsPageView: View {
             } message: {
                 Text(String(localized: "settings.reset_confirm_body"))
             }
-            .fileExporter(
-                isPresented: $isCalibrationReportExporterPresented,
-                document: calibrationReportDocument,
-                contentType: selectedCalibrationReportExportFormat.contentType,
-                defaultFilename: calibrationReportDocument.defaultFilename
-            ) { _ in }
+            .sheet(isPresented: $isCalibrationDetailPresented) {
+                calibrationDetailSheet
+                    .presentationDetents([.large])
+                    .preferredColorScheme(.dark)
+            }
         }
         .tabItem {
             Label(String(localized: "tab.settings"), systemImage: "gearshape")
@@ -118,12 +106,120 @@ struct SettingsPageView: View {
                 Toggle(String(localized: "settings.external_high_gain"), isOn: $audioController.extendedExternalGainEnabled)
                     .tint(AppTheme.accent)
                     .disabled(!audioController.supportsExtendedExternalGain)
+
+                Divider()
+                    .overlay(AppTheme.stroke)
+
+                HardwareCapsuleSelector(
+                    title: String(localized: "label.channel"),
+                    selection: $audioController.channelMode,
+                    items: AudioEngineController.ChannelMode.allCases,
+                    accentColor: { $0.acousticAccentColor },
+                    label: { $0.localizedTitle }
+                )
             }
         }
     }
 
     private var analyzerCard: some View {
         RealtimeSpectrumAnalyzerCard(analyzer: analyzer)
+    }
+
+    private var calibrationSummaryCard: some View {
+        InstrumentCard(fill: AppTheme.cardStrong) {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(alignment: .top, spacing: 12) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        SectionTitle(title: String(localized: "settings.calibration_analysis"))
+                        Text(String(localized: "settings.calibration_analysis_body"))
+                            .font(.caption)
+                            .foregroundStyle(AppTheme.textSecondary)
+                    }
+
+                    Spacer()
+
+                    StatusBadge(
+                        title: calibrationStatusBadgeTitle,
+                        tone: calibrationStatusTone,
+                        icon: calibrationStatusIcon
+                    )
+                }
+
+                LazyVGrid(columns: gridColumns(2), spacing: 10) {
+                    DetailTile(
+                        title: String(localized: "calibration.profile_label"),
+                        value: audioController.activeCalibrationProfileDisplayName,
+                        caption: audioController.hasActiveCalibrationProfile ? audioController.calibrationProfileSummaryText : String(localized: "settings.calibration_profile_empty"),
+                        accentColor: audioController.hasActiveCalibrationProfile ? AppTheme.success : AppTheme.warning
+                    )
+
+                    DetailTile(
+                        title: String(localized: "analyzer.title"),
+                        value: analyzer.statusText,
+                        caption: analyzer.peakFrequency > 0
+                            ? FrequencyFormatting.displayString(for: analyzer.peakFrequency)
+                            : String(localized: "analyzer.peak_unknown"),
+                        accentColor: analyzer.isRunning ? AppTheme.accent : .white
+                    )
+                }
+
+                if audioController.hasActiveCalibrationProfile {
+                    Toggle(
+                        String(localized: "calibration.enable_compensation"),
+                        isOn: Binding(
+                            get: { audioController.isCalibrationCompensationEnabled },
+                            set: { audioController.setCalibrationCompensationEnabled($0) }
+                        )
+                    )
+                    .tint(AppTheme.accent)
+                    .disabled(audioController.isLoopbackCalibrationRunning)
+                }
+
+                Button {
+                    isCalibrationDetailPresented = true
+                } label: {
+                    Label(
+                        String(localized: "settings.open_calibration_analysis"),
+                        systemImage: "waveform"
+                    )
+                }
+                .buttonStyle(PrimaryButtonStyle())
+            }
+        }
+    }
+
+    private var calibrationDetailSheet: some View {
+        NavigationStack {
+            AdaptiveDashboard(onBackgroundTap: dismissKeyboard) {
+                CompactStatusCard(
+                    icon: "waveform",
+                    title: String(localized: "settings.calibration_analysis"),
+                    value: calibrationStatusBadgeTitle,
+                    badge: analyzer.statusText,
+                    auxiliary: audioController.activeCalibrationProfileDisplayName
+                ) {
+                    EmptyView()
+                }
+
+                calibrationCard
+                analyzerCard
+            }
+            .navigationTitle(String(localized: "settings.calibration_analysis"))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(String(localized: "button.done")) {
+                        isCalibrationDetailPresented = false
+                    }
+                }
+            }
+            .fileExporter(
+                isPresented: $isCalibrationReportExporterPresented,
+                document: calibrationReportDocument,
+                contentType: selectedCalibrationReportExportFormat.contentType,
+                defaultFilename: calibrationReportDocument.defaultFilename
+            ) { _ in }
+        }
     }
 
     private var calibrationCard: some View {
@@ -515,21 +611,6 @@ struct SettingsPageView: View {
                     metric: String(localized: "signal_spec.sweep.metric")
                 )
 
-            }
-        }
-    }
-
-    private var channelCard: some View {
-        InstrumentCard {
-            VStack(alignment: .leading, spacing: 8) {
-                SectionTitle(title: String(localized: "settings.channel"))
-                HardwareCapsuleSelector(
-                    title: String(localized: "label.channel"),
-                    selection: $audioController.channelMode,
-                    items: AudioEngineController.ChannelMode.allCases,
-                    accentColor: { $0.acousticAccentColor },
-                    label: { $0.localizedTitle }
-                )
             }
         }
     }

@@ -96,6 +96,10 @@
 "settings.route_overview" = "Route Overview";
 "settings.playback" = "Playback";
 "settings.channel" = "Channel Settings";
+"settings.calibration_analysis" = "Calibration & Analysis";
+"settings.calibration_analysis_body" = "Manage loopback calibration, export reports, and inspect realtime spectrum details from one focused workspace.";
+"settings.calibration_profile_empty" = "No active calibration profile yet.";
+"settings.open_calibration_analysis" = "Open Calibration & Analysis";
 "settings.fade" = "Enable safe fade in/out";
 "settings.awake" = "Keep screen awake";
 "settings.external_high_gain" = "Expert Mode: External High Gain";
@@ -270,6 +274,7 @@
 "button.save_preset" = "Save Preset";
 "button.reset_defaults" = "Restore Defaults";
 "button.dismiss_keyboard" = "Done";
+"button.done" = "Done";
 "button.output_gain_minus_1db" = "-1 dB";
 "button.output_gain_plus_1db" = "+1 dB";
 "button.output_gain_minus_3db" = "-3 dB";

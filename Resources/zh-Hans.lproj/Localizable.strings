@@ -96,6 +96,10 @@
 "settings.route_overview" = "链路概览";
 "settings.playback" = "播放行为";
 "settings.channel" = "声道设置";
+"settings.calibration_analysis" = "校准与分析";
+"settings.calibration_analysis_body" = "集中管理回输入校准、报告导出和实时频谱细节。";
+"settings.calibration_profile_empty" = "当前还没有启用校准档案。";
+"settings.open_calibration_analysis" = "打开校准与分析";
 "settings.fade" = "启用防爆音淡入淡出";
 "settings.awake" = "保持屏幕常亮";
 "settings.external_high_gain" = "专家模式：外接高增益";
@@ -270,6 +274,7 @@
 "button.save_preset" = "保存预设";
 "button.reset_defaults" = "恢复默认参数";
 "button.dismiss_keyboard" = "收起键盘";
+"button.done" = "完成";
 "button.output_gain_minus_1db" = "-1 dB";
 "button.output_gain_plus_1db" = "+1 dB";
 "button.output_gain_minus_3db" = "-3 dB";
