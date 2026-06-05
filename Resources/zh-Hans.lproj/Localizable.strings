@@ -275,6 +275,48 @@
 "button.output_gain_minus_3db" = "-3 dB";
 "button.output_gain_plus_3db" = "+3 dB";
 "button.apply_test_preset" = "一键应用";
+"guided_test.sheet.title" = "引导测试";
+"guided_test.action_exit" = "退出";
+"guided_test.action_start" = "开始引导测试";
+"guided_test.flow_title" = "引导测试流程";
+"guided_test.flow_subtitle" = "一页启动完整预设检验流程，并在每一步记录结果。";
+"guided_test.history_title" = "最近测试记录";
+"guided_test.history_summary" = "%d 通过 · %d 异常 · %d 跳过";
+"guided_test.action_apply_preset" = "应用参数";
+"guided_test.section_current_preset" = "当前步骤";
+"guided_test.section_usage" = "用途说明";
+"guided_test.section_objective" = "验收目标";
+"guided_test.section_note" = "备注";
+"guided_test.section_result" = "步骤结果";
+"guided_test.step_progress" = "步骤进度";
+"guided_test.plan_selection_title" = "选择引导测试计划";
+"guided_test.plan_selection_empty_title" = "暂无测试计划";
+"guided_test.plan_selection_empty_body" = "当前未找到可用的引导测试计划，请补充内置测试包。";
+"guided_test.action_start_plan" = "开始";
+"guided_test.plan_step_count" = "%d 个步骤";
+
+"guided_test.step_result.pass" = "通过";
+"guided_test.step_result.anomaly" = "异常";
+"guided_test.step_result.skipped" = "跳过";
+
+"guided_test.fallback_preset_name" = "回退测试预设";
+
+"guided_test.plan.acoustic_validation.name" = "声学快速验收";
+"guided_test.plan.acoustic_validation.description" = "基于内置测试包构建完整验收流程，逐步完成参数应用和记录。";
+"guided_test.plan.acoustic_validation.step.reference_tone.description" = "应用 1 kHz 参考正弦，确认基准播放与主路径状态。";
+"guided_test.plan.acoustic_validation.step.reference_tone.objective" = "确认基准点处没有明显削波或声道偏差。";
+"guided_test.plan.acoustic_validation.step.speaker_check.description" = "应用扬声器扫频预设，听检是否有明显中断。";
+"guided_test.plan.acoustic_validation.step.speaker_check.objective" = "确认全带宽链路可持续输出并无明显断点。";
+"guided_test.plan.acoustic_validation.step.pink_noise.description" = "应用粉红噪声，复核环境噪声和链路听感均衡。";
+"guided_test.plan.acoustic_validation.step.pink_noise.objective" = "确认低电平听感与频带分布大致均衡。";
+"guided_test.plan.acoustic_validation.step.white_noise.description" = "应用白噪声，核对底噪主观感受与噪声边界。";
+"guided_test.plan.acoustic_validation.step.white_noise.objective" = "判断背景底噪与噪点水平是否可接受。";
+"guided_test.plan.acoustic_validation.step.left_channel.description" = "应用左声道单音，复核声道路由。";
+"guided_test.plan.acoustic_validation.step.left_channel.objective" = "确认左声道独立输出行为正常。";
+"guided_test.plan.acoustic_validation.step.right_channel.description" = "应用右声道单音，复核声道路由。";
+"guided_test.plan.acoustic_validation.step.right_channel.objective" = "确认右声道独立输出行为正常。";
+"guided_test.plan.acoustic_validation.step.low_frequency.description" = "应用低频扫频，检视低频连续性。";
+"guided_test.plan.acoustic_validation.step.low_frequency.objective" = "捕捉低频衰减、共振或中断迹象。";
 
 "presets.delete_confirm_title" = "删除预设？";
 "presets.delete_confirm_body" = "确定删除“%@”吗？此操作无法撤销。";

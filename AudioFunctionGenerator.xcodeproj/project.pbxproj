@@ -36,10 +36,12 @@
 		B49BF268D279E055A672C4E8 /* AppPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73D581887993A1161831B7D /* AppPreset.swift */; };
 		BAE16667F4C7B6F48AD857E3 /* AppViewTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B068D120B2D94B817778DF /* AppViewTypes.swift */; };
 		CB4A280DC366FF48C6899019 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E04E01DE36F01FCA9F5938 /* ContentView.swift */; };
+		C4A2B6D7E8F901A2B3C4D5E6 /* GuidedTestFlowSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F708192A3B4C6 /* GuidedTestFlowSheet.swift */; };
 		DCE2DECDA0EE53B48E42235F /* TonePageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CF51A30E7AF18FA394B786D /* TonePageView.swift */; };
 		E0D4EEA163215D3AE042775D /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 3A4E989DE58B9AB1B7525502 /* PrivacyInfo.xcprivacy */; };
 		F3B74538485AD354EFED1422 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FC36DF61A384670228E47B8D /* InfoPlist.strings */; };
 		F8D4975689FC100E3A481DCF /* AcousticAdvancedUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525D9D268E7B892CDDD9FAD5 /* AcousticAdvancedUI.swift */; };
+		F9C4D8E7A6B5C4D3E2F1A0B9 /* GuidedTestPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F708192A3B4C5 /* GuidedTestPlan.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -76,6 +78,8 @@
 		B73D581887993A1161831B7D /* AppPreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPreset.swift; sourceTree = "<group>"; };
 		C1B068D120B2D94B817778DF /* AppViewTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewTypes.swift; sourceTree = "<group>"; };
 		D68C042EC1A8CE02C1C31544 /* AcousticTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcousticTheme.swift; sourceTree = "<group>"; };
+		1A2B3C4D5E6F708192A3B4C5 /* GuidedTestPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidedTestPlan.swift; sourceTree = "<group>"; };
+		1A2B3C4D5E6F708192A3B4C6 /* GuidedTestFlowSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidedTestFlowSheet.swift; sourceTree = "<group>"; };
 		E9879F26062BCD5E868CA426 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		F1BFF93C5C31A6CF5E6DA31C /* AudioFunctionGenerator.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = AudioFunctionGenerator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB6EF56CBCE0845FD03C4AA7 /* AudioFunctionGeneratorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFunctionGeneratorApp.swift; sourceTree = "<group>"; };
@@ -108,6 +112,7 @@
 			children = (
 				D68C042EC1A8CE02C1C31544 /* AcousticTheme.swift */,
 				B73D581887993A1161831B7D /* AppPreset.swift */,
+				1A2B3C4D5E6F708192A3B4C5 /* GuidedTestPlan.swift */,
 				FFCDBD69DCBE012D2EBBE788 /* AppTheme.swift */,
 				04B8677FEEF567119C2D3648 /* BuiltInTestPresets.swift */,
 				05CBBFF1A5C78C9E12EE2C42 /* CalibrationProfile.swift */,
@@ -153,6 +158,7 @@
 				A4E04E01DE36F01FCA9F5938 /* ContentView.swift */,
 				A680DA2311D7334BB6F1EF23 /* Info.plist */,
 				ABD056E2683AFFA5D257E017 /* MembershipViews.swift */,
+				1A2B3C4D5E6F708192A3B4C6 /* GuidedTestFlowSheet.swift */,
 				ED8A25266A510F0343C22A49 /* Pages */,
 			);
 			path = App;
@@ -258,6 +264,7 @@
 				1D9AA9F2C6A4DE4B5F2F0E87 /* AcousticAnalyzerUI.swift in Sources */,
 				F8D4975689FC100E3A481DCF /* AcousticAdvancedUI.swift in Sources */,
 				8A09A042F09690787629640C /* AcousticControls.swift in Sources */,
+				F9C4D8E7A6B5C4D3E2F1A0B9 /* GuidedTestPlan.swift in Sources */,
 				47F36291142A8289E50651BA /* AcousticTheme.swift in Sources */,
 				B49BF268D279E055A672C4E8 /* AppPreset.swift in Sources */,
 				4EB8E762C1EF38DD5EC0ED4B /* AppTheme.swift in Sources */,
@@ -280,6 +287,7 @@
 				47810C831D07034B1CD9E73D /* MembershipViews.swift in Sources */,
 				3D4FFBEC8586F20898A445B1 /* NoisePageView.swift in Sources */,
 				817A3FB99BF50BBD77190091 /* PresetsPageView.swift in Sources */,
+				C4A2B6D7E8F901A2B3C4D5E6 /* GuidedTestFlowSheet.swift in Sources */,
 				B35033D9B69515C356C0DD21 /* SettingsPageView.swift in Sources */,
 				1F3D2A7E6B9D4E5F8A1C3B2D /* RealtimeSpectrumAnalyzer.swift in Sources */,
 				511D3D406CFA4BF847ABDB26 /* SweepPageView.swift in Sources */,

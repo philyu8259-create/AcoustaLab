@@ -3,6 +3,7 @@ import SwiftUI
 struct PresetsPageView: View {
     @ObservedObject var audioController: AudioEngineController
     @ObservedObject var presetStore: PresetStore
+    @ObservedObject var guidedTestHistoryStore: GuidedTestHistoryStore
     let focusedField: FocusState<InputField?>.Binding
     @Binding var presetName: String
     let dismissKeyboard: () -> Void
@@ -10,6 +11,15 @@ struct PresetsPageView: View {
     let loadPreset: (AppPreset) -> Void
     let deletePreset: (AppPreset) -> Void
     let builtInPresets: [BuiltInTestPreset]
+    let guidedTestPlans: [GuidedTestPlan]
+
+    @State private var isGuidedTestSheetPresented = false
+    private static let historyDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter
+    }()
 
     var body: some View {
         NavigationStack {
@@ -89,6 +99,24 @@ struct PresetsPageView: View {
                     }
                 }
 
+                if !guidedTestPlans.isEmpty {
+                    InstrumentCard {
+                        VStack(alignment: .leading, spacing: 12) {
+                            SectionTitle(title: String(localized: "guided_test.flow_title"))
+                            Text(String(localized: "guided_test.flow_subtitle"))
+                                .font(.caption)
+                                .foregroundStyle(AppTheme.textSecondary)
+
+                            HStack {
+                                Button(String(localized: "guided_test.action_start")) {
+                                    isGuidedTestSheetPresented = true
+                                }
+                                .buttonStyle(PrimaryButtonStyle())
+                            }
+                        }
+                    }
+                }
+
                 InstrumentCard {
                     VStack(alignment: .leading, spacing: 12) {
                         SectionTitle(title: String(localized: "presets.save_current"))
@@ -154,9 +182,65 @@ struct PresetsPageView: View {
                         }
                     }
                 }
+
+                if !guidedTestHistoryStore.recentRuns.isEmpty {
+                    InstrumentCard(fill: AppTheme.cardStrong) {
+                        VStack(alignment: .leading, spacing: 12) {
+                            SectionTitle(title: String(localized: "guided_test.history_title"))
+
+                            ForEach(Array(guidedTestHistoryStore.recentRuns.prefix(5)), id: \.id) { run in
+                                VStack(alignment: .leading, spacing: 8) {
+                                    HStack(alignment: .top, spacing: 10) {
+                                        VStack(alignment: .leading, spacing: 3) {
+                                            Text(LocalizedStringKey(run.planNameKey))
+                                                .font(.subheadline.weight(.semibold))
+                                                .foregroundStyle(.white)
+
+                                            Text(Self.historyDateFormatter.string(from: run.createdAt))
+                                                .font(.caption2)
+                                                .foregroundStyle(AppTheme.textSecondary)
+                                        }
+
+                                        Spacer()
+
+                                        Button(role: .destructive) {
+                                            guidedTestHistoryStore.delete(run)
+                                        } label: {
+                                            Image(systemName: "trash")
+                                        }
+                                        .buttonStyle(SecondaryButtonStyle())
+                                    }
+
+                                    Text(String(
+                                        format: String(localized: "guided_test.history_summary"),
+                                        run.passCount,
+                                        run.anomalyCount,
+                                        run.skippedCount
+                                    ))
+                                    .font(.caption)
+                                    .foregroundStyle(AppTheme.textSecondary)
+                                }
+                                .padding(.vertical, 4)
+
+                                if run.id != guidedTestHistoryStore.recentRuns.prefix(5).last?.id {
+                                    Divider().overlay(Color.white.opacity(0.12))
+                                }
+                            }
+                        }
+                    }
+                }
             }
             .navigationTitle(String(localized: "tab.presets"))
             .navigationBarTitleDisplayMode(.inline)
+        }
+        .sheet(isPresented: $isGuidedTestSheetPresented) {
+            GuidedTestFlowSheet(
+                plans: guidedTestPlans,
+                historyStore: guidedTestHistoryStore,
+                applyPreset: loadPreset
+            )
+            .presentationDetents([.large])
+            .preferredColorScheme(.dark)
         }
         .tabItem {
             Label(String(localized: "tab.presets"), systemImage: "square.stack")

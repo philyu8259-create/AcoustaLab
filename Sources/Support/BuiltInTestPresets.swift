@@ -143,6 +143,10 @@ enum BuiltInTestPresetCatalog {
                 outputGain: outputGain,
                 safetyFadeEnabled: safetyFadeEnabled
             )
-        )
+            )
+    }
+
+    static func preset(for presetID: String) -> BuiltInTestPreset? {
+        presets.first { $0.id == presetID }
     }
 }
