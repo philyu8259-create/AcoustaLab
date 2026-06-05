@@ -44,183 +44,169 @@ struct GuidedTestFlowSheet: View {
     }
 
     private var planSelectionView: some View {
-        ScrollView {
-            AdaptiveDashboard {
-                SectionTitle(title: String(localized: "guided_test.plan_selection_title"))
-                    .padding(.horizontal, 16)
-                    .padding(.top, 10)
+        AdaptiveDashboard {
+            SectionTitle(title: String(localized: "guided_test.plan_selection_title"))
 
-                if plans.isEmpty {
-                    InlineNotice(
-                        icon: "exclamationmark.triangle",
-                        title: String(localized: "guided_test.plan_selection_empty_title"),
-                        message: String(localized: "guided_test.plan_selection_empty_body"),
-                        tone: .warning
-                    ) {
-                        EmptyView()
-                    }
-                    .padding(.horizontal, 16)
-                } else {
-                    VStack(spacing: 12) {
-                        ForEach(plans) { plan in
-                            InstrumentCard(fill: AppTheme.cardStrong) {
-                                VStack(alignment: .leading, spacing: 12) {
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text(LocalizedStringKey(plan.nameKey))
-                                            .font(.headline.weight(.semibold))
+            if plans.isEmpty {
+                InlineNotice(
+                    icon: "exclamationmark.triangle",
+                    title: String(localized: "guided_test.plan_selection_empty_title"),
+                    message: String(localized: "guided_test.plan_selection_empty_body"),
+                    tone: .warning
+                ) {
+                    EmptyView()
+                }
+            } else {
+                VStack(spacing: 12) {
+                    ForEach(plans) { plan in
+                        InstrumentCard(fill: AppTheme.cardStrong) {
+                            VStack(alignment: .leading, spacing: 12) {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(LocalizedStringKey(plan.nameKey))
+                                        .font(.headline.weight(.semibold))
 
-                                        Text(LocalizedStringKey(plan.descriptionKey))
-                                            .font(.caption)
-                                            .foregroundStyle(AppTheme.textSecondary)
+                                    Text(LocalizedStringKey(plan.descriptionKey))
+                                        .font(.caption)
+                                        .foregroundStyle(AppTheme.textSecondary)
+                                }
+
+                                HStack {
+                                    Text(String(format: String(localized: "guided_test.plan_step_count"), plan.steps.count))
+                                        .font(.caption2)
+                                        .foregroundStyle(AppTheme.textSecondary)
+
+                                    Spacer()
+
+                                    Button(String(localized: "guided_test.action_start_plan")) {
+                                        start(plan)
                                     }
-
-                                    HStack {
-                                        Text(String(format: String(localized: "guided_test.plan_step_count"), plan.steps.count))
-                                            .font(.caption2)
-                                            .foregroundStyle(AppTheme.textSecondary)
-
-                                        Spacer()
-
-                                        Button(String(localized: "guided_test.action_start_plan")) {
-                                            start(plan)
-                                        }
-                                        .buttonStyle(SecondaryButtonStyle())
-                                    }
+                                    .buttonStyle(SecondaryButtonStyle())
                                 }
                             }
                         }
                     }
-                    .padding(.horizontal, 16)
                 }
             }
         }
     }
 
     private func guidedTestStepsView(for plan: GuidedTestPlan) -> some View {
-        ScrollView {
-            AdaptiveDashboard {
-                let currentStep = plan.steps[currentStepIndex]
-                let progressValue = Double(currentStepIndex + 1) / Double(plan.steps.count)
+        AdaptiveDashboard {
+            let currentStep = plan.steps[currentStepIndex]
+            let progressValue = Double(currentStepIndex + 1) / Double(plan.steps.count)
 
-                VStack(alignment: .leading, spacing: 12) {
-                    InstrumentCard(fill: AppTheme.cardStrong) {
-                        VStack(alignment: .leading, spacing: 10) {
-                            HStack(alignment: .top, spacing: 8) {
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(LocalizedStringKey(plan.nameKey))
-                                        .font(.headline.weight(.semibold))
-
-                                    Text(String(localized: "guided_test.step_progress"))
-                                        .font(.caption2)
-                                        .foregroundStyle(AppTheme.textSecondary)
-                                }
-                                Spacer()
-
-                                Text("\(currentStepIndex + 1)/\(plan.steps.count)")
-                                    .font(.caption.weight(.semibold))
-                                    .foregroundStyle(.white)
-                                    .padding(.horizontal, 10)
-                                    .padding(.vertical, 6)
-                                    .background(AppTheme.accent.opacity(0.18))
-                                    .clipShape(Capsule())
-                            }
-
-                            ProgressView(value: progressValue)
-                                .tint(AppTheme.accent)
-                        }
-                    }
-
-                    InstrumentCard {
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text(String(localized: "guided_test.section_current_preset"))
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(.white)
-
+            VStack(alignment: .leading, spacing: 12) {
+                InstrumentCard(fill: AppTheme.cardStrong) {
+                    VStack(alignment: .leading, spacing: 10) {
+                        HStack(alignment: .top, spacing: 8) {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text(LocalizedStringKey(currentPresetName(for: currentStep.preset)))
-                                    .font(.subheadline.weight(.semibold))
+                                Text(LocalizedStringKey(plan.nameKey))
+                                    .font(.headline.weight(.semibold))
 
-                                Text(summaryText(for: currentStep.preset))
-                                    .font(.caption)
+                                Text(String(localized: "guided_test.step_progress"))
+                                    .font(.caption2)
                                     .foregroundStyle(AppTheme.textSecondary)
-
-                                Text(String(localized: "label.current_frequency"))
-                                    .font(.caption2.weight(.medium))
-                                    .foregroundStyle(AppTheme.textSecondary)
-                                    .padding(.top, 4)
                             }
+                            Spacer()
 
-                            Button(String(localized: "guided_test.action_apply_preset")) {
-                                applyPreset(currentStep.preset)
-                            }
-                            .buttonStyle(SecondaryButtonStyle())
-                        }
-                    }
-
-                    InstrumentCard {
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text(String(localized: "guided_test.section_usage"))
+                            Text("\(currentStepIndex + 1)/\(plan.steps.count)")
                                 .font(.caption.weight(.semibold))
                                 .foregroundStyle(.white)
-
-                            Text(LocalizedStringKey(currentStep.descriptionKey))
-                                .font(.caption)
-                                .foregroundStyle(AppTheme.textSecondary)
-
-                            Text(String(localized: "guided_test.section_objective"))
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(.white)
-                                .padding(.top, 4)
-
-                            Text(LocalizedStringKey(currentStep.objectiveKey))
-                                .font(.caption)
-                                .foregroundStyle(AppTheme.textSecondary)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 6)
+                                .background(AppTheme.accent.opacity(0.18))
+                                .clipShape(Capsule())
                         }
+
+                        ProgressView(value: progressValue)
+                            .tint(AppTheme.accent)
                     }
+                }
 
-                    InstrumentCard {
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text(String(localized: "guided_test.section_note"))
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(.white)
-
-                            TextEditor(text: Binding(
-                                get: { stepNotes[currentStep.id] ?? "" },
-                                set: { stepNotes[currentStep.id] = $0 }
-                            ))
-                            .frame(minHeight: 90)
-                            .padding(8)
-                            .background(Color.white.opacity(0.08))
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                            .scrollContentBackground(.hidden)
-                            .foregroundStyle(.white)
-                        }
-                    }
-
-                    VStack(spacing: 8) {
-                        Text(String(localized: "guided_test.section_result"))
+                InstrumentCard {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text(String(localized: "guided_test.section_current_preset"))
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(.white)
-                            .frame(maxWidth: .infinity, alignment: .leading)
 
-                        HStack(spacing: 8) {
-                            ForEach(GuidedTestStepResultState.allCases, id: \.self) { state in
-                                Button {
-                                    markStep(state, in: plan)
-                                } label: {
-                                    Label(
-                                        LocalizedStringKey(state.localizedKey),
-                                        systemImage: icon(for: state)
-                                    )
-                                }
-                                .buttonStyle(SecondaryButtonStyle())
-                                .foregroundStyle(tint(for: state))
-                                .frame(maxWidth: .infinity)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(LocalizedStringKey(currentPresetName(for: currentStep.preset)))
+                                .font(.subheadline.weight(.semibold))
+
+                            Text(summaryText(for: currentStep.preset))
+                                .font(.caption)
+                                .foregroundStyle(AppTheme.textSecondary)
+                        }
+
+                        Button(String(localized: "guided_test.action_apply_preset")) {
+                            applyPreset(currentStep.preset)
+                        }
+                        .buttonStyle(SecondaryButtonStyle())
+                    }
+                }
+
+                InstrumentCard {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text(String(localized: "guided_test.section_usage"))
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.white)
+
+                        Text(LocalizedStringKey(currentStep.descriptionKey))
+                            .font(.caption)
+                            .foregroundStyle(AppTheme.textSecondary)
+
+                        Text(String(localized: "guided_test.section_objective"))
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.white)
+                            .padding(.top, 4)
+
+                        Text(LocalizedStringKey(currentStep.objectiveKey))
+                            .font(.caption)
+                            .foregroundStyle(AppTheme.textSecondary)
+                    }
+                }
+
+                InstrumentCard {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text(String(localized: "guided_test.section_note"))
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.white)
+
+                        TextEditor(text: Binding(
+                            get: { stepNotes[currentStep.id] ?? "" },
+                            set: { stepNotes[currentStep.id] = $0 }
+                        ))
+                        .frame(minHeight: 90)
+                        .padding(8)
+                        .background(Color.white.opacity(0.08))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .scrollContentBackground(.hidden)
+                        .foregroundStyle(.white)
+                    }
+                }
+
+                VStack(spacing: 8) {
+                    Text(String(localized: "guided_test.section_result"))
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                    LazyVGrid(columns: gridColumns(2), spacing: 8) {
+                        ForEach(GuidedTestStepResultState.allCases, id: \.self) { state in
+                            Button {
+                                markStep(state, in: plan)
+                            } label: {
+                                Label(
+                                    LocalizedStringKey(state.localizedKey),
+                                    systemImage: icon(for: state)
+                                )
                             }
+                            .buttonStyle(SecondaryButtonStyle())
+                            .foregroundStyle(tint(for: state))
+                            .frame(maxWidth: .infinity)
                         }
                     }
                 }
-                .padding(.horizontal, 16)
             }
         }
     }
