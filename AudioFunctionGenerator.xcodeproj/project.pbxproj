@@ -12,6 +12,7 @@
 		1B6B97C4544CB7FFE44EE7CA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F8C7FF1F26DAFFEAE0BB4348 /* Localizable.strings */; };
 		2378F18346647D06405318FB /* CalibrationProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CBBFF1A5C78C9E12EE2C42 /* CalibrationProfile.swift */; };
 		27BC2E9B8B0B4A7D8C4F9D0A /* CalibrationReportDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B2E3F5D2B97414B9C7D1E11 /* CalibrationReportDocument.swift */; };
+		A1FA1E7F2C4D5E6A7B8C9012 /* CalibrationReportExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1AAE5F2D3C4B67890ABCDEF /* CalibrationReportExporter.swift */; };
 		281EFF70030127822D37CAE5 /* FrequencyStepCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52EBD4F0AF0661AA4B2CAB9 /* FrequencyStepCatalog.swift */; };
 		32B849A96EEEB68920D5B667 /* AudioEngineController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A5998912B2BAB3D7CB1E23 /* AudioEngineController.swift */; };
 		3D4FFBEC8586F20898A445B1 /* NoisePageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAA4B40388F817B0A3B0848 /* NoisePageView.swift */; };
@@ -60,6 +61,7 @@
 		5E97A1EAC1892E6B4B0CF835 /* AudioRouteSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRouteSupport.swift; sourceTree = "<group>"; };
 		6260F53D002042B0495B1E05 /* AudioEngineControllerSupportTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngineControllerSupportTypes.swift; sourceTree = "<group>"; };
 		7B2E3F5D2B97414B9C7D1E11 /* CalibrationReportDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibrationReportDocument.swift; sourceTree = "<group>"; };
+		B1AAE5F2D3C4B67890ABCDEF /* CalibrationReportExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibrationReportExporter.swift; sourceTree = "<group>"; };
 		99694741D0827045A82BD4A3 /* FrequencyFormatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrequencyFormatting.swift; sourceTree = "<group>"; };
 		9D863BA0CD2381F97EE0E5AA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A4E04E01DE36F01FCA9F5938 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -105,6 +107,7 @@
 				FFCDBD69DCBE012D2EBBE788 /* AppTheme.swift */,
 				04B8677FEEF567119C2D3648 /* BuiltInTestPresets.swift */,
 				05CBBFF1A5C78C9E12EE2C42 /* CalibrationProfile.swift */,
+				B1AAE5F2D3C4B67890ABCDEF /* CalibrationReportExporter.swift */,
 				7B2E3F5D2B97414B9C7D1E11 /* CalibrationReportDocument.swift */,
 				99694741D0827045A82BD4A3 /* FrequencyFormatting.swift */,
 				B52EBD4F0AF0661AA4B2CAB9 /* FrequencyStepCatalog.swift */,
@@ -262,6 +265,7 @@
 				7669DE092DC65C357AA604C2 /* BuiltInTestPresets.swift in Sources */,
 				2378F18346647D06405318FB /* CalibrationProfile.swift in Sources */,
 				27BC2E9B8B0B4A7D8C4F9D0A /* CalibrationReportDocument.swift in Sources */,
+				A1FA1E7F2C4D5E6A7B8C9012 /* CalibrationReportExporter.swift in Sources */,
 				CB4A280DC366FF48C6899019 /* ContentView.swift in Sources */,
 				550CF32A6A1F0DDCD76DF6CD /* FrequencyFormatting.swift in Sources */,
 				281EFF70030127822D37CAE5 /* FrequencyStepCatalog.swift in Sources */,

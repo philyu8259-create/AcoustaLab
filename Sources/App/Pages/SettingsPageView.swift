@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct SettingsPageView: View {
     @ObservedObject var audioController: AudioEngineController
@@ -8,6 +9,7 @@ struct SettingsPageView: View {
     let showMembership: () -> Void
     @State private var isResetConfirmationPresented = false
     @State private var isCalibrationReportExporterPresented = false
+    @State private var selectedCalibrationReportExportFormat: CalibrationReportExportFormat = .pdf
     @State private var calibrationReportDocument = CalibrationReportDocument()
 
     var body: some View {
@@ -48,7 +50,7 @@ struct SettingsPageView: View {
             .fileExporter(
                 isPresented: $isCalibrationReportExporterPresented,
                 document: calibrationReportDocument,
-                contentType: .plainText,
+                contentType: selectedCalibrationReportExportFormat.contentType,
                 defaultFilename: calibrationReportDocument.defaultFilename
             ) { _ in }
         }
@@ -393,14 +395,19 @@ struct SettingsPageView: View {
                                 .font(.caption2)
                                 .foregroundStyle(AppTheme.textSecondary)
 
-                            Button {
-                                calibrationReportDocument = CalibrationReportDocument(profile: activeProfile)
-                                isCalibrationReportExporterPresented = true
-                            } label: {
-                                Label(String(localized: "calibration.report_button"), systemImage: "square.and.arrow.up")
+                            LazyVGrid(columns: gridColumns(2), spacing: 10) {
+                                ForEach(CalibrationReportExportFormat.exportButtonFormats, id: \.self) { format in
+                                    Button {
+                                        selectedCalibrationReportExportFormat = format
+                                        calibrationReportDocument = CalibrationReportDocument(profile: activeProfile, format: format)
+                                        isCalibrationReportExporterPresented = true
+                                    } label: {
+                                        Label(format.localizedTitleKey, systemImage: format.systemImage)
+                                    }
+                                    .buttonStyle(SecondaryButtonStyle())
+                                    .disabled(audioController.isLoopbackCalibrationRunning)
+                                }
                             }
-                            .buttonStyle(SecondaryButtonStyle())
-                            .disabled(audioController.isLoopbackCalibrationRunning)
                         }
                     }
                 }
