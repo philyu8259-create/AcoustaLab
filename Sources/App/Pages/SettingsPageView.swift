@@ -649,8 +649,6 @@ struct SettingsPageView: View {
                     }
                 }
 
-                SettingsRow(title: String(localized: "settings.support_contact"), value: "Lincoln Chen")
-                SettingsRow(title: String(localized: "settings.support_email"), value: "10883714@qq.com")
             }
         }
     }
