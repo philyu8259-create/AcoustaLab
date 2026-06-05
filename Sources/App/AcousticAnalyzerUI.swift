@@ -31,11 +31,11 @@ struct RealtimeSpectrumAnalyzerCard: View {
                         caption: String(localized: "analyzer.peak_hint")
                     )
 
-                DetailTile(
-                    title: String(localized: "analyzer.input_level"),
-                    value: String(format: "%.1f dBFS", analyzer.inputLevelDecibels),
-                    caption: String(localized: "analyzer.input_level_hint")
-                )
+                    DetailTile(
+                        title: String(localized: "analyzer.input_level"),
+                        value: String(format: "%.1f dBFS", analyzer.inputLevelDecibels),
+                        caption: String(localized: "analyzer.input_level_hint")
+                    )
                 }
 
                 if analyzer.isRunning {
@@ -63,33 +63,35 @@ struct RealtimeBandChart: View {
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.white)
 
-            GeometryReader { geometry in
-                let chartHeight = max(geometry.size.height - 26, 80)
-                HStack(alignment: .bottom, spacing: 7) {
-                    ForEach(bands) { band in
-                        VStack(spacing: 6) {
-                            GeometryReader { cellGeometry in
+            ScrollView(.horizontal, showsIndicators: false) {
+                GeometryReader { geometry in
+                    let chartHeight = max(geometry.size.height - 30, 82)
+                    HStack(alignment: .bottom, spacing: 7) {
+                        ForEach(bands) { band in
+                            VStack(spacing: 6) {
                                 let normalized = normalizedHeight(for: band.levelDecibels)
                                 let barHeight = max(4, chartHeight * normalized)
                                 RoundedRectangle(cornerRadius: 6)
                                     .fill(barColor(for: band.levelDecibels))
-                                    .frame(width: cellGeometry.size.width, height: barHeight)
-                                    .frame(maxHeight: .infinity, alignment: .bottom)
+                                    .frame(width: 26, height: barHeight)
+                                    .frame(height: chartHeight, alignment: .bottom)
+
+                                Text(bandLabel(for: band.centerFrequency))
+                                    .font(.caption2.monospacedDigit())
+                                    .foregroundStyle(AppTheme.textSecondary)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.7)
+
+                                Text(String(format: "%.0f", band.levelDecibels))
+                                    .font(.caption2.monospacedDigit())
+                                    .foregroundStyle(.white.opacity(0.92))
+                                    .minimumScaleFactor(0.8)
                             }
-                            .frame(height: chartHeight)
-                            Text(bandLabel(for: band.centerFrequency))
-                                .font(.caption2.monospacedDigit())
-                                .foregroundStyle(AppTheme.textSecondary)
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.75)
-                            Text(String(format: "%.0f", band.levelDecibels))
-                                .font(.caption2.monospacedDigit())
-                                .foregroundStyle(.white.opacity(0.92))
-                                .minimumScaleFactor(0.8)
+                            .frame(width: 36)
                         }
-                        .frame(maxWidth: .infinity)
                     }
                 }
+                .frame(width: CGFloat(max(bands.count, 1)) * 43, height: 168)
             }
             .frame(height: 168)
         }

@@ -367,7 +367,7 @@
 "analyzer.status_permission_denied" = "Microphone permission denied";
 "analyzer.status_no_input" = "No usable input available";
 "analyzer.status_failed" = "Analyzer start failed";
-"analyzer.band_chart" = "Bands (16-band 1/3-oct approximated)";
+"analyzer.band_chart" = "RTA Bands (1/3-octave, 31.5 Hz - 16 kHz)";
 "analyzer.peak_frequency" = "Peak Frequency";
 "analyzer.peak_unknown" = "Waiting";
 "analyzer.peak_hint" = "Peak detected band center";

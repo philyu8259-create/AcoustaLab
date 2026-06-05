@@ -35,7 +35,7 @@ targets:
           - weixin
         UILaunchScreen:
           UIColorName: BrandBackground
-          UIImageName: AppLogo
+          UIImageName: AppKnobLogo
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
         UISupportedInterfaceOrientations:

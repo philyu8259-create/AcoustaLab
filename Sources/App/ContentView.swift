@@ -86,6 +86,7 @@ struct ContentView: View {
         .onChange(of: membershipStore.hasCoreAccess) { _, hasCoreAccess in
             if !hasCoreAccess {
                 audioController.stop()
+                spectrumAnalyzer.stop()
             }
         }
         .onChange(of: audioController.frequency) { _, _ in syncToneInput() }

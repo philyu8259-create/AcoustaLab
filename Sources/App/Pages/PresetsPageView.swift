@@ -34,6 +34,22 @@ struct PresetsPageView: View {
                     EmptyView()
                 }
 
+                if !guidedTestPlans.isEmpty {
+                    InstrumentCard(fill: AppTheme.cardStrong) {
+                        VStack(alignment: .leading, spacing: 12) {
+                            SectionTitle(title: String(localized: "guided_test.flow_title"))
+                            Text(String(localized: "guided_test.flow_subtitle"))
+                                .font(.caption)
+                                .foregroundStyle(AppTheme.textSecondary)
+
+                            Button(String(localized: "guided_test.action_start")) {
+                                isGuidedTestSheetPresented = true
+                            }
+                            .buttonStyle(PrimaryButtonStyle())
+                        }
+                    }
+                }
+
                 if !builtInPresets.isEmpty {
                     InstrumentCard(fill: AppTheme.cardStrong) {
                         VStack(alignment: .leading, spacing: 12) {
@@ -44,74 +60,8 @@ struct PresetsPageView: View {
 
                             VStack(spacing: 10) {
                                 ForEach(builtInPresets) { preset in
-                                    VStack(alignment: .leading, spacing: 8) {
-                                        VStack(alignment: .leading, spacing: 4) {
-                                            HStack(alignment: .top, spacing: 10) {
-                                                VStack(alignment: .leading, spacing: 4) {
-                                                    Text(LocalizedStringKey(preset.nameKey))
-                                                        .font(.subheadline.weight(.semibold))
-                                                        .foregroundStyle(.white)
-                                                    Text(preset.preset.mode.localizedTitle)
-                                                        .font(.caption)
-                                                        .foregroundStyle(AppTheme.textSecondary)
-                                                }
-                                                Spacer()
-                                                Text(summaryText(for: preset.preset))
-                                                    .font(.caption2.weight(.medium))
-                                                    .foregroundStyle(AppTheme.accent)
-                                                    .padding(.horizontal, 10)
-                                                    .padding(.vertical, 5)
-                                                    .background(AppTheme.accent.opacity(0.12))
-                                                    .clipShape(Capsule())
-                                            }
-
-                                            Text(LocalizedStringKey(preset.descriptionKey))
-                                                .font(.caption2)
-                                                .foregroundStyle(AppTheme.textSecondary)
-                                                .lineLimit(2)
-                                        }
-
-                                        HStack(spacing: 10) {
-                                            Button {
-                                                loadPreset(preset.preset)
-                                            } label: {
-                                                HStack(spacing: 6) {
-                                                    Image(systemName: "bolt.fill")
-                                                        .font(.caption2.weight(.semibold))
-                                                    Text(String(localized: "button.apply_test_preset"))
-                                                }
-                                            }
-                                            .buttonStyle(SecondaryButtonStyle())
-
-                                            Spacer()
-                                        }
-                                    }
-                                    .padding(12)
-                                    .background(Color.white.opacity(0.05))
-                                    .clipShape(RoundedRectangle(cornerRadius: 16))
-                                    .overlay {
-                                        RoundedRectangle(cornerRadius: 16)
-                                            .stroke(Color.white.opacity(0.12), lineWidth: 1)
-                                    }
+                                    builtInPresetRow(for: preset)
                                 }
-                            }
-                        }
-                    }
-                }
-
-                if !guidedTestPlans.isEmpty {
-                    InstrumentCard {
-                        VStack(alignment: .leading, spacing: 12) {
-                            SectionTitle(title: String(localized: "guided_test.flow_title"))
-                            Text(String(localized: "guided_test.flow_subtitle"))
-                                .font(.caption)
-                                .foregroundStyle(AppTheme.textSecondary)
-
-                            HStack {
-                                Button(String(localized: "guided_test.action_start")) {
-                                    isGuidedTestSheetPresented = true
-                                }
-                                .buttonStyle(PrimaryButtonStyle())
                             }
                         }
                     }
@@ -255,6 +205,54 @@ struct PresetsPageView: View {
             return "\(FrequencyFormatting.displayString(for: preset.sweepStartFrequency)) - \(FrequencyFormatting.displayString(for: preset.sweepEndFrequency))"
         case .noise:
             return preset.noiseType.localizedTitle
+        }
+    }
+
+    private func builtInPresetRow(for preset: BuiltInTestPreset) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(alignment: .top, spacing: 10) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(LocalizedStringKey(preset.nameKey))
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.white)
+                        Text(preset.preset.mode.localizedTitle)
+                            .font(.caption)
+                            .foregroundStyle(AppTheme.textSecondary)
+                    }
+                    Spacer()
+                    Text(summaryText(for: preset.preset))
+                        .font(.caption2.weight(.medium))
+                        .foregroundStyle(AppTheme.accent)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .background(AppTheme.accent.opacity(0.12))
+                        .clipShape(Capsule())
+                }
+
+                Text(LocalizedStringKey(preset.descriptionKey))
+                    .font(.caption2)
+                    .foregroundStyle(AppTheme.textSecondary)
+                    .lineLimit(2)
+            }
+
+            Button {
+                loadPreset(preset.preset)
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "bolt.fill")
+                        .font(.caption2.weight(.semibold))
+                    Text(String(localized: "button.apply_test_preset"))
+                }
+            }
+            .buttonStyle(SecondaryButtonStyle())
+        }
+        .padding(12)
+        .background(Color.white.opacity(0.05))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .overlay {
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.white.opacity(0.12), lineWidth: 1)
         }
     }
 }

@@ -32,8 +32,8 @@ struct SettingsPageView: View {
                     playbackCard
                     calibrationCard
                     channelCard
+                    analyzerCard
                 }
-                analyzerCard
                 signalSpecificationsCard
                 supportCard
                 appInfoCard
@@ -408,7 +408,11 @@ struct SettingsPageView: View {
                                         calibrationReportDocument = CalibrationReportDocument(profile: activeProfile, format: format)
                                         isCalibrationReportExporterPresented = true
                                     } label: {
-                                        Label(format.localizedTitleKey, systemImage: format.systemImage)
+                                        Label {
+                                            Text(LocalizedStringKey(format.localizedTitleKey))
+                                        } icon: {
+                                            Image(systemName: format.systemImage)
+                                        }
                                     }
                                     .buttonStyle(SecondaryButtonStyle())
                                     .disabled(audioController.isLoopbackCalibrationRunning)

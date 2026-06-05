@@ -33,7 +33,6 @@ final class RealtimeSpectrumAnalyzer: ObservableObject {
     private let lowInputLevelThreshold = -72.0
     private let analysisLevelsSmoothing = 0.22
     private let levelSmoothing = 0.82
-    private let maxBands: Int = 16
     private var sampleWindow: [Float] = []
     private var smoothedLevels: [Double] = []
     private var isPreparing = false
@@ -46,8 +45,6 @@ final class RealtimeSpectrumAnalyzer: ObservableObject {
 
     private let thirdOctaveBandDefinitions: [BandDefinition] = {
         let centerFrequencies: [Double] = [
-            20,
-            25,
             31.5,
             40,
             50,
@@ -61,7 +58,21 @@ final class RealtimeSpectrumAnalyzer: ObservableObject {
             315,
             400,
             500,
-            630
+            630,
+            800,
+            1000,
+            1250,
+            1600,
+            2000,
+            2500,
+            3150,
+            4000,
+            5000,
+            6300,
+            8000,
+            10_000,
+            12_500,
+            16_000
         ]
         let ratio = pow(2.0, 1.0 / 6.0)
 
@@ -87,7 +98,7 @@ final class RealtimeSpectrumAnalyzer: ObservableObject {
                 levelDecibels: -120
             )
         }
-        self.smoothedLevels = Array(repeating: -120, count: minBandsCount)
+        self.smoothedLevels = Array(repeating: -120, count: bandCount)
     }
 
     deinit {
@@ -135,7 +146,7 @@ final class RealtimeSpectrumAnalyzer: ObservableObject {
         sampleWindow.removeAll(keepingCapacity: true)
         restoreAudioSession()
 
-        smoothedLevels = Array(repeating: minDecibelFloor, count: minBandsCount)
+        smoothedLevels = Array(repeating: minDecibelFloor, count: bandCount)
         DispatchQueue.main.async {
             self.peakFrequency = 0
             self.inputLevelDecibels = self.minDecibelFloor
@@ -152,8 +163,8 @@ final class RealtimeSpectrumAnalyzer: ObservableObject {
         }
     }
 
-    private var minBandsCount: Int {
-        min(maxBands, thirdOctaveBandDefinitions.count)
+    private var bandCount: Int {
+        thirdOctaveBandDefinitions.count
     }
 
     private func beginCapture() {
@@ -258,9 +269,9 @@ final class RealtimeSpectrumAnalyzer: ObservableObject {
     private func analyze(_ samples: [Float]) {
         let inputLevel = calculateInputLevelDecibels(samples)
         var updatedBands: [Band] = []
-        updatedBands.reserveCapacity(minBandsCount)
+        updatedBands.reserveCapacity(bandCount)
 
-        for index in 0..<minBandsCount {
+        for index in 0..<bandCount {
             let definition = thirdOctaveBandDefinitions[index]
             let center = goertzelMagnitudeDb(samples: samples, frequency: definition.centerFrequency)
             let lower = goertzelMagnitudeDb(samples: samples, frequency: definition.lowerFrequency)
