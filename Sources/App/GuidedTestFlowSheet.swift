@@ -4,6 +4,7 @@ struct GuidedTestFlowSheet: View {
     let plans: [GuidedTestPlan]
     @ObservedObject var historyStore: GuidedTestHistoryStore
     let applyPreset: (AppPreset) -> Void
+    let requestReviewAfterMeaningfulAction: (ReviewPromptCoordinator.Event) -> Void
 
     @Environment(\.dismiss) private var dismiss
 
@@ -246,6 +247,7 @@ struct GuidedTestFlowSheet: View {
                 stepResults: orderedResults
             )
             historyStore.save(run)
+            requestReviewAfterMeaningfulAction(.guidedTestCompleted)
             dismiss()
         } else {
             currentStepIndex += 1

@@ -1,13 +1,14 @@
-# App Store Screenshot Asset Guide (v1.4+)
+# App Store Screenshot Asset Guide (v1.5 ASO)
 
-Status: Actual App Store screenshot images are not committed in this workstream.
-This folder only stores the specification and expected filenames so the screenshot workflow can be reproduced consistently.
+Status: The v1.5 ASO screenshot assets are committed here so App Store Connect
+uploads can be reproduced consistently.
 
 ## Screenshot source and layout
 
-- Keep source screenshots in `AppStoreAssets/source/` and provide local paths for review.
-- Prefer **PNG** exports only, with no decorative overlays or watermark.
-- One screenshot should be captured per required scene and device family before packaging.
+- `source/asc/` contains the current App Store Connect screenshots downloaded
+  from Apple CDN as source material.
+- `final-premium/` contains the upload-ready v1.5 ASO screenshots.
+- Prefer **PNG** exports only, with no watermark.
 
 ## Recommended portrait sizes
 
@@ -18,31 +19,32 @@ This folder only stores the specification and expected filenames so the screensh
 
 ## Naming convention
 
-Use stable names to keep export scripts deterministic:
+Use stable names to keep upload order deterministic:
 
-`v1.4.{scene}.{device}.{format}.png`
+`{locale}-{index}-{scene}.png`
 
-- `v1.4`: App version tag used in current PR
-- `scene`: `single-tone`, `sweep`, `noise`, `preset-pack`, `calibration-report`, `settings-privacy`
-- `device`: `iphone_6.7`, `iphone_6.5`, `ipados`
-- `format`: `source` for capture file, `final` for App Store review submission
+- `locale`: `zh` or `en`
+- `index`: display order in App Store Connect
+- `scene`: short ASO scene label
 
-## Required scene list for 1.4 and later
+## v1.5 ASO scene order
 
-- `single-tone` — single tone signal generation screen (core differentiator)
-- `sweep` — sweep generation and parameter controls
-- `noise` — noise source controls and playback state
-- `preset-pack` — built-in preset or preset pack browsing and one-tap use
-- `calibration-report` — calibration workflow result/report page
-- `settings-privacy` — settings page that shows support/privacy access
+- `01-speaker-test` — speaker/audio test value proposition
+- `02-sweep` — sweep testing and abnormal frequency positioning
+- `03-noise` — white/pink noise environment checks
+- `04-report` — calibration report export
+- `05-privacy` — local processing and privacy reassurance
 
-## Placeholder checklist
+## Current ASO copy
 
-No placeholder images are generated in this repo. Track the real captures manually:
+Chinese:
 
-- [ ] `v1.4.single-tone.iphone_6.7.source.png`
-- [ ] `v1.4.sweep.iphone_6.7.source.png`
-- [ ] `v1.4.noise.iphone_6.7.source.png`
-- [ ] `v1.4.preset-pack.iphone_6.7.source.png`
-- [ ] `v1.4.calibration-report.iphone_6.7.source.png`
-- [ ] `v1.4.settings-privacy.iphone_6.7.source.png`
+- App name: `声测工坊-音频测试工具`
+- Subtitle: `扫频噪声与扬声器检查`
+- Keywords: `音频,声学,扫频,粉噪,白噪,扬声器,喇叭,校准,频率,信号,分贝,测试`
+
+English:
+
+- App name: `AcoustaLab: Tone Generator`
+- Subtitle: `Sweep, Noise & Speaker Tests`
+- Keywords: `tone,generator,frequency,sweep,pink,white,noise,speaker,calibration,sine,wave,hz,audio,test`

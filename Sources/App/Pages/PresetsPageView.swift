@@ -12,6 +12,7 @@ struct PresetsPageView: View {
     let deletePreset: (AppPreset) -> Void
     let builtInPresets: [BuiltInTestPreset]
     let guidedTestPlans: [GuidedTestPlan]
+    let requestReviewAfterMeaningfulAction: (ReviewPromptCoordinator.Event) -> Void
 
     @State private var isGuidedTestSheetPresented = false
     private static let historyDateFormatter: DateFormatter = {
@@ -187,7 +188,8 @@ struct PresetsPageView: View {
             GuidedTestFlowSheet(
                 plans: guidedTestPlans,
                 historyStore: guidedTestHistoryStore,
-                applyPreset: loadPreset
+                applyPreset: loadPreset,
+                requestReviewAfterMeaningfulAction: requestReviewAfterMeaningfulAction
             )
             .presentationDetents([.large])
             .preferredColorScheme(.dark)

@@ -1,4 +1,5 @@
 import SwiftUI
+import StoreKit
 #if os(iOS)
 import UIKit
 #endif
@@ -9,7 +10,9 @@ struct ContentView: View {
     @StateObject private var guidedTestHistoryStore = GuidedTestHistoryStore()
     @StateObject private var membershipStore = MembershipStore()
     @StateObject private var spectrumAnalyzer = RealtimeSpectrumAnalyzer()
+    @StateObject private var reviewPromptCoordinator = ReviewPromptCoordinator()
 
+    @Environment(\.requestReview) private var requestReview
     @State private var selectedTab: RootTab = .tone
     @State private var isMembershipSheetPresented = false
     @State private var toneFrequencyText = FrequencyFormatting.textFieldString(for: 1000)
@@ -48,7 +51,8 @@ struct ContentView: View {
                 membershipStore: membershipStore,
                 dismissKeyboard: dismissKeyboard,
                 resetToDefaults: resetToDefaults,
-                showMembership: showMembership
+                showMembership: showMembership,
+                requestReviewAfterMeaningfulAction: requestReviewAfterMeaningfulAction
             )
             .tag(RootTab.settings)
         }
@@ -191,7 +195,8 @@ struct ContentView: View {
                 loadPreset: loadPreset,
                 deletePreset: deletePreset,
                 builtInPresets: BuiltInTestPresetCatalog.presets,
-                guidedTestPlans: GuidedTestPlanCatalog.plans
+                guidedTestPlans: GuidedTestPlanCatalog.plans,
+                requestReviewAfterMeaningfulAction: requestReviewAfterMeaningfulAction
             )
         } else {
             MembershipLockedPage(
@@ -272,6 +277,7 @@ struct ContentView: View {
         let finalName = trimmed.isEmpty ? defaultPresetName() : trimmed
         presetStore.create(name: finalName, from: audioController)
         presetName = ""
+        requestReviewAfterMeaningfulAction(.presetSaved)
     }
 
     private func loadPreset(_ preset: AppPreset) {
@@ -305,6 +311,12 @@ struct ContentView: View {
         let sanitized = text.replacingOccurrences(of: ",", with: ".")
         guard let value = Double(sanitized) else { return }
         apply(value)
+    }
+
+    private func requestReviewAfterMeaningfulAction(_ event: ReviewPromptCoordinator.Event) {
+        reviewPromptCoordinator.record(event) {
+            requestReview()
+        }
     }
 
     private func syncAllInputFields() {

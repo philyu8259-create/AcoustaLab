@@ -8,6 +8,7 @@ struct SettingsPageView: View {
     let dismissKeyboard: () -> Void
     let resetToDefaults: () -> Void
     let showMembership: () -> Void
+    let requestReviewAfterMeaningfulAction: (ReviewPromptCoordinator.Event) -> Void
     @State private var isResetConfirmationPresented = false
     @State private var isCalibrationDetailPresented = false
     @State private var isCalibrationReportExporterPresented = false
@@ -42,6 +43,11 @@ struct SettingsPageView: View {
                 calibrationDetailSheet
                     .presentationDetents([.large])
                     .preferredColorScheme(.dark)
+            }
+            .onChange(of: audioController.loopbackCalibrationPhase) { _, phase in
+                if phase == .completed {
+                    requestReviewAfterMeaningfulAction(.calibrationCompleted)
+                }
             }
         }
         .tabItem {
@@ -218,7 +224,11 @@ struct SettingsPageView: View {
                 document: calibrationReportDocument,
                 contentType: selectedCalibrationReportExportFormat.contentType,
                 defaultFilename: calibrationReportDocument.defaultFilename
-            ) { _ in }
+            ) { result in
+                if case .success = result {
+                    requestReviewAfterMeaningfulAction(.reportExported)
+                }
+            }
         }
     }
 

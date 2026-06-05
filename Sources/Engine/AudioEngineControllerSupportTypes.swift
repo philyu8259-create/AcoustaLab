@@ -47,7 +47,7 @@ struct BiquadState {
 }
 
 final class LoopbackCalibrationRun {
-    enum Phase {
+    enum Phase: Equatable {
         case idle
         case preparing
         case settling

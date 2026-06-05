@@ -1,4 +1,42 @@
 import Foundation
+import Combine
+
+@MainActor
+final class ReviewPromptCoordinator: ObservableObject {
+    enum Event: String {
+        case presetSaved
+        case guidedTestCompleted
+        case calibrationCompleted
+        case reportExported
+    }
+
+    private let defaults = UserDefaults.standard
+    private let eventCountKey = "review_prompt_event_count"
+    private let lastPromptDateKey = "review_prompt_last_prompt_date"
+    private let minimumPromptInterval: TimeInterval = 14 * 24 * 60 * 60
+
+    func record(_ event: Event, requestReview: () -> Void) {
+        let nextCount = defaults.integer(forKey: eventCountKey) + 1
+        defaults.set(nextCount, forKey: eventCountKey)
+        defaults.set(Date(), forKey: "review_prompt_last_event_\(event.rawValue)")
+
+        guard shouldRequestReview(eventCount: nextCount) else { return }
+        defaults.set(Date(), forKey: lastPromptDateKey)
+        requestReview()
+    }
+
+    private func shouldRequestReview(eventCount: Int) -> Bool {
+        guard eventCount >= 1 else { return false }
+
+        if let lastPromptDate = defaults.object(forKey: lastPromptDateKey) as? Date,
+           Date().timeIntervalSince(lastPromptDate) < minimumPromptInterval
+        {
+            return false
+        }
+
+        return true
+    }
+}
 
 struct AppPreset: Identifiable, Codable, Equatable {
     let id: UUID
