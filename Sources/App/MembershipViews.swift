@@ -119,6 +119,8 @@ struct MembershipPaywallView: View {
                         }
                         .buttonStyle(SecondaryButtonStyle())
 
+                        legalLinks
+
                         Button(String(localized: "membership.close"), action: close)
                             .buttonStyle(SecondaryButtonStyle())
                     }
@@ -140,6 +142,48 @@ struct MembershipPaywallView: View {
                 Text(membershipStore.alertMessage ?? "")
             }
         }
+    }
+
+    private var legalLinks: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(String(localized: "membership.legal_notice"))
+                .font(.caption2)
+                .foregroundStyle(AppTheme.textSecondary)
+
+            HStack(spacing: 12) {
+                if let privacyPolicyURL {
+                    Link(destination: privacyPolicyURL) {
+                        Label(String(localized: "membership.privacy_policy"), systemImage: "hand.raised.fill")
+                    }
+                }
+
+                if let termsOfUseURL {
+                    Link(destination: termsOfUseURL) {
+                        Label(String(localized: "membership.terms_of_use"), systemImage: "doc.text.fill")
+                    }
+                }
+            }
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(AppTheme.accent)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(Color.white.opacity(0.045))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .stroke(Color.white.opacity(0.08), lineWidth: 1)
+                )
+        )
+    }
+
+    private var privacyPolicyURL: URL? {
+        URL(string: String(localized: "settings.privacy_policy_url_value"))
+    }
+
+    private var termsOfUseURL: URL? {
+        URL(string: String(localized: "membership.terms_of_use_url_value"))
     }
 
     private func includedRow(_ text: String) -> some View {

@@ -420,4 +420,8 @@
 "membership.restore_success" = "Full access restored.";
 "membership.restore_empty" = "No purchase was found to restore.";
 "membership.restore_failed" = "Restore failed. Please try again later.";
+"membership.legal_notice" = "Subscriptions auto-renew unless canceled at least 24 hours before renewal. Review the policies before purchasing.";
+"membership.privacy_policy" = "Privacy Policy";
+"membership.terms_of_use" = "Terms of Use (EULA)";
+"membership.terms_of_use_url_value" = "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/";
 "membership.close" = "Close";
