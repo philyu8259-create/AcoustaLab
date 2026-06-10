@@ -133,6 +133,19 @@
 "settings.badge_loopback_ready" = "可做回输入";
 "settings.badge_input_attention" = "输入待确认";
 "settings.badge_high_gain" = "可用高增益";
+"settings.review_demo" = "App 审核演示";
+"settings.review_demo_body" = "仅供 App Review 使用：输入审核专用账号后，可模拟入门体验/订阅已过期状态，检查锁定后的购买流程。";
+"settings.review_demo_username" = "演示账号";
+"settings.review_demo_username_placeholder" = "abcd";
+"settings.review_demo_password" = "演示密码";
+"settings.review_demo_password_placeholder" = "1234";
+"settings.review_demo_activate" = "启用过期演示";
+"settings.review_demo_active" = "过期演示";
+"settings.review_demo_success" = "过期演示已启用。单音、扫描、噪声和预设会展示体验结束后的购买流程。";
+"settings.review_demo_revealed" = "已显示审核演示入口。请填写审核账号密码以模拟过期体验状态。";
+"settings.review_demo_invalid" = "演示账号或密码不正确。";
+"settings.review_demo_clear" = "退出演示";
+"settings.review_demo_cleared" = "过期演示已退出。";
 
 "calibration.title" = "回输入自校准";
 "calibration.current_route" = "当前路由";

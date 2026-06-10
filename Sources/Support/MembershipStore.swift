@@ -7,12 +7,18 @@ final class MembershipStore: ObservableObject {
     nonisolated static let monthlyProductID = "com.phil.AcoustaLab.pro.monthly"
     nonisolated static let yearlyProductID = "com.phil.AcoustaLab.pro.yearly"
     private static let trialStartDateKey = "trial_start_date"
+    private static let reviewExpiredDemoActiveKey = "review_expired_demo_active"
+    private static let reviewDemoVisibleKey = "review_demo_visible"
     private static let trialDurationDays = 3
+    private static let reviewDemoUsername = "abcd"
+    private static let reviewDemoPassword = "1234"
 
     @Published private(set) var productsByID: [String: Product] = [:]
     @Published private(set) var hasLifetimeUnlock = false
     @Published private(set) var hasActiveSubscription = false
     @Published private(set) var activeSubscriptionProductID: String?
+    @Published private(set) var isReviewExpiredDemoActive = false
+    @Published private(set) var isReviewDemoVisible = false
     @Published private(set) var isLoadingProduct = false
     @Published var alertMessage: String?
 
@@ -22,6 +28,8 @@ final class MembershipStore: ObservableObject {
         if UserDefaults.standard.object(forKey: Self.trialStartDateKey) == nil {
             UserDefaults.standard.set(Date(), forKey: Self.trialStartDateKey)
         }
+        isReviewExpiredDemoActive = UserDefaults.standard.bool(forKey: Self.reviewExpiredDemoActiveKey)
+        isReviewDemoVisible = UserDefaults.standard.bool(forKey: Self.reviewDemoVisibleKey)
     }
 
     deinit {
@@ -147,6 +155,41 @@ final class MembershipStore: ObservableObject {
         } catch {
             alertMessage = String(localized: "membership.restore_failed")
         }
+    }
+
+    func activateExpiredReviewDemo(username: String, password: String) -> Bool {
+        let normalizedUsername = username.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        guard normalizedUsername == Self.reviewDemoUsername,
+              password == Self.reviewDemoPassword
+        else {
+            return false
+        }
+
+        let expiredStartDate = Calendar.current.date(
+            byAdding: .day,
+            value: -(Self.trialDurationDays + 1),
+            to: Date()
+        ) ?? Date(timeIntervalSinceNow: -Double(Self.trialDurationDays + 1) * 86_400)
+
+        UserDefaults.standard.set(expiredStartDate, forKey: Self.trialStartDateKey)
+        UserDefaults.standard.set(true, forKey: Self.reviewExpiredDemoActiveKey)
+        UserDefaults.standard.set(true, forKey: Self.reviewDemoVisibleKey)
+        isReviewExpiredDemoActive = true
+        isReviewDemoVisible = true
+        return true
+    }
+
+    func revealExpiredReviewDemo() {
+        UserDefaults.standard.set(true, forKey: Self.reviewDemoVisibleKey)
+        isReviewDemoVisible = true
+    }
+
+    func deactivateExpiredReviewDemo() {
+        UserDefaults.standard.set(Date(), forKey: Self.trialStartDateKey)
+        UserDefaults.standard.set(false, forKey: Self.reviewExpiredDemoActiveKey)
+        UserDefaults.standard.set(false, forKey: Self.reviewDemoVisibleKey)
+        isReviewExpiredDemoActive = false
+        isReviewDemoVisible = false
     }
 
     private func refreshEntitlements() async {

@@ -14,11 +14,17 @@ struct SettingsPageView: View {
     @State private var isCalibrationReportExporterPresented = false
     @State private var selectedCalibrationReportExportFormat: CalibrationReportExportFormat = .pdf
     @State private var calibrationReportDocument = CalibrationReportDocument()
+    @State private var reviewDemoUsername = ""
+    @State private var reviewDemoPassword = ""
+    @State private var reviewDemoMessage: String?
 
     var body: some View {
         NavigationStack {
             AdaptiveDashboard(onBackgroundTap: dismissKeyboard, initialScrollID: screenshotInitialScrollID) {
                 MembershipSettingsCard(membershipStore: membershipStore, showMembership: showMembership)
+                if membershipStore.isReviewDemoVisible || membershipStore.isReviewExpiredDemoActive {
+                    reviewDemoCard
+                }
                 routeOverviewCard
                 if membershipStore.hasCoreAccess {
                     playbackCard
@@ -108,6 +114,110 @@ struct SettingsPageView: View {
                     )
                 }
             }
+        }
+    }
+
+    private var reviewDemoCard: some View {
+        InstrumentCard {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(alignment: .top, spacing: 12) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        SectionTitle(title: String(localized: "settings.review_demo"))
+                        Text(String(localized: "settings.review_demo_body"))
+                            .font(.caption)
+                            .foregroundStyle(AppTheme.textSecondary)
+                    }
+
+                    Spacer(minLength: 8)
+
+                    if membershipStore.isReviewExpiredDemoActive {
+                        StatusBadge(
+                            title: String(localized: "settings.review_demo_active"),
+                            tone: .warning,
+                            icon: "clock.badge.exclamationmark"
+                        )
+                    }
+                }
+
+                LazyVGrid(columns: gridColumns(2), spacing: 10) {
+                    reviewDemoTextField(
+                        title: String(localized: "settings.review_demo_username"),
+                        placeholder: String(localized: "settings.review_demo_username_placeholder"),
+                        text: $reviewDemoUsername
+                    )
+
+                    reviewDemoSecureField(
+                        title: String(localized: "settings.review_demo_password"),
+                        placeholder: String(localized: "settings.review_demo_password_placeholder"),
+                        text: $reviewDemoPassword
+                    )
+                }
+
+                HStack(spacing: 10) {
+                    Button(String(localized: "settings.review_demo_activate")) {
+                        activateReviewDemo()
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+
+                    if membershipStore.isReviewExpiredDemoActive {
+                        Button(String(localized: "settings.review_demo_clear")) {
+                            membershipStore.deactivateExpiredReviewDemo()
+                            reviewDemoMessage = String(localized: "settings.review_demo_cleared")
+                        }
+                        .buttonStyle(SecondaryButtonStyle())
+                    }
+                }
+
+                if let reviewDemoMessage {
+                    Text(reviewDemoMessage)
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(membershipStore.isReviewExpiredDemoActive ? AppTheme.warning : AppTheme.textSecondary)
+                }
+            }
+        }
+    }
+
+    private func activateReviewDemo() {
+        if membershipStore.activateExpiredReviewDemo(username: reviewDemoUsername, password: reviewDemoPassword) {
+            reviewDemoUsername = ""
+            reviewDemoPassword = ""
+            reviewDemoMessage = String(localized: "settings.review_demo_success")
+        } else {
+            reviewDemoMessage = String(localized: "settings.review_demo_invalid")
+        }
+    }
+
+    private func reviewDemoTextField(title: String, placeholder: String, text: Binding<String>) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(title)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.white)
+            TextField(placeholder, text: text)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .textFieldStyle(.plain)
+                .submitLabel(.done)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 12)
+                .background(Color.white.opacity(0.08))
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        }
+    }
+
+    private func reviewDemoSecureField(title: String, placeholder: String, text: Binding<String>) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(title)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.white)
+            SecureField(placeholder, text: text)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .textFieldStyle(.plain)
+                .submitLabel(.done)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 12)
+                .background(Color.white.opacity(0.08))
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
         }
     }
 
@@ -693,6 +803,11 @@ struct SettingsPageView: View {
 
                 SettingsRow(title: String(localized: "settings.app_name"), value: String(localized: "settings.app_name_value"))
                 SettingsRow(title: String(localized: "settings.app_version"), value: appVersionText)
+                    .contentShape(Rectangle())
+                    .onTapGesture(count: 3) {
+                        membershipStore.revealExpiredReviewDemo()
+                        reviewDemoMessage = String(localized: "settings.review_demo_revealed")
+                    }
 
                 Text(String(localized: "settings.app_info_body"))
                     .font(.caption2)

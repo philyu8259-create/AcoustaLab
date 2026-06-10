@@ -133,6 +133,19 @@
 "settings.badge_loopback_ready" = "Loopback Ready";
 "settings.badge_input_attention" = "Check Input";
 "settings.badge_high_gain" = "High Gain Available";
+"settings.review_demo" = "App Review Demo";
+"settings.review_demo_body" = "For App Review only: enter the provided demo account to simulate an expired starter/subscription state and review the locked purchase flow.";
+"settings.review_demo_username" = "Demo username";
+"settings.review_demo_username_placeholder" = "abcd";
+"settings.review_demo_password" = "Demo password";
+"settings.review_demo_password_placeholder" = "1234";
+"settings.review_demo_activate" = "Use Expired Demo";
+"settings.review_demo_active" = "Expired Demo";
+"settings.review_demo_success" = "Expired demo is active. Tone, Sweep, Noise, and Presets now show the post-expiration purchase flow.";
+"settings.review_demo_invalid" = "The demo username or password is incorrect.";
+"settings.review_demo_revealed" = "App Review demo mode is now visible. Enter the provided account credentials to simulate an expired trial.";
+"settings.review_demo_clear" = "Exit Demo";
+"settings.review_demo_cleared" = "Expired demo has been cleared.";
 
 "calibration.title" = "Loopback Calibration";
 "calibration.current_route" = "Route";
