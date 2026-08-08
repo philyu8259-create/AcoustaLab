@@ -1,2 +1,2 @@
 "CFBundleDisplayName" = "声测工坊";
-"NSMicrophoneUsageDescription" = "AcoustaLab 会使用麦克风进行声学校准和本地音频测量。";
+"NSMicrophoneUsageDescription" = "AcoustaLab 会使用麦克风进行声学校准、本地音频测量和实时频谱分析。";

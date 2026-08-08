@@ -1,0 +1,112 @@
+{
+  "identifier" : "BC28BFB6-0D31-46B7-95F4-649506F39FA1",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "9.99",
+      "familyShareable" : false,
+      "internalID" : "A6116ED1-88C1-4A6C-9E81-21490C5CE842",
+      "localizations" : [
+        {
+          "description" : "One-time purchase with no renewal.",
+          "displayName" : "Lifetime Pro",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "一次性购买，无需续期。",
+          "displayName" : "永久 Pro",
+          "locale" : "zh_CN"
+        }
+      ],
+      "productID" : "com.phil.AcoustaLab.lifetime",
+      "referenceName" : "Lifetime Pro",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_renewalBillingIssuesEnabled" : false,
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "8EE3D9B4-9488-42E8-9206-5AD95EEA97B0",
+      "localizations" : [
+
+      ],
+      "name" : "AcoustaLab Pro",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "0.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "AB6FBC8B-17C2-49CC-B6E1-8A815615605F",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Full Pro access, billed monthly.",
+              "displayName" : "Monthly Pro",
+              "locale" : "en_US"
+            },
+            {
+              "description" : "完整 Pro 权限，按月自动续期。",
+              "displayName" : "月度 Pro",
+              "locale" : "zh_CN"
+            }
+          ],
+          "productID" : "com.phil.AcoustaLab.pro.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Monthly Pro",
+          "subscriptionGroupID" : "8EE3D9B4-9488-42E8-9206-5AD95EEA97B0",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "4.99",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "D99C14C3-D2F8-467A-9A9C-391418A15E09",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Full Pro access, billed yearly.",
+              "displayName" : "Yearly Pro",
+              "locale" : "en_US"
+            },
+            {
+              "description" : "完整 Pro 权限，按年自动续期。",
+              "displayName" : "年度 Pro",
+              "locale" : "zh_CN"
+            }
+          ],
+          "productID" : "com.phil.AcoustaLab.pro.yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Yearly Pro",
+          "subscriptionGroupID" : "8EE3D9B4-9488-42E8-9206-5AD95EEA97B0",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

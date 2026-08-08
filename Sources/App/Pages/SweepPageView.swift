@@ -21,10 +21,10 @@ struct SweepPageView: View {
                     title: String(localized: "tab.sweep"),
                     value: FrequencyFormatting.displayString(for: audioController.currentSweepFrequency),
                     badge: audioController.sweepMode.localizedTitle,
-                    auxiliary: String(format: String(localized: "sweep.progress_compact"), Int(audioController.sweepProgress * 100))
+                    auxiliary: sweepRuntimeStatus
                 ) {
                     ProgressView(value: audioController.sweepProgress)
-                        .tint(AppTheme.accent)
+                        .tint(audioController.sweepIsInInterval ? AppTheme.warning : AppTheme.accent)
                 }
 
                 OutputTransportCard(audioController: audioController, outputGainQuickSteps: outputGainQuickSteps)
@@ -125,6 +125,71 @@ struct SweepPageView: View {
                     label: { $0.localizedTitle }
                 )
 
+                HardwareCapsuleSelector(
+                    title: String(localized: "sweep.direction"),
+                    selection: $audioController.sweepDirection,
+                    items: AudioEngineController.SweepDirection.allCases,
+                    accentColor: { $0 == .forward ? AcousticTheme.sineAccent : AcousticTheme.triangleAccent },
+                    label: { sweepDirectionTitle($0) }
+                )
+                .disabled(audioController.isPlaying)
+                .opacity(audioController.isPlaying ? 0.72 : 1)
+
+                HardwareCapsuleSelector(
+                    title: String(localized: "sweep.repeat"),
+                    selection: $audioController.sweepRepeatMode,
+                    items: AudioEngineController.SweepRepeatMode.allCases,
+                    accentColor: { repeatModeAccent($0) },
+                    label: { sweepRepeatModeTitle($0) }
+                )
+                .disabled(audioController.isPlaying)
+                .opacity(audioController.isPlaying ? 0.72 : 1)
+
+                if audioController.sweepRepeatMode == .fixed {
+                    HStack(spacing: 12) {
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text(String(localized: "sweep.repeat_rounds"))
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(.white)
+                            Text(String(localized: "sweep.repeat_rounds_hint"))
+                                .font(.caption2)
+                                .foregroundStyle(AppTheme.textSecondary)
+                        }
+
+                        Spacer(minLength: 8)
+
+                        Stepper(value: $audioController.sweepRepeatCount, in: 2 ... 20) {
+                            Text("\(audioController.sweepRepeatCount)×")
+                                .font(.caption.monospacedDigit().weight(.bold))
+                                .foregroundStyle(AppTheme.accent)
+                                .frame(minWidth: 34, alignment: .trailing)
+                        }
+                        .fixedSize()
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 10)
+                    .hardwarePanel(fill: AcousticTheme.controlBackground, cornerRadius: 16)
+                    .disabled(audioController.isPlaying)
+                    .opacity(audioController.isPlaying ? 0.72 : 1)
+                }
+
+                if audioController.sweepRepeatMode != .single {
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text(String(localized: "sweep.interval"))
+                                .font(.caption.weight(.semibold))
+                            Spacer()
+                            Text(String(format: "%.1f s", audioController.sweepLoopInterval))
+                                .font(.caption.monospacedDigit())
+                                .foregroundStyle(AppTheme.accent)
+                        }
+                        Slider(value: $audioController.sweepLoopInterval, in: 0 ... 10, step: 0.5)
+                            .tint(AppTheme.accent)
+                    }
+                    .disabled(audioController.isPlaying)
+                    .opacity(audioController.isPlaying ? 0.72 : 1)
+                }
+
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
                         Text(sweepDurationTitle)
@@ -197,4 +262,60 @@ struct SweepPageView: View {
         }
         return String(format: "%.1f s", audioController.sweepStepHoldDuration)
     }
+
+    private var sweepRuntimeStatus: String {
+        let totalText: String
+        switch audioController.sweepRepeatMode {
+        case .single:
+            totalText = "1"
+        case .fixed:
+            totalText = "\(audioController.sweepRepeatCount)"
+        case .continuous:
+            totalText = "∞"
+        }
+
+        let roundText = String(
+            format: String(localized: "sweep.runtime_round"),
+            audioController.sweepCurrentIteration,
+            totalText
+        )
+
+        guard audioController.isPlaying else {
+            return String(format: String(localized: "sweep.runtime_ready"), roundText)
+        }
+
+        if audioController.sweepIsInInterval {
+            let remaining = String(format: "%.1f s", audioController.sweepIntervalRemaining)
+            return String(format: String(localized: "sweep.runtime_interval"), remaining, roundText)
+        }
+
+        let phase = audioController.sweepIsReturning
+            ? String(localized: "sweep.runtime_return")
+            : String(localized: "sweep.runtime_forward")
+        return "\(roundText) · \(phase) · \(Int(audioController.sweepProgress * 100))%"
+    }
+
+    private func sweepRepeatModeTitle(_ mode: AudioEngineController.SweepRepeatMode) -> String {
+        switch mode {
+        case .single: return String(localized: "sweep.repeat_once")
+        case .continuous: return String(localized: "sweep.repeat_continuous")
+        case .fixed: return String(localized: "sweep.repeat_fixed")
+        }
+    }
+
+    private func sweepDirectionTitle(_ direction: AudioEngineController.SweepDirection) -> String {
+        switch direction {
+        case .forward: return String(localized: "sweep.direction_one_way")
+        case .roundTrip: return String(localized: "sweep.direction_round_trip")
+        }
+    }
+
+    private func repeatModeAccent(_ mode: AudioEngineController.SweepRepeatMode) -> Color {
+        switch mode {
+        case .single: return AcousticTheme.sineAccent
+        case .continuous: return AcousticTheme.squareAccent
+        case .fixed: return AcousticTheme.triangleAccent
+        }
+    }
+
 }

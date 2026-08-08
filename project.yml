@@ -10,8 +10,8 @@ settings:
   base:
     PRODUCT_BUNDLE_IDENTIFIER: com.phil.AcoustaLab
     SWIFT_VERSION: 5.0
-    CURRENT_PROJECT_VERSION: 6
-    MARKETING_VERSION: 1.5
+    CURRENT_PROJECT_VERSION: 11
+    MARKETING_VERSION: 1.6
     DEVELOPMENT_TEAM: 9SZ5257PF4
 packages: {}
 targets:
@@ -31,8 +31,6 @@ targets:
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         ITSAppUsesNonExemptEncryption: false
-        LSApplicationQueriesSchemes:
-          - weixin
         UILaunchScreen:
           UIColorName: BrandBackground
           UIImageName: AppKnobLogo
@@ -45,7 +43,7 @@ targets:
           - UIInterfaceOrientationPortraitUpsideDown
           - UIInterfaceOrientationLandscapeLeft
           - UIInterfaceOrientationLandscapeRight
-        NSMicrophoneUsageDescription: AcoustaLab 会使用麦克风进行声学校准和本地音频测量。
+        NSMicrophoneUsageDescription: AcoustaLab 会使用麦克风进行声学校准、本地音频测量和实时频谱分析。
     settings:
       base:
         PRODUCT_NAME: AudioFunctionGenerator
@@ -63,4 +61,17 @@ targets:
           CODE_SIGN_STYLE: Automatic
     dependencies: []
     scheme:
-      testTargets: []
+      testTargets:
+        - AudioFunctionGeneratorTests
+      storeKitConfiguration: Configuration.storekit
+  AudioFunctionGeneratorTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: Tests
+    dependencies:
+      - target: AudioFunctionGenerator
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.phil.AcoustaLab.tests
+        GENERATE_INFOPLIST_FILE: true

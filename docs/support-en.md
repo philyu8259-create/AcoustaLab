@@ -1,8 +1,8 @@
 # AcoustaLab Support
 
-Thank you for using AcoustaLab, a focused acoustic signal generator for tone, sweep, noise, presets, route checks, and local calibration workflows.
+Thank you for using AcoustaLab, a local-first acoustic toolkit for tones, sweeps, noise, speaker and headphone checks, presets, guided tests, realtime spectrum analysis, and calibration reporting.
 
-AcoustaLab 1.4 has built-in test packs, local test history, and calibration report export for verification workflows.
+AcoustaLab 1.6 includes built-in one-click test presets, guided test history, realtime spectrum/RTA tools, and calibration report export in PDF, CSV, and PNG formats.
 
 ## Contact
 
@@ -19,23 +19,22 @@ When reporting an issue, please include:
 
 - Device model and iOS/iPadOS version
 - App version and build number
-- The feature you were using, such as Tone, Sweep, Noise, Presets, Test Pack, Calibration Report, or Settings
+- The feature you were using, such as Tone, Sweep, Noise, Presets, Guided Test, Calibration Report, RTA, or Settings
 - A short description of what happened and what you expected
-- The screen name shown in the issue report (for example: tone waveform, sweep control, presets list, calibration report, privacy/settings)
+- The screen name shown in the issue report
 
-## Availability
+## Availability and Privacy
 
-AcoustaLab 1.4 does not include ads, third-party ad SDKs, account login, subscription plans, or ad/behavioral tracking.
-
-## Privacy policy alignment
-
-- No ads and no tracking SDKs are integrated.
-- No account login is required to use core acoustic features.
-- No subscription billing is used; only one-time access unlock is available through Apple In-App Purchase.
-- Generated audio, test data, and presets are kept on device by default.
+- AcoustaLab contains no ads or third-party advertising SDKs.
+- The app does not use advertising or behavioral tracking and does not request App Tracking Transparency permission.
+- No account login is required.
+- Generated audio, microphone measurements, presets, test history, calibration data, and reports are processed or stored locally. The app does not automatically upload them to a developer-operated server.
+- PDF, CSV, and PNG exports leave the app only when you choose a destination through the system export or share flow.
 
 ## Purchases
 
-AcoustaLab offers 3 days of starter access and a one-time full access unlock through Apple In-App Purchase. If you already unlocked full access, use the Restore Purchases option in the access page or settings page.
+AcoustaLab offers 3 days of starter access. Continued Pro access is available through monthly or yearly auto-renewable subscriptions, or a one-time lifetime unlock, using Apple In-App Purchase. Available products and prices are displayed in the app for your App Store storefront.
 
-Last updated: June 5, 2026
+Apple handles purchase and payment processing. If you previously purchased access, use **Restore Purchases** on the access page or in Settings. Subscription management and cancellation are handled through your Apple ID subscription settings.
+
+Last updated: August 8, 2026

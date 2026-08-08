@@ -52,6 +52,21 @@ final class AudioEngineController: ObservableObject {
         var id: String { rawValue }
     }
 
+    enum SweepRepeatMode: String, CaseIterable, Identifiable, Codable {
+        case single = "Single"
+        case continuous = "Continuous"
+        case fixed = "Fixed"
+
+        var id: String { rawValue }
+    }
+
+    enum SweepDirection: String, CaseIterable, Identifiable, Codable {
+        case forward = "Forward"
+        case roundTrip = "Round Trip"
+
+        var id: String { rawValue }
+    }
+
     enum NoiseType: String, CaseIterable, Identifiable, Codable {
         case white = "White"
         case pink = "Pink"
@@ -124,8 +139,46 @@ final class AudioEngineController: ObservableObject {
             persistState()
         }
     }
+    @Published var sweepRepeatMode: SweepRepeatMode = .single {
+        didSet {
+            resetRealtimeStates()
+            persistState()
+        }
+    }
+    @Published var sweepRepeatCount: Int = 3 {
+        didSet {
+            let clampedValue = min(max(sweepRepeatCount, 2), 20)
+            if sweepRepeatCount != clampedValue {
+                sweepRepeatCount = clampedValue
+                return
+            }
+            resetRealtimeStates()
+            persistState()
+        }
+    }
+    @Published var sweepDirection: SweepDirection = .forward {
+        didSet {
+            resetRealtimeStates()
+            persistState()
+        }
+    }
+    @Published var sweepLoopInterval: Double = 0 {
+        didSet {
+            let clampedValue = min(max(sweepLoopInterval, 0), 10)
+            if abs(sweepLoopInterval - clampedValue) > 0.0001 {
+                sweepLoopInterval = clampedValue
+                return
+            }
+            resetRealtimeStates()
+            persistState()
+        }
+    }
     @Published private(set) var currentSweepFrequency: Double = 20
     @Published private(set) var sweepProgress: Double = 0
+    @Published private(set) var sweepCurrentIteration: Int = 1
+    @Published private(set) var sweepIsReturning = false
+    @Published private(set) var sweepIsInInterval = false
+    @Published private(set) var sweepIntervalRemaining: Double = 0
 
     @Published var noiseType: NoiseType = .white {
         didSet { persistState() }
@@ -323,8 +376,7 @@ final class AudioEngineController: ObservableObject {
         currentCompensationDecibels = 0
         stopUITimer()
         if resetSweepPosition, selectedMode == .sweep {
-            currentSweepFrequency = clamp(sweepStartFrequency)
-            sweepProgress = 0
+            resetSweepPlaybackState()
         }
     }
 
@@ -591,6 +643,13 @@ final class AudioEngineController: ObservableObject {
             let sweepCurve = self.sweepCurve
             let sweepMode = self.sweepMode
             let sweepStepMode = self.sweepStepMode
+            let sweepRepeatMode = self.sweepRepeatMode
+            let sweepRepeatCount = min(max(self.sweepRepeatCount, 2), 20)
+            let sweepDirection = self.sweepDirection
+            let sweepLoopInterval = min(max(self.sweepLoopInterval, 0), 10)
+            let sweepStepFrequencies = sweepMode == .steppedSine
+                ? steppedSweepFrequencies(start: startFrequency, end: endFrequency, stepMode: sweepStepMode)
+                : []
             let noiseType = self.noiseType
             let filterMode = self.noiseFilterMode
             let filterCutoff = self.clamp(self.noiseCutoff)
@@ -640,7 +699,7 @@ final class AudioEngineController: ObservableObject {
                         compensationFrequency = self.smoothedToneFrequency
                     case .sweep:
                         let elapsed = self.renderElapsedTime(sampleOffset: frame, sampleRate: sr)
-                        let state = self.sweepState(
+                        let state = Self.sweepState(
                             at: elapsed,
                             start: startFrequency,
                             end: endFrequency,
@@ -648,16 +707,19 @@ final class AudioEngineController: ObservableObject {
                             stepHoldDuration: sweepStepHoldDuration,
                             curve: sweepCurve,
                             mode: sweepMode,
-                            stepMode: sweepStepMode
+                            steppedFrequencies: sweepStepFrequencies,
+                            repeatMode: sweepRepeatMode,
+                            repeatCount: sweepRepeatCount,
+                            direction: sweepDirection,
+                            loopInterval: sweepLoopInterval
                         )
                         self.smoothedSweepFrequency += (state.frequency - self.smoothedSweepFrequency) * frequencySmoothingFactor
                         let phaseStep = self.smoothedSweepFrequency / sr
-                        rawSample = sin(self.phase * 2.0 * Double.pi)
-                        self.advancePhase(byNormalizedIncrement: phaseStep)
-                        compensationFrequency = state.frequency
-                        if state.shouldStop {
-                            self.requestAutoStop()
+                        if state.isToneActive {
+                            rawSample = sin(self.phase * 2.0 * Double.pi) * state.signalGain
+                            self.advancePhase(byNormalizedIncrement: phaseStep)
                         }
+                        compensationFrequency = state.frequency
                     case .noise:
                         let noise = self.noiseSample(for: noiseType)
                         rawSample = self.filteredNoiseSample(
@@ -744,7 +806,7 @@ final class AudioEngineController: ObservableObject {
         return gain(forDecibels: activeCalibrationProfile.compensationDecibels(for: frequency))
     }
 
-    private func sweepState(
+    static func sweepState(
         at elapsed: Double,
         start: Double,
         end: Double,
@@ -752,38 +814,131 @@ final class AudioEngineController: ObservableObject {
         stepHoldDuration: Double,
         curve: SweepCurve,
         mode: SweepMode,
-        stepMode: FrequencyStepMode
-    ) -> (frequency: Double, progress: Double, shouldStop: Bool) {
+        steppedFrequencies: [Double],
+        repeatMode: SweepRepeatMode,
+        repeatCount: Int,
+        direction: SweepDirection,
+        loopInterval: Double
+    ) -> SweepPlaybackState {
+        let safeElapsed = max(elapsed, 0)
+        let passDuration: Double
         switch mode {
         case .sweep:
-            let clampedProgress = min(max(elapsed / duration, 0), 1)
-            let frequency: Double
-
-            switch curve {
-            case .linear:
-                frequency = start + ((end - start) * clampedProgress)
-            case .logarithmic:
-                let safeStart = max(start, 1)
-                let safeEnd = max(end, 1)
-                let value = log(safeStart) + (log(safeEnd) - log(safeStart)) * clampedProgress
-                frequency = exp(value)
-            }
-
-            return (frequency, clampedProgress, elapsed >= duration)
-
+            passDuration = max(duration, 0.1)
         case .steppedSine:
-            let frequencies = steppedSweepFrequencies(start: start, end: end, stepMode: stepMode)
-            guard let lastFrequency = frequencies.last else {
-                return (start, 1, true)
-            }
+            passDuration = max(stepHoldDuration, 0.2) * Double(max(steppedFrequencies.count, 1))
+        }
 
+        let passCountPerIteration = direction == .roundTrip ? 2.0 : 1.0
+        let activeIterationDuration = passDuration * passCountPerIteration
+        let interval = min(max(loopInterval, 0), 10)
+        let iterationStride = activeIterationDuration + interval
+        let finiteIterationCount: Int?
+        switch repeatMode {
+        case .single:
+            finiteIterationCount = 1
+        case .continuous:
+            finiteIterationCount = nil
+        case .fixed:
+            finiteIterationCount = min(max(repeatCount, 2), 20)
+        }
+
+        if let finiteIterationCount {
+            let totalDuration = (activeIterationDuration * Double(finiteIterationCount))
+                + (interval * Double(max(finiteIterationCount - 1, 0)))
+            if safeElapsed >= totalDuration {
+                return SweepPlaybackState(
+                    frequency: direction == .roundTrip ? start : end,
+                    progress: 1,
+                    iteration: finiteIterationCount,
+                    totalIterations: finiteIterationCount,
+                    phase: .completed,
+                    intervalRemaining: 0,
+                    signalGain: 0
+                )
+            }
+        }
+
+        let rawIteration = Int(safeElapsed / max(iterationStride, 0.1))
+        let iteration = max(rawIteration + 1, 1)
+        let iterationElapsed = safeElapsed - (Double(rawIteration) * iterationStride)
+        let hasAnotherIteration = finiteIterationCount.map { iteration < $0 } ?? true
+
+        if iterationElapsed >= activeIterationDuration, hasAnotherIteration, interval > 0 {
+            return SweepPlaybackState(
+                frequency: direction == .roundTrip ? start : end,
+                progress: 1,
+                iteration: iteration,
+                totalIterations: finiteIterationCount,
+                phase: .interval,
+                intervalRemaining: max(iterationStride - iterationElapsed, 0),
+                signalGain: 0
+            )
+        }
+
+        let isReturning = direction == .roundTrip && iterationElapsed >= passDuration
+        let passElapsed = isReturning ? iterationElapsed - passDuration : iterationElapsed
+        let passProgress = min(max(passElapsed / passDuration, 0), 1)
+        let position = isReturning ? 1 - passProgress : passProgress
+        let frequency: Double
+
+        switch mode {
+        case .sweep:
+            frequency = sweepFrequency(start: start, end: end, position: position, curve: curve)
+        case .steppedSine:
+            guard !steppedFrequencies.isEmpty else {
+                return SweepPlaybackState(
+                    frequency: start,
+                    progress: 1,
+                    iteration: iteration,
+                    totalIterations: finiteIterationCount,
+                    phase: .completed,
+                    intervalRemaining: 0,
+                    signalGain: 1
+                )
+            }
             let hold = max(stepHoldDuration, 0.2)
-            let totalDuration = hold * Double(frequencies.count)
-            let rawIndex = Int(elapsed / hold)
-            let index = min(max(rawIndex, 0), frequencies.count - 1)
-            let progress = min(max(elapsed / totalDuration, 0), 1)
-            let frequency = frequencies.indices.contains(index) ? frequencies[index] : lastFrequency
-            return (frequency, progress, elapsed >= totalDuration)
+            let forwardIndex = min(max(Int(passElapsed / hold), 0), steppedFrequencies.count - 1)
+            let index = isReturning ? steppedFrequencies.count - 1 - forwardIndex : forwardIndex
+            frequency = steppedFrequencies[index]
+        }
+
+        let iterationProgress = min(max(iterationElapsed / activeIterationDuration, 0), 1)
+        let transitionFade = min(0.01, activeIterationDuration * 0.1)
+        var signalGain = 1.0
+        if transitionFade > 0 {
+            signalGain = min(signalGain, max((activeIterationDuration - iterationElapsed) / transitionFade, 0))
+        }
+        if iteration > 1, transitionFade > 0 {
+            signalGain = min(signalGain, max(iterationElapsed / transitionFade, 0))
+        }
+
+        return SweepPlaybackState(
+            frequency: frequency,
+            progress: iterationProgress,
+            iteration: iteration,
+            totalIterations: finiteIterationCount,
+            phase: isReturning ? .returning : .forward,
+            intervalRemaining: 0,
+            signalGain: min(max(signalGain, 0), 1)
+        )
+    }
+
+    private static func sweepFrequency(
+        start: Double,
+        end: Double,
+        position: Double,
+        curve: SweepCurve
+    ) -> Double {
+        let clampedPosition = min(max(position, 0), 1)
+        switch curve {
+        case .linear:
+            return start + ((end - start) * clampedPosition)
+        case .logarithmic:
+            let safeStart = max(start, 1)
+            let safeEnd = max(end, 1)
+            let value = log(safeStart) + (log(safeEnd) - log(safeStart)) * clampedPosition
+            return exp(value)
         }
     }
 
@@ -884,12 +1039,20 @@ final class AudioEngineController: ObservableObject {
             currentSweepFrequency = clampedFrequency
             sweepProgress = 0
         case .sweep:
-            currentSweepFrequency = clamp(sweepStartFrequency)
-            sweepProgress = 0
+            resetSweepPlaybackState()
         case .noise:
             currentSweepFrequency = clamp(noiseCutoff)
             sweepProgress = 0
         }
+    }
+
+    private func resetSweepPlaybackState() {
+        currentSweepFrequency = clamp(sweepStartFrequency)
+        sweepProgress = 0
+        sweepCurrentIteration = 1
+        sweepIsReturning = false
+        sweepIsInInterval = false
+        sweepIntervalRemaining = 0
     }
 
     private func startUITimerIfNeeded() {
@@ -957,7 +1120,7 @@ final class AudioEngineController: ObservableObject {
                 : 0
         case .sweep:
             let elapsed = max(0, (playbackStartTime.map { CACurrentMediaTime() - $0 }) ?? 0)
-            let state = sweepState(
+            let state = Self.sweepState(
                 at: elapsed,
                 start: clamp(sweepStartFrequency),
                 end: clamp(sweepEndFrequency),
@@ -965,10 +1128,24 @@ final class AudioEngineController: ObservableObject {
                 stepHoldDuration: max(sweepStepHoldDuration, 0.2),
                 curve: sweepCurve,
                 mode: sweepMode,
-                stepMode: sweepStepMode
+                steppedFrequencies: sweepMode == .steppedSine
+                    ? steppedSweepFrequencies(
+                        start: clamp(sweepStartFrequency),
+                        end: clamp(sweepEndFrequency),
+                        stepMode: sweepStepMode
+                    )
+                    : [],
+                repeatMode: sweepRepeatMode,
+                repeatCount: sweepRepeatCount,
+                direction: sweepDirection,
+                loopInterval: sweepLoopInterval
             )
             currentSweepFrequency = state.frequency
             sweepProgress = state.progress
+            sweepCurrentIteration = state.iteration
+            sweepIsReturning = state.phase == .returning
+            sweepIsInInterval = state.phase == .interval
+            sweepIntervalRemaining = state.intervalRemaining
             currentCompensationDecibels = activeCalibrationProfile?.isCompensationEnabled == true
                 ? (activeCalibrationProfile?.compensationDecibels(for: state.frequency) ?? 0)
                 : 0
@@ -1448,6 +1625,10 @@ final class AudioEngineController: ObservableObject {
             sweepCurve: sweepCurve,
             sweepMode: sweepMode,
             sweepStepMode: sweepStepMode,
+            sweepRepeatMode: sweepRepeatMode,
+            sweepRepeatCount: sweepRepeatCount,
+            sweepDirection: sweepDirection,
+            sweepLoopInterval: sweepLoopInterval,
             noiseType: noiseType,
             noiseFilterMode: noiseFilterMode,
             noiseCutoff: noiseCutoff,
@@ -1470,6 +1651,10 @@ final class AudioEngineController: ObservableObject {
         sweepCurve = preset.sweepCurve
         sweepMode = preset.sweepMode
         sweepStepMode = preset.sweepStepMode
+        sweepRepeatMode = preset.sweepRepeatMode
+        sweepRepeatCount = min(max(preset.sweepRepeatCount, 2), 20)
+        sweepDirection = preset.sweepDirection
+        sweepLoopInterval = min(max(preset.sweepLoopInterval, 0), 10)
         noiseType = preset.noiseType
         noiseFilterMode = preset.noiseFilterMode
         noiseCutoff = clamp(preset.noiseCutoff)
@@ -1493,6 +1678,10 @@ final class AudioEngineController: ObservableObject {
         sweepCurve = .logarithmic
         sweepMode = .sweep
         sweepStepMode = .octave
+        sweepRepeatMode = .single
+        sweepRepeatCount = 3
+        sweepDirection = .forward
+        sweepLoopInterval = 0
         noiseType = .white
         noiseFilterMode = .off
         noiseCutoff = 1000
@@ -1531,6 +1720,10 @@ final class AudioEngineController: ObservableObject {
             sweepCurve: sweepCurve,
             sweepMode: sweepMode,
             sweepStepMode: sweepStepMode,
+            sweepRepeatMode: sweepRepeatMode,
+            sweepRepeatCount: sweepRepeatCount,
+            sweepDirection: sweepDirection,
+            sweepLoopInterval: sweepLoopInterval,
             noiseType: noiseType,
             noiseFilterMode: noiseFilterMode,
             noiseCutoff: noiseCutoff,
@@ -1569,6 +1762,10 @@ final class AudioEngineController: ObservableObject {
             sweepCurve = state.sweepCurve
             sweepMode = state.sweepMode
             sweepStepMode = state.sweepStepMode
+            sweepRepeatMode = state.sweepRepeatMode
+            sweepRepeatCount = min(max(state.sweepRepeatCount, 2), 20)
+            sweepDirection = state.sweepDirection
+            sweepLoopInterval = min(max(state.sweepLoopInterval, 0), 10)
             noiseType = state.noiseType
             noiseFilterMode = state.noiseFilterMode
             noiseCutoff = clamp(state.noiseCutoff)

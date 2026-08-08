@@ -233,6 +233,26 @@ struct RMSAccumulator {
     var sampleCount: Int = 0
 }
 
+struct SweepPlaybackState {
+    enum Phase: Equatable {
+        case forward
+        case returning
+        case interval
+        case completed
+    }
+
+    let frequency: Double
+    let progress: Double
+    let iteration: Int
+    let totalIterations: Int?
+    let phase: Phase
+    let intervalRemaining: Double
+    let signalGain: Double
+
+    var isToneActive: Bool { phase == .forward || phase == .returning }
+    var shouldStop: Bool { phase == .completed }
+}
+
 struct PersistedState: Codable {
     let selectedMode: AudioEngineController.SignalMode
     let frequency: Double
@@ -245,6 +265,10 @@ struct PersistedState: Codable {
     let sweepCurve: AudioEngineController.SweepCurve
     let sweepMode: AudioEngineController.SweepMode
     let sweepStepMode: FrequencyStepMode
+    let sweepRepeatMode: AudioEngineController.SweepRepeatMode
+    let sweepRepeatCount: Int
+    let sweepDirection: AudioEngineController.SweepDirection
+    let sweepLoopInterval: Double
     let noiseType: AudioEngineController.NoiseType
     let noiseFilterMode: AudioEngineController.FilterMode
     let noiseCutoff: Double
@@ -270,6 +294,10 @@ struct PersistedState: Codable {
         case sweepCurve
         case sweepMode
         case sweepStepMode
+        case sweepRepeatMode
+        case sweepRepeatCount
+        case sweepDirection
+        case sweepLoopInterval
         case noiseType
         case noiseFilterMode
         case noiseCutoff
@@ -296,6 +324,10 @@ struct PersistedState: Codable {
         sweepCurve: AudioEngineController.SweepCurve,
         sweepMode: AudioEngineController.SweepMode,
         sweepStepMode: FrequencyStepMode,
+        sweepRepeatMode: AudioEngineController.SweepRepeatMode,
+        sweepRepeatCount: Int,
+        sweepDirection: AudioEngineController.SweepDirection,
+        sweepLoopInterval: Double,
         noiseType: AudioEngineController.NoiseType,
         noiseFilterMode: AudioEngineController.FilterMode,
         noiseCutoff: Double,
@@ -320,6 +352,10 @@ struct PersistedState: Codable {
         self.sweepCurve = sweepCurve
         self.sweepMode = sweepMode
         self.sweepStepMode = sweepStepMode
+        self.sweepRepeatMode = sweepRepeatMode
+        self.sweepRepeatCount = sweepRepeatCount
+        self.sweepDirection = sweepDirection
+        self.sweepLoopInterval = sweepLoopInterval
         self.noiseType = noiseType
         self.noiseFilterMode = noiseFilterMode
         self.noiseCutoff = noiseCutoff
@@ -347,6 +383,10 @@ struct PersistedState: Codable {
         sweepCurve = try container.decode(AudioEngineController.SweepCurve.self, forKey: .sweepCurve)
         sweepMode = try container.decodeIfPresent(AudioEngineController.SweepMode.self, forKey: .sweepMode) ?? .sweep
         sweepStepMode = try container.decodeIfPresent(FrequencyStepMode.self, forKey: .sweepStepMode) ?? .octave
+        sweepRepeatMode = try container.decodeIfPresent(AudioEngineController.SweepRepeatMode.self, forKey: .sweepRepeatMode) ?? .single
+        sweepRepeatCount = try container.decodeIfPresent(Int.self, forKey: .sweepRepeatCount) ?? 3
+        sweepDirection = try container.decodeIfPresent(AudioEngineController.SweepDirection.self, forKey: .sweepDirection) ?? .forward
+        sweepLoopInterval = try container.decodeIfPresent(Double.self, forKey: .sweepLoopInterval) ?? 0
         noiseType = try container.decode(AudioEngineController.NoiseType.self, forKey: .noiseType)
         noiseFilterMode = try container.decode(AudioEngineController.FilterMode.self, forKey: .noiseFilterMode)
         noiseCutoff = try container.decode(Double.self, forKey: .noiseCutoff)

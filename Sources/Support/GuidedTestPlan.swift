@@ -22,6 +22,7 @@ struct GuidedTestStep: Identifiable, Codable, Equatable {
     let preset: AppPreset
     let descriptionKey: String
     let objectiveKey: String
+    let playbackDuration: TimeInterval
 }
 
 struct GuidedTestPlan: Identifiable, Codable, Equatable {
@@ -190,43 +191,50 @@ enum GuidedTestPlanCatalog {
                         id: "guided_test_plan.acoustic_validation.reference_tone",
                         preset: reference ?? fallback,
                         descriptionKey: "guided_test.plan.acoustic_validation.step.reference_tone.description",
-                        objectiveKey: "guided_test.plan.acoustic_validation.step.reference_tone.objective"
+                        objectiveKey: "guided_test.plan.acoustic_validation.step.reference_tone.objective",
+                        playbackDuration: 5
                     ),
                     GuidedTestStep(
                         id: "guided_test_plan.acoustic_validation.speaker_check",
                         preset: speaker ?? fallback,
                         descriptionKey: "guided_test.plan.acoustic_validation.step.speaker_check.description",
-                        objectiveKey: "guided_test.plan.acoustic_validation.step.speaker_check.objective"
+                        objectiveKey: "guided_test.plan.acoustic_validation.step.speaker_check.objective",
+                        playbackDuration: 12
                     ),
                     GuidedTestStep(
                         id: "guided_test_plan.acoustic_validation.pink_noise",
                         preset: pink ?? fallback,
                         descriptionKey: "guided_test.plan.acoustic_validation.step.pink_noise.description",
-                        objectiveKey: "guided_test.plan.acoustic_validation.step.pink_noise.objective"
+                        objectiveKey: "guided_test.plan.acoustic_validation.step.pink_noise.objective",
+                        playbackDuration: 6
                     ),
                     GuidedTestStep(
                         id: "guided_test_plan.acoustic_validation.white_noise",
                         preset: white ?? fallback,
                         descriptionKey: "guided_test.plan.acoustic_validation.step.white_noise.description",
-                        objectiveKey: "guided_test.plan.acoustic_validation.step.white_noise.objective"
+                        objectiveKey: "guided_test.plan.acoustic_validation.step.white_noise.objective",
+                        playbackDuration: 6
                     ),
                     GuidedTestStep(
                         id: "guided_test_plan.acoustic_validation.left_channel",
                         preset: left ?? fallback,
                         descriptionKey: "guided_test.plan.acoustic_validation.step.left_channel.description",
-                        objectiveKey: "guided_test.plan.acoustic_validation.step.left_channel.objective"
+                        objectiveKey: "guided_test.plan.acoustic_validation.step.left_channel.objective",
+                        playbackDuration: 4
                     ),
                     GuidedTestStep(
                         id: "guided_test_plan.acoustic_validation.right_channel",
                         preset: right ?? fallback,
                         descriptionKey: "guided_test.plan.acoustic_validation.step.right_channel.description",
-                        objectiveKey: "guided_test.plan.acoustic_validation.step.right_channel.objective"
+                        objectiveKey: "guided_test.plan.acoustic_validation.step.right_channel.objective",
+                        playbackDuration: 4
                     ),
                     GuidedTestStep(
                         id: "guided_test_plan.acoustic_validation.low_frequency",
                         preset: lowFrequency ?? fallback,
                         descriptionKey: "guided_test.plan.acoustic_validation.step.low_frequency.description",
-                        objectiveKey: "guided_test.plan.acoustic_validation.step.low_frequency.objective"
+                        objectiveKey: "guided_test.plan.acoustic_validation.step.low_frequency.objective",
+                        playbackDuration: 10
                     )
                 ]
             )

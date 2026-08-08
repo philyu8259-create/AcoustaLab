@@ -51,6 +51,21 @@
 "sweep.duration" = "扫频时长";
 "sweep.step_hold_duration" = "单频停留";
 "sweep.curve" = "曲线";
+"sweep.direction" = "扫描方向";
+"sweep.repeat" = "重复方式";
+"sweep.repeat_rounds" = "循环次数";
+"sweep.repeat_rounds_hint" = "2-20 个完整轮次";
+"sweep.interval" = "循环间隔";
+"sweep.repeat_once" = "单次";
+"sweep.repeat_continuous" = "无限";
+"sweep.repeat_fixed" = "定次";
+"sweep.direction_one_way" = "单向";
+"sweep.direction_round_trip" = "往返";
+"sweep.runtime_round" = "第 %d/%@ 轮";
+"sweep.runtime_ready" = "就绪 · %@";
+"sweep.runtime_interval" = "间隔 %@ · %@";
+"sweep.runtime_return" = "回程";
+"sweep.runtime_forward" = "去程";
 
 "noise.subtitle" = "白噪、粉噪、棕噪和基础滤波，方便做试听与排查。";
 "noise.metric_caption" = "适合做底噪试听、滤波体验和简单声学检查。";
@@ -310,6 +325,18 @@
 "guided_test.plan_selection_empty_body" = "当前未找到可用的引导测试计划，请补充内置测试包。";
 "guided_test.action_start_plan" = "开始";
 "guided_test.plan_step_count" = "%d 个步骤";
+"guided_test.safety_title" = "请先检查输出音量";
+"guided_test.safety_body" = "开始前请调低音量。每段信号均在本机播放，并会在倒计时结束时自动停止。";
+"guided_test.action_pause" = "暂停";
+"guided_test.action_resume" = "播放";
+"guided_test.action_retest" = "重新测试";
+"guided_test.playback_ready" = "准备就绪";
+"guided_test.playback_playing" = "正在播放";
+"guided_test.playback_paused" = "已暂停";
+"guided_test.playback_complete" = "等待判断";
+"guided_test.playback_seconds" = "%d 秒";
+"guided_test.playback_accessibility" = "%@，剩余 %d 秒";
+"guided_test.completion_title" = "测试完成";
 
 "guided_test.step_result.pass" = "通过";
 "guided_test.step_result.anomaly" = "异常";

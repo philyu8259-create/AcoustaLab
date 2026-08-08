@@ -1,41 +1,32 @@
 # AcoustaLab
 
-AcoustaLab 1.4 is a local acoustic utility for tone generation, sweep generation, noise testing, presets, and headphone/speaker validation workflows on iOS.
+AcoustaLab 1.6 is a local-first acoustic utility for signal generation, speaker and headphone checks, guided test workflows, realtime spectrum analysis, and calibration reporting on iOS and iPadOS.
 
-## Current Status (v1.4)
+## Current Status (v1.6)
 
-Core features:
-- Single Tone page
-- Sweep page
-- Noise page
-- Sine / Square / Triangle / Saw waveforms
-- Linear / Log sweep
-- Repeat / Siren sweep loop
-- White / Pink / Brown noise
-- Low-pass / High-pass filter
-- Frequency text inputs
-- Logarithmic frequency slider (1 Hz - 32 kHz)
-- Fine-tune buttons
-- Standard frequency shortcuts
-- Channel routing: L+R / L / R
-- Output gain control
-- Play / Stop
-- AVAudioSourceNode-based realtime generation
-- Basic gain smoothing for start / stop and parameter changes
-- Output route detection (speaker / headphones / bluetooth)
-- Keep-screen-awake and safety fade settings
-- PolyBLEP band-limited square / saw oscillator path
-- Local preset save / load / delete
-- Built-in test pack for acoustic workflow quick checks
-- Built-in calibration report and local test history support
-- Local export of calibration report, test log, and settings-related outputs
+Signal tools:
+- Single tones with sine, square, triangle, and sawtooth waveforms
+- Linear and logarithmic sweeps, including step and repeating sweep modes
+- White, pink, and brown noise with filter controls
+- Logarithmic frequency control from 1 Hz to 32 kHz, fine tuning, and standard frequency shortcuts
+- L+R, left-only, and right-only channel routing
+- Output gain control, safety fades, screen-awake control, and output-route detection
+- Realtime audio generation with smoothed parameter changes and band-limited square/saw oscillator paths
 
-Privacy and monetization:
-- No advertisements, no ad SDKs
-- No tracking for ad profiling, ad SDK telemetry, or user behavior ads analytics
+Testing and reporting:
+- User presets with local save, load, and delete
+- Built-in one-click test presets for reference tone, speaker sweep, noise, channel, and low-frequency checks
+- Guided acoustic test workflow with local test history
+- Local calibration workflow and realtime spectrum/RTA analysis
+- Calibration report export as PDF, CSV, or PNG curve image
+
+Privacy and access:
+- No advertisements or third-party advertising SDKs
+- No advertising or behavioral tracking, and no App Tracking Transparency request
 - No account login required
-- One-time Apple In-App Purchase for full access (no subscriptions)
-- All generated audio, presets, test history, and calibration artifacts are stored on device first
+- 3 days of starter access
+- Monthly and yearly auto-renewable Pro subscriptions, plus a one-time lifetime unlock, through Apple In-App Purchase
+- Generated audio, microphone measurements, presets, test history, calibration data, and reports remain on device unless the user explicitly exports or shares a file
 
 ## Build Commands
 
@@ -48,9 +39,8 @@ xcodebuild -project AudioFunctionGenerator.xcodeproj -scheme AudioFunctionGenera
 
 ## Local Privacy Notes
 
-AcoustaLab is designed as a local-first tool. By default, the app keeps signal generation data, routes, calibration state, tone/sweep/noise presets, test history, and export files on-device.
+AcoustaLab processes signal generation, microphone measurement, realtime spectrum analysis, routing, presets, test history, and calibration data locally. It does not automatically upload audio, measurements, reports, or usage data to a developer-operated server.
 
-### 1.4 Scope in Practice
+Exported PDF, CSV, and PNG files are created from local calibration data. A file leaves the app only when the user chooses a destination through the system export or share flow.
 
-- Route check and test status pages are for in-app guidance only.
-- Calibration report export and test history can be shared locally by the user.
+Apple handles App Store purchase transactions. AcoustaLab reads verified StoreKit entitlements to determine access and does not receive or store payment card details.

@@ -22,12 +22,8 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>weixin</string>
-	</array>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>AcoustaLab 会使用麦克风进行声学校准和本地音频测量。</string>
+	<string>AcoustaLab 会使用麦克风进行声学校准、本地音频测量和实时频谱分析。</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

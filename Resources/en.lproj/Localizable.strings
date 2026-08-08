@@ -51,6 +51,21 @@
 "sweep.duration" = "Sweep Duration";
 "sweep.step_hold_duration" = "Step Hold";
 "sweep.curve" = "Curve";
+"sweep.direction" = "Direction";
+"sweep.repeat" = "Repeat";
+"sweep.repeat_rounds" = "Rounds";
+"sweep.repeat_rounds_hint" = "2-20 complete rounds";
+"sweep.interval" = "Interval";
+"sweep.repeat_once" = "Once";
+"sweep.repeat_continuous" = "Continuous";
+"sweep.repeat_fixed" = "Count";
+"sweep.direction_one_way" = "One-way";
+"sweep.direction_round_trip" = "Round trip";
+"sweep.runtime_round" = "Round %d/%@";
+"sweep.runtime_ready" = "Ready · %@";
+"sweep.runtime_interval" = "Interval %@ · %@";
+"sweep.runtime_return" = "Return";
+"sweep.runtime_forward" = "Forward";
 
 "noise.subtitle" = "White, pink, brown noise and basic filtering for quick listening and diagnostics.";
 "noise.metric_caption" = "Useful for noise floor checks, filter auditioning, and simple acoustic tests.";
@@ -310,6 +325,18 @@
 "guided_test.plan_selection_empty_body" = "No guided test plan is available. Please update the built-in flow package.";
 "guided_test.action_start_plan" = "Start";
 "guided_test.plan_step_count" = "%d steps";
+"guided_test.safety_title" = "Check your output level";
+"guided_test.safety_body" = "Lower the volume before starting. Each signal plays locally and stops automatically when its timer ends.";
+"guided_test.action_pause" = "Pause";
+"guided_test.action_resume" = "Play";
+"guided_test.action_retest" = "Retest";
+"guided_test.playback_ready" = "Ready";
+"guided_test.playback_playing" = "Playing";
+"guided_test.playback_paused" = "Paused";
+"guided_test.playback_complete" = "Ready to assess";
+"guided_test.playback_seconds" = "%d s";
+"guided_test.playback_accessibility" = "%@, %d seconds remaining";
+"guided_test.completion_title" = "Test Complete";
 
 "guided_test.step_result.pass" = "Pass";
 "guided_test.step_result.anomaly" = "Anomaly";

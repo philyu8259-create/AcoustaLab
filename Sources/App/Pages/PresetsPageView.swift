@@ -188,7 +188,7 @@ struct PresetsPageView: View {
             GuidedTestFlowSheet(
                 plans: guidedTestPlans,
                 historyStore: guidedTestHistoryStore,
-                applyPreset: loadPreset,
+                audioController: audioController,
                 requestReviewAfterMeaningfulAction: requestReviewAfterMeaningfulAction
             )
             .presentationDetents([.large])

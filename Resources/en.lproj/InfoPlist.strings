@@ -1,2 +1,2 @@
 "CFBundleDisplayName" = "AcoustaLab";
-"NSMicrophoneUsageDescription" = "AcoustaLab uses the microphone for acoustic calibration and local audio measurement.";
+"NSMicrophoneUsageDescription" = "AcoustaLab uses the microphone for acoustic calibration, local audio measurement, and realtime spectrum analysis.";

@@ -53,6 +53,10 @@ struct AppPreset: Identifiable, Codable, Equatable {
     var sweepCurve: AudioEngineController.SweepCurve
     var sweepMode: AudioEngineController.SweepMode
     var sweepStepMode: FrequencyStepMode
+    var sweepRepeatMode: AudioEngineController.SweepRepeatMode
+    var sweepRepeatCount: Int
+    var sweepDirection: AudioEngineController.SweepDirection
+    var sweepLoopInterval: Double
 
     var noiseType: AudioEngineController.NoiseType
     var noiseFilterMode: AudioEngineController.FilterMode
@@ -77,6 +81,10 @@ struct AppPreset: Identifiable, Codable, Equatable {
         case sweepCurve
         case sweepMode
         case sweepStepMode
+        case sweepRepeatMode
+        case sweepRepeatCount
+        case sweepDirection
+        case sweepLoopInterval
         case noiseType
         case noiseFilterMode
         case noiseCutoff
@@ -100,6 +108,10 @@ struct AppPreset: Identifiable, Codable, Equatable {
         sweepCurve: AudioEngineController.SweepCurve,
         sweepMode: AudioEngineController.SweepMode,
         sweepStepMode: FrequencyStepMode,
+        sweepRepeatMode: AudioEngineController.SweepRepeatMode = .single,
+        sweepRepeatCount: Int = 3,
+        sweepDirection: AudioEngineController.SweepDirection = .forward,
+        sweepLoopInterval: Double = 0,
         noiseType: AudioEngineController.NoiseType,
         noiseFilterMode: AudioEngineController.FilterMode,
         noiseCutoff: Double,
@@ -121,6 +133,10 @@ struct AppPreset: Identifiable, Codable, Equatable {
         self.sweepCurve = sweepCurve
         self.sweepMode = sweepMode
         self.sweepStepMode = sweepStepMode
+        self.sweepRepeatMode = sweepRepeatMode
+        self.sweepRepeatCount = min(max(sweepRepeatCount, 2), 20)
+        self.sweepDirection = sweepDirection
+        self.sweepLoopInterval = min(max(sweepLoopInterval, 0), 10)
         self.noiseType = noiseType
         self.noiseFilterMode = noiseFilterMode
         self.noiseCutoff = noiseCutoff
@@ -145,6 +161,10 @@ struct AppPreset: Identifiable, Codable, Equatable {
         sweepCurve = try container.decode(AudioEngineController.SweepCurve.self, forKey: .sweepCurve)
         sweepMode = try container.decodeIfPresent(AudioEngineController.SweepMode.self, forKey: .sweepMode) ?? .sweep
         sweepStepMode = try container.decodeIfPresent(FrequencyStepMode.self, forKey: .sweepStepMode) ?? .octave
+        sweepRepeatMode = try container.decodeIfPresent(AudioEngineController.SweepRepeatMode.self, forKey: .sweepRepeatMode) ?? .single
+        sweepRepeatCount = min(max(try container.decodeIfPresent(Int.self, forKey: .sweepRepeatCount) ?? 3, 2), 20)
+        sweepDirection = try container.decodeIfPresent(AudioEngineController.SweepDirection.self, forKey: .sweepDirection) ?? .forward
+        sweepLoopInterval = min(max(try container.decodeIfPresent(Double.self, forKey: .sweepLoopInterval) ?? 0, 0), 10)
         noiseType = try container.decode(AudioEngineController.NoiseType.self, forKey: .noiseType)
         noiseFilterMode = try container.decode(AudioEngineController.FilterMode.self, forKey: .noiseFilterMode)
         noiseCutoff = try container.decode(Double.self, forKey: .noiseCutoff)
