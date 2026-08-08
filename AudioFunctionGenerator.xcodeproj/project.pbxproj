@@ -32,6 +32,7 @@
 		8437E2ECBBAC1258BCD4CABC /* AudioSignalMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2D820F5AEC4A68F9F3301C /* AudioSignalMath.swift */; };
 		85F94663EFF955E7FAC9DAA9 /* RealtimeSpectrumAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77568912A94E2F61FA9C8DDD /* RealtimeSpectrumAnalyzer.swift */; };
 		8A09A042F09690787629640C /* AcousticControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18F0E731693D316CB2366240 /* AcousticControls.swift */; };
+		A5614D7FE9D7B1A9E830C20C /* ShareSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E04E99AFBBB221657CBCF65 /* ShareSupport.swift */; };
 		AB3AAF3E9FF749C776BE1197 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5A153A6425C67980A0D1A51B /* Assets.xcassets */; };
 		B35033D9B69515C356C0DD21 /* SettingsPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025F51080F34FB8FF925DA77 /* SettingsPageView.swift */; };
 		B49BF268D279E055A672C4E8 /* AppPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73D581887993A1161831B7D /* AppPreset.swift */; };
@@ -72,6 +73,7 @@
 		2C2D820F5AEC4A68F9F3301C /* AudioSignalMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSignalMath.swift; sourceTree = "<group>"; };
 		3A4E989DE58B9AB1B7525502 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		485ACF78A024AE55E57A3641 /* AudioCalibrationSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCalibrationSupport.swift; sourceTree = "<group>"; };
+		4E04E99AFBBB221657CBCF65 /* ShareSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSupport.swift; sourceTree = "<group>"; };
 		525D9D268E7B892CDDD9FAD5 /* AcousticAdvancedUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcousticAdvancedUI.swift; sourceTree = "<group>"; };
 		5A153A6425C67980A0D1A51B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5CAA4B40388F817B0A3B0848 /* NoisePageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoisePageView.swift; sourceTree = "<group>"; };
@@ -135,6 +137,7 @@
 				B52EBD4F0AF0661AA4B2CAB9 /* FrequencyStepCatalog.swift */,
 				CCF1215E34F435E59DDB1A69 /* GuidedTestPlan.swift */,
 				A88DC913DA980012380DF886 /* MembershipStore.swift */,
+				4E04E99AFBBB221657CBCF65 /* ShareSupport.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -343,6 +346,7 @@
 				817A3FB99BF50BBD77190091 /* PresetsPageView.swift in Sources */,
 				85F94663EFF955E7FAC9DAA9 /* RealtimeSpectrumAnalyzer.swift in Sources */,
 				B35033D9B69515C356C0DD21 /* SettingsPageView.swift in Sources */,
+				A5614D7FE9D7B1A9E830C20C /* ShareSupport.swift in Sources */,
 				511D3D406CFA4BF847ABDB26 /* SweepPageView.swift in Sources */,
 				DCE2DECDA0EE53B48E42235F /* TonePageView.swift in Sources */,
 			);

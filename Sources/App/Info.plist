@@ -24,6 +24,28 @@
 	<false/>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>AcoustaLab 会使用麦克风进行声学校准、本地音频测量和实时频谱分析。</string>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.json</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>AcoustaLab Preset</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.phil.AcoustaLab.preset</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>acoustalabpreset</string>
+				</array>
+				<key>public.mime-type</key>
+				<string>application/vnd.acoustalab.preset+json</string>
+			</dict>
+		</dict>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

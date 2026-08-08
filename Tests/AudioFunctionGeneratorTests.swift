@@ -1,4 +1,5 @@
 import XCTest
+import UIKit
 @testable import AudioFunctionGenerator
 
 final class AudioFunctionGeneratorTests: XCTestCase {
@@ -144,5 +145,116 @@ final class AudioFunctionGeneratorTests: XCTestCase {
         XCTAssertEqual(decoded.sweepRepeatCount, 3)
         XCTAssertEqual(decoded.sweepDirection, .forward)
         XCTAssertEqual(decoded.sweepLoopInterval, 0)
+    }
+
+    func testSharedPresetRoundTripsAndReceivesNewIdentifier() throws {
+        let original = try XCTUnwrap(BuiltInTestPresetCatalog.presets.first?.preset)
+        let data = try PresetFileTransfer.data(for: original)
+        var imported = try PresetFileTransfer.preset(from: data)
+
+        XCTAssertNotEqual(imported.id, original.id)
+        imported.id = original.id
+        XCTAssertEqual(imported, original)
+    }
+
+    @MainActor
+    func testGuidedTestShareCardRendersAtExpectedSize() throws {
+        let plan = try XCTUnwrap(GuidedTestPlanCatalog.plans.first)
+        let results = plan.steps.map { step in
+            GuidedTestStepResult(
+                stepID: step.id,
+                presetID: step.preset.id,
+                presetName: step.preset.name,
+                state: .pass,
+                note: nil
+            )
+        }
+        let run = GuidedTestRun(
+            planID: plan.id,
+            planNameKey: plan.nameKey,
+            stepResults: results
+        )
+
+        for localeIdentifier in ["en", "zh-Hans"] {
+            let payload = try GuidedTestShareRenderer.sharePayload(
+                for: run,
+                locale: Locale(identifier: localeIdentifier)
+            )
+            let image = try XCTUnwrap(payload.items.first as? UIImage)
+            XCTAssertEqual(image.size.width, 1080, accuracy: 0.5)
+            XCTAssertEqual(image.size.height, 1350, accuracy: 0.5)
+            let topPixel = try rgbaPixel(in: image, x: 5, y: 5)
+            XCTAssertGreaterThan(topPixel.green, 150)
+            XCTAssertGreaterThan(topPixel.blue, 180)
+            let panelPixel = try rgbaPixel(in: image, x: 70, y: 220)
+            XCTAssertGreaterThan(panelPixel.red, 20)
+            XCTAssertGreaterThan(panelPixel.blue, 35)
+
+            let pngData = try XCTUnwrap(image.pngData())
+            let attachment = XCTAttachment(
+                data: pngData,
+                uniformTypeIdentifier: "public.png"
+            )
+            attachment.name = "AcoustaLab-Guided-Test-Share-Card-\(localeIdentifier)"
+            attachment.lifetime = .keepAlways
+            add(attachment)
+        }
+    }
+
+    private func rgbaPixel(in image: UIImage, x: Int, y: Int) throws -> (red: UInt8, green: UInt8, blue: UInt8, alpha: UInt8) {
+        let cgImage = try XCTUnwrap(image.cgImage)
+        let data = try XCTUnwrap(cgImage.dataProvider?.data)
+        let bytes = try XCTUnwrap(CFDataGetBytePtr(data))
+        let offset = y * cgImage.bytesPerRow + x * 4
+        return (bytes[offset], bytes[offset + 1], bytes[offset + 2], bytes[offset + 3])
+    }
+
+    @MainActor
+    func testReviewPromptWaitsForTwoEventsAndOnlyRequestsOncePerVersion() {
+        let suiteName = "ReviewPromptCoordinatorTests-\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let coordinator = ReviewPromptCoordinator(
+            defaults: defaults,
+            appVersion: "1.6-test",
+            now: { Date(timeIntervalSince1970: 1_000_000) },
+            minimumEventCount: 2,
+            minimumPromptInterval: 0
+        )
+
+        XCTAssertFalse(coordinator.record(.presetSaved))
+        XCTAssertTrue(coordinator.record(.guidedTestCompleted))
+        XCTAssertFalse(coordinator.record(.reportExported))
+    }
+
+    @MainActor
+    func testReviewPromptRespectsMinimumIntervalAcrossVersions() {
+        let suiteName = "ReviewPromptIntervalTests-\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        var date = Date(timeIntervalSince1970: 2_000_000)
+        let firstVersion = ReviewPromptCoordinator(
+            defaults: defaults,
+            appVersion: "1.6-test",
+            now: { date },
+            minimumEventCount: 1,
+            minimumPromptInterval: 30 * 24 * 60 * 60
+        )
+        XCTAssertTrue(firstVersion.record(.guidedTestCompleted))
+
+        date.addTimeInterval(10 * 24 * 60 * 60)
+        let nextVersionTooSoon = ReviewPromptCoordinator(
+            defaults: defaults,
+            appVersion: "1.7-test",
+            now: { date },
+            minimumEventCount: 1,
+            minimumPromptInterval: 30 * 24 * 60 * 60
+        )
+        XCTAssertFalse(nextVersionTooSoon.record(.guidedTestCompleted))
+
+        date.addTimeInterval(21 * 24 * 60 * 60)
+        XCTAssertTrue(nextVersionTooSoon.record(.reportExported))
     }
 }

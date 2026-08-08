@@ -10,26 +10,46 @@ final class ReviewPromptCoordinator: ObservableObject {
         case reportExported
     }
 
-    private let defaults = UserDefaults.standard
-    private let eventCountKey = "review_prompt_event_count"
+    private let defaults: UserDefaults
+    private let appVersion: String
+    private let now: () -> Date
+    private let minimumEventCount: Int
+    private let minimumPromptInterval: TimeInterval
     private let lastPromptDateKey = "review_prompt_last_prompt_date"
-    private let minimumPromptInterval: TimeInterval = 14 * 24 * 60 * 60
+    private let lastPromptVersionKey = "review_prompt_last_prompt_version"
 
-    func record(_ event: Event, requestReview: () -> Void) {
+    init(
+        defaults: UserDefaults = .standard,
+        appVersion: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "unknown",
+        now: @escaping () -> Date = Date.init,
+        minimumEventCount: Int = 2,
+        minimumPromptInterval: TimeInterval = 30 * 24 * 60 * 60
+    ) {
+        self.defaults = defaults
+        self.appVersion = appVersion
+        self.now = now
+        self.minimumEventCount = minimumEventCount
+        self.minimumPromptInterval = minimumPromptInterval
+    }
+
+    func record(_ event: Event) -> Bool {
+        let eventCountKey = "review_prompt_event_count_\(appVersion)"
         let nextCount = defaults.integer(forKey: eventCountKey) + 1
         defaults.set(nextCount, forKey: eventCountKey)
-        defaults.set(Date(), forKey: "review_prompt_last_event_\(event.rawValue)")
+        defaults.set(now(), forKey: "review_prompt_last_event_\(event.rawValue)")
 
-        guard shouldRequestReview(eventCount: nextCount) else { return }
-        defaults.set(Date(), forKey: lastPromptDateKey)
-        requestReview()
+        guard shouldRequestReview(eventCount: nextCount) else { return false }
+        defaults.set(now(), forKey: lastPromptDateKey)
+        defaults.set(appVersion, forKey: lastPromptVersionKey)
+        return true
     }
 
     private func shouldRequestReview(eventCount: Int) -> Bool {
-        guard eventCount >= 1 else { return false }
+        guard eventCount >= minimumEventCount else { return false }
+        guard defaults.string(forKey: lastPromptVersionKey) != appVersion else { return false }
 
         if let lastPromptDate = defaults.object(forKey: lastPromptDateKey) as? Date,
-           Date().timeIntervalSince(lastPromptDate) < minimumPromptInterval
+           now().timeIntervalSince(lastPromptDate) < minimumPromptInterval
         {
             return false
         }
@@ -39,7 +59,7 @@ final class ReviewPromptCoordinator: ObservableObject {
 }
 
 struct AppPreset: Identifiable, Codable, Equatable {
-    let id: UUID
+    var id: UUID
     var name: String
     var mode: AudioEngineController.SignalMode
 

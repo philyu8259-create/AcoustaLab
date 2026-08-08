@@ -363,18 +363,33 @@ struct SettingsPageView: View {
                 .font(.caption2)
                 .foregroundStyle(AppTheme.textSecondary)
 
-            LazyVGrid(columns: gridColumns(2), spacing: 10) {
+            VStack(spacing: 10) {
                 ForEach(CalibrationReportExportFormat.exportButtonFormats, id: \.self) { format in
-                    Button {
-                        exportCalibrationReport(profile: profile, format: format)
-                    } label: {
-                        Label {
-                            Text(LocalizedStringKey(format.localizedTitleKey))
-                        } icon: {
-                            Image(systemName: format.systemImage)
+                    HStack(spacing: 8) {
+                        Button {
+                            exportCalibrationReport(profile: profile, format: format)
+                        } label: {
+                            Label {
+                                Text(LocalizedStringKey(format.localizedTitleKey))
+                            } icon: {
+                                Image(systemName: format.systemImage)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         }
+                        .buttonStyle(SecondaryButtonStyle())
+
+                        ShareActionButton {
+                            try CalibrationReportShareService.sharePayload(for: profile, format: format)
+                        } label: {
+                            Image(systemName: "square.and.arrow.up")
+                        }
+                        .buttonStyle(SecondaryButtonStyle())
+                        .frame(width: 44)
+                        .accessibilityLabel(String(
+                            format: String(localized: "calibration.share_format"),
+                            String(localized: String.LocalizationValue(format.localizedTitleKey))
+                        ))
                     }
-                    .buttonStyle(SecondaryButtonStyle())
                     .disabled(audioController.isLoopbackCalibrationRunning)
                 }
             }

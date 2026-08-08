@@ -88,6 +88,11 @@
 "presets.count_compact" = "Saved presets";
 "presets.empty_title" = "No presets yet";
 "presets.empty_body" = "Tune a page first, then come back here to save a reusable setup.";
+"presets.import" = "Import";
+"presets.share" = "Share Preset";
+"presets.import_result_title" = "Preset Import";
+"presets.import_success" = "Imported \"%@\".";
+"presets.import_failed" = "The preset could not be imported: %@";
 "presets.testpack.preset.reference_tone.name" = "1 kHz Reference Tone";
 "presets.testpack.preset.reference_tone.description" = "Single 1 kHz sine, useful for SPL spot checks and calibration reference.";
 "presets.testpack.preset.sine_sweep_speaker.name" = "Sine Sweep Speaker Check";
@@ -337,10 +342,22 @@
 "guided_test.playback_seconds" = "%d s";
 "guided_test.playback_accessibility" = "%@, %d seconds remaining";
 "guided_test.completion_title" = "Test Complete";
+"guided_test.share_result" = "Share Result";
 
 "guided_test.step_result.pass" = "Pass";
 "guided_test.step_result.anomaly" = "Anomaly";
 "guided_test.step_result.skipped" = "Skip";
+
+"share.error_title" = "Unable to Share";
+"share.error_body" = "AcoustaLab could not prepare this item. Please try again.";
+"share.card.app_name" = "AcoustaLab";
+"share.card.category" = "ACOUSTIC TEST RESULT";
+"share.card.status_pass" = "All completed checks passed";
+"share.card.status_attention" = "One or more checks need attention";
+"share.card.details" = "TEST DETAILS";
+"share.card.footer_title" = "Test speakers with confidence";
+"share.card.footer_body" = "Tone, sweep, noise, channel checks and local acoustic tools. Scan to view AcoustaLab on the App Store.";
+"calibration.share_format" = "Share %@";
 
 "guided_test.fallback_preset_name" = "Fallback Test Preset";
 

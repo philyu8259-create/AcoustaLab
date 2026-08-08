@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct PresetsPageView: View {
     @ObservedObject var audioController: AudioEngineController
@@ -15,6 +16,8 @@ struct PresetsPageView: View {
     let requestReviewAfterMeaningfulAction: (ReviewPromptCoordinator.Event) -> Void
 
     @State private var isGuidedTestSheetPresented = false
+    @State private var isPresetImporterPresented = false
+    @State private var presetImportMessage: String?
     private static let historyDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
@@ -79,8 +82,17 @@ struct PresetsPageView: View {
                             .padding(.vertical, 12)
                             .background(Color.white.opacity(0.08))
                             .clipShape(RoundedRectangle(cornerRadius: 16))
-                        Button(String(localized: "button.save_preset"), action: savePreset)
-                            .buttonStyle(PrimaryButtonStyle())
+                        HStack(spacing: 10) {
+                            Button(String(localized: "button.save_preset"), action: savePreset)
+                                .buttonStyle(PrimaryButtonStyle())
+
+                            Button {
+                                isPresetImporterPresented = true
+                            } label: {
+                                Label(String(localized: "presets.import"), systemImage: "square.and.arrow.down")
+                            }
+                            .buttonStyle(SecondaryButtonStyle())
+                        }
                     }
                 }
 
@@ -123,6 +135,14 @@ struct PresetsPageView: View {
                                         }
                                         .buttonStyle(SecondaryButtonStyle())
 
+                                        ShareActionButton {
+                                            try PresetFileTransfer.sharePayload(for: preset)
+                                        } label: {
+                                            Image(systemName: "square.and.arrow.up")
+                                        }
+                                        .buttonStyle(SecondaryButtonStyle())
+                                        .accessibilityLabel(String(localized: "presets.share"))
+
                                         Button(String(localized: "button.delete"), role: .destructive) {
                                             deletePreset(preset)
                                         }
@@ -153,6 +173,14 @@ struct PresetsPageView: View {
                                         }
 
                                         Spacer()
+
+                                        ShareActionButton {
+                                            try GuidedTestShareRenderer.sharePayload(for: run)
+                                        } label: {
+                                            Image(systemName: "square.and.arrow.up")
+                                        }
+                                        .buttonStyle(SecondaryButtonStyle())
+                                        .accessibilityLabel(String(localized: "guided_test.share_result"))
 
                                         Button(role: .destructive) {
                                             guidedTestHistoryStore.delete(run)
@@ -194,6 +222,20 @@ struct PresetsPageView: View {
             .presentationDetents([.large])
             .preferredColorScheme(.dark)
         }
+        .fileImporter(
+            isPresented: $isPresetImporterPresented,
+            allowedContentTypes: [.acoustaLabPreset, .json],
+            allowsMultipleSelection: false,
+            onCompletion: importPreset
+        )
+        .alert(String(localized: "presets.import_result_title"), isPresented: Binding(
+            get: { presetImportMessage != nil },
+            set: { if !$0 { presetImportMessage = nil } }
+        )) {
+            Button(String(localized: "button.done"), role: .cancel) {}
+        } message: {
+            Text(presetImportMessage ?? "")
+        }
         .tabItem {
             Label(String(localized: "tab.presets"), systemImage: "square.stack")
         }
@@ -207,6 +249,31 @@ struct PresetsPageView: View {
             return "\(FrequencyFormatting.displayString(for: preset.sweepStartFrequency)) - \(FrequencyFormatting.displayString(for: preset.sweepEndFrequency))"
         case .noise:
             return preset.noiseType.localizedTitle
+        }
+    }
+
+    private func importPreset(_ result: Result<[URL], Error>) {
+        do {
+            guard let url = try result.get().first else { return }
+            let isSecurityScoped = url.startAccessingSecurityScopedResource()
+            defer {
+                if isSecurityScoped {
+                    url.stopAccessingSecurityScopedResource()
+                }
+            }
+
+            let data = try Data(contentsOf: url, options: .mappedIfSafe)
+            let preset = try PresetFileTransfer.preset(from: data)
+            presetStore.save(preset)
+            presetImportMessage = String(
+                format: String(localized: "presets.import_success"),
+                preset.name
+            )
+        } catch {
+            presetImportMessage = String(
+                format: String(localized: "presets.import_failed"),
+                error.localizedDescription
+            )
         }
     }
 

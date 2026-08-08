@@ -338,7 +338,10 @@ struct ContentView: View {
     }
 
     private func requestReviewAfterMeaningfulAction(_ event: ReviewPromptCoordinator.Event) {
-        reviewPromptCoordinator.record(event) {
+        guard reviewPromptCoordinator.record(event) else { return }
+        Task { @MainActor in
+            try? await Task.sleep(for: .seconds(2))
+            guard !Task.isCancelled else { return }
             requestReview()
         }
     }

@@ -88,6 +88,11 @@
 "presets.count_compact" = "已存预设";
 "presets.empty_title" = "还没有预设";
 "presets.empty_body" = "先去任意功能页调好参数，再回来保存一组常用配置。";
+"presets.import" = "导入";
+"presets.share" = "分享预设";
+"presets.import_result_title" = "预设导入";
+"presets.import_success" = "已导入“%@”。";
+"presets.import_failed" = "无法导入该预设：%@";
 "presets.testpack.preset.reference_tone.name" = "1 kHz 参考正弦";
 "presets.testpack.preset.reference_tone.description" = "1 kHz 单频正弦，适用于 SPL 取样点和基准偏差对照。";
 "presets.testpack.preset.sine_sweep_speaker.name" = "扫频扬声器检查";
@@ -337,10 +342,22 @@
 "guided_test.playback_seconds" = "%d 秒";
 "guided_test.playback_accessibility" = "%@，剩余 %d 秒";
 "guided_test.completion_title" = "测试完成";
+"guided_test.share_result" = "分享结果";
 
 "guided_test.step_result.pass" = "通过";
 "guided_test.step_result.anomaly" = "异常";
 "guided_test.step_result.skipped" = "跳过";
+
+"share.error_title" = "无法分享";
+"share.error_body" = "声测工坊暂时无法准备此内容，请稍后重试。";
+"share.card.app_name" = "声测工坊";
+"share.card.category" = "声学测试结果";
+"share.card.status_pass" = "所有已完成项目均通过";
+"share.card.status_attention" = "部分检查项目需要留意";
+"share.card.details" = "测试明细";
+"share.card.footer_title" = "快速完成扬声器与音频检查";
+"share.card.footer_body" = "支持单音、扫频、噪声、声道检查和本地声学工具。扫码前往 App Store 查看声测工坊。";
+"calibration.share_format" = "分享%@";
 
 "guided_test.fallback_preset_name" = "回退测试预设";
 

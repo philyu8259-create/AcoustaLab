@@ -282,10 +282,19 @@ struct GuidedTestFlowSheet: View {
                         resultMetric(value: run.skippedCount, key: "guided_test.step_result.skipped", color: AppTheme.textSecondary)
                     }
 
-                    Button(String(localized: "button.done")) {
-                        close()
+                    HStack(spacing: 10) {
+                        ShareActionButton {
+                            try GuidedTestShareRenderer.sharePayload(for: run)
+                        } label: {
+                            Label(String(localized: "guided_test.share_result"), systemImage: "square.and.arrow.up")
+                        }
+                        .buttonStyle(SecondaryButtonStyle())
+
+                        Button(String(localized: "button.done")) {
+                            close()
+                        }
+                        .buttonStyle(PrimaryButtonStyle())
                     }
-                    .buttonStyle(PrimaryButtonStyle())
                 }
             }
         }

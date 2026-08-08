@@ -44,6 +44,15 @@ targets:
           - UIInterfaceOrientationLandscapeLeft
           - UIInterfaceOrientationLandscapeRight
         NSMicrophoneUsageDescription: AcoustaLab 会使用麦克风进行声学校准、本地音频测量和实时频谱分析。
+        UTExportedTypeDeclarations:
+          - UTTypeIdentifier: com.phil.AcoustaLab.preset
+            UTTypeDescription: AcoustaLab Preset
+            UTTypeConformsTo:
+              - public.json
+            UTTypeTagSpecification:
+              public.filename-extension:
+                - acoustalabpreset
+              public.mime-type: application/vnd.acoustalab.preset+json
     settings:
       base:
         PRODUCT_NAME: AudioFunctionGenerator
