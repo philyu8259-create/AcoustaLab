@@ -20,6 +20,8 @@ Camera access is requested only when you open the sound-level camera. It capture
 
 The app may store preferences, starter-access status, purchase entitlement state, calibration state, route information, test history, presets, and saved report data on your device. This information is used to provide app features and preserve state across launches.
 
+Review invitation eligibility and request-attempt counters are stored only on your device. They are not uploaded and do not indicate whether you submitted a rating or review.
+
 ## Test History, Reports, and Export Behavior
 
 - Test history and calibration report records are stored in the app sandbox.
@@ -52,4 +54,4 @@ For privacy questions, please contact:
 - Contact: Lincoln Chen
 - Email: contact@xufanzhilian.com
 
-Last updated: November 2, 2026
+Last updated: November 3, 2026

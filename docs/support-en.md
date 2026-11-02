@@ -2,7 +2,9 @@
 
 Thank you for using AcoustaLab, a local-first acoustic toolkit for tones, sweeps, noise, speaker and headphone checks, presets, guided tests, realtime spectrum analysis, and calibration reporting.
 
-AcoustaLab 1.10 includes built-in one-click test presets, guided test history, realtime spectrum/RTA tools, and calibration report export in PDF, CSV, and PNG formats.
+AcoustaLab 1.10 adds everyday noise measurement in decibels (dB), sound-level photos, and saved measurement records alongside speaker and headphone checks, realtime spectrum/RTA tools, and calibration reporting.
+
+Version note: the permanent Free tier and explicitly started 24-hour Pro trial described here apply to version 1.10 and later. Earlier releases may use a 3-day starter period and different access limits; check the version and access page in your installed app. Previously started trials keep their original expiry.
 
 ## Measurement and Saved Results
 
@@ -10,7 +12,7 @@ Use Measure for sound levels, spectrum snapshots and comparisons, and rattle inv
 
 ## Decibel Readings and Calibration
 
-A weighting is the default. An uncalibrated iPhone built-in microphone uses a general sensitivity assumption and is labelled Estimated · Uncalibrated; its accuracy has not been measured for your phone. External or unknown inputs may show relative digital dBFS, where negative values are normal. For a measured sound-pressure reference, calibrate with an independent reference meter and a stable 1 kHz source.
+A weighting is the default. An uncalibrated iPhone built-in microphone uses a general sensitivity assumption; its absolute accuracy has not been validated for your phone. The displayed scale is not a validated measurement range. External or unknown inputs may show relative digital dBFS, where negative values are normal. For a measured sound-pressure reference, calibrate with an independent reference meter and a stable 1 kHz source.
 
 ## No Valid Input
 
@@ -18,11 +20,11 @@ A digital-zero input is shown as unavailable and cannot be used for a sound-leve
 
 ## Watermarked Photos and Recovery
 
-Open the sound-level camera and explicitly start measurement before taking a photo. The watermark preserves the latest shutter-request reading, time, statistics, and estimate or calibration status. Photos stay in the app unless you share them or choose Save Image. Existing library photos are not read, and location access is not requested. Unreadable or unfinished photos appear in Files to Recover, where you can export the unchanged originals before confirming deletion.
+Open the sound-level camera and explicitly start measurement before taking a photo. The watermark preserves the latest shutter-request reading, unit, weighting, response, time, statistics, and input information. Photos stay in the app unless you share them or choose Save Image. Existing library photos are not read, and location access is not requested. Unreadable or unfinished photos appear in Files to Recover, where you can export the unchanged originals before confirming deletion.
 
 ## Saved Data and Access
 
-After access expires, you can still view, manage, and export saved measurement records and photos from Measure. Starting new live measurements requires active access.
+In version 1.10, basic metering, sine tones, unfiltered noise and fixed checks remain free. Free includes 10 saved measurements, 10 watermarked photos and 3 custom basic presets. Existing data remains available for viewing, management and export after Pro ends; records are never automatically deleted to meet a Free limit. Earlier versions may require access for new measurements.
 
 ## Contact
 
@@ -53,8 +55,8 @@ When reporting an issue, please include:
 
 ## Purchases
 
-AcoustaLab offers 3 days of starter access. Continued Pro access is available through monthly or yearly auto-renewable subscriptions, or a one-time lifetime unlock, using Apple In-App Purchase. Available products and prices are displayed in the app for your App Store storefront.
+Version 1.10 offers one 24-hour local Pro trial that you explicitly start. No payment is required and it never charges automatically. Existing starter periods retain their original expiry. Monthly, yearly and one-time Lifetime Pro include the same advanced tools. Apple In-App Purchase displays available products and localized prices for your storefront. Buying Lifetime does not automatically cancel an existing subscription; use Manage Apple Subscriptions to review it.
 
 Apple handles purchase and payment processing. If you previously purchased access, use **Restore Purchases** on the access page or in Settings. Subscription management and cancellation are handled through your Apple ID subscription settings.
 
-Last updated: November 2, 2026
+Last updated: November 3, 2026
