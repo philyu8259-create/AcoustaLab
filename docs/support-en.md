@@ -29,7 +29,7 @@ After access expires, you can still view, manage, and export saved measurement r
 For product support, bug reports, or App Store review questions, please contact:
 
 - Contact: Lincoln Chen
-- Email: 10883714@qq.com
+- Email: contact@xufanzhilian.com
 
 We usually reply as soon as possible after receiving your message.
 
@@ -57,4 +57,4 @@ AcoustaLab offers 3 days of starter access. Continued Pro access is available th
 
 Apple handles purchase and payment processing. If you previously purchased access, use **Restore Purchases** on the access page or in Settings. Subscription management and cancellation are handled through your Apple ID subscription settings.
 
-Last updated: October 30, 2026
+Last updated: November 2, 2026

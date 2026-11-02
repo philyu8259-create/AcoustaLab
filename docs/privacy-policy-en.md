@@ -50,6 +50,6 @@ We may update this privacy policy when the app changes. The latest version will 
 For privacy questions, please contact:
 
 - Contact: Lincoln Chen
-- Email: 10883714@qq.com
+- Email: contact@xufanzhilian.com
 
-Last updated: October 30, 2026
+Last updated: November 2, 2026

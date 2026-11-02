@@ -50,6 +50,6 @@ App 使用经 StoreKit 验证的购买权限信息判断 Pro 权限是否有效�
 如有隐私相关问题，请联系：
 
 - 联系人：Lincoln Chen
-- 邮箱：10883714@qq.com
+- 邮箱：contact@xufanzhilian.com
 
-最后更新：2026 年 10 月 30 日
+最后更新：2026 年 11 月 2 日
