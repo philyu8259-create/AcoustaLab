@@ -1,26 +1,41 @@
 # AcoustaLab Privacy Policy
 
-AcoustaLab is designed as a local acoustic utility. We respect your privacy and keep the app focused on signal generation, audio routing, local measurement, and calibration workflows.
+AcoustaLab 1.10 is a local-first acoustic utility for signal generation, audio routing, guided tests, realtime spectrum analysis, local measurement, and calibration reporting.
 
 ## Data We Collect and Use
 
-AcoustaLab does not upload your generated audio, microphone audio, presets, or calibration measurements to our servers. The app does not include third-party advertising, advertising SDKs, App Tracking Transparency prompts, or tracking for advertising purposes.
+AcoustaLab does not upload your generated audio, microphone audio, presets, test history, calibration results, photos, or reports to a developer-operated server.
+
+The app does not include advertisements, third-party advertising SDKs, analytics SDKs for advertising or behavioral tracking, or commercial tracking code. It does not request App Tracking Transparency permission.
 
 ## Microphone Access
 
-AcoustaLab may request microphone access for acoustic calibration and local audio measurement features. Microphone input is used on device for measurement-related functionality. We do not upload microphone audio to our servers.
+AcoustaLab may request microphone access for acoustic calibration, local audio measurement, and realtime spectrum/RTA features. Microphone input is processed on device for these features. We do not upload microphone audio to our servers.
 
-## App Data Stored On Device
+## Camera and Photo Records
 
-The app may store local settings such as preferences, trial status, calibration state, route information, and saved presets on your device. This information is used to make the app work consistently across launches.
+Camera access is requested only when you open the sound-level camera. It captures still photos with a sound-level measurement watermark. Photos and their measurement snapshots are stored in the app sandbox; the app does not upload them automatically, access your existing photo library, or request location access. Sharing or saving a photo to your photo library is controlled by your explicit action in the system share sheet. Saving to Photos may request add-only permission; existing library photos are not read. You can delete photos from Photo Records.
 
-## In-App Purchases
+## App Data Stored on Device
 
-AcoustaLab uses Apple In-App Purchase for one-time full access unlock. Purchase transactions and payment processing are handled by Apple. We do not receive or store your payment card details.
+The app may store preferences, starter-access status, purchase entitlement state, calibration state, route information, test history, presets, and saved report data on your device. This information is used to provide app features and preserve state across launches.
+
+## Test History, Reports, and Export Behavior
+
+- Test history and calibration report records are stored in the app sandbox.
+- PDF, CSV, and PNG exports are generated from local calibration data.
+- The app does not automatically upload exported files to a remote endpoint.
+- If you export or share a file through a system flow, transmission is controlled by the destination you select and your explicit action.
+
+## In-App Purchases and Subscriptions
+
+AcoustaLab offers monthly and yearly auto-renewable subscriptions and a one-time lifetime unlock through Apple In-App Purchase. Apple handles purchase transactions, subscription management, and payment processing. We do not receive or store your payment card details.
+
+The app uses verified StoreKit entitlement information to determine whether Pro access is active. Purchase restoration is initiated only when you choose the restore option.
 
 ## Support Email
 
-If you contact us for support by email, we will use the information you provide only to respond to your request.
+If you contact us for support by email, we will use the information you provide to respond to and resolve your request.
 
 ## Children
 
@@ -28,7 +43,7 @@ AcoustaLab is a utility app and is not directed at children. We do not knowingly
 
 ## Changes
 
-We may update this privacy policy when the app changes. The latest version will be available at this page.
+We may update this privacy policy when the app changes. The latest version will be available on this page.
 
 ## Contact
 
@@ -37,4 +52,4 @@ For privacy questions, please contact:
 - Contact: Lincoln Chen
 - Email: 10883714@qq.com
 
-Last updated: May 23, 2026
+Last updated: October 30, 2026
